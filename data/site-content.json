@@ -451,22 +451,32 @@
       ]
     },
     {
-      "title": "AI Verdict",
+      "title": "AI-swers",
       "category": "AI-Powered Multi-Model Video Generation Engine",
-      "image": "/assets/apps/images/ai-verdict.webp",
+      "image": "/assets/apps/images/ai-swers.webp",
       "imageFit": "cover",
-      "video": "https://youtu.be/8ra4_p_i7hk",
+      "video": "https://youtu.be/PoZDyi5U4_U",
       "videoType": "youtube",
-      "url": "https://www.youtube.com/@AI-Verdict",
+      "url": "https://www.youtube.com/@AI-swers",
       "linkLabel": "Go To Channel",
       "summary": "Automated AI video content system that orchestrates multiple AI models to generate dynamic debate-style videos.",
-      "outcome": "Users input a single question, then the system routes it across AI agents, generates visuals and voiceovers, and renders complete vertical and horizontal video outputs for social distribution.",
+      "outcome": "Input a single question, then the system routes it across AI agents, generates cinematic videos related to the answers and adds unique voiceovers for each AI model character, and creates a thumbnail image with SEO-optimized YouTube title, description and tags to use in the uploading process.",
       "tags": [
         "AI video generation",
         "Multi-agent systems",
         "Content automation",
         "Voice synthesis",
-        "Social media content"
+        "Social media content",
+        "Codex",
+        "OpenAI API",
+        "Sora",
+        "Youtube",
+        "DeepSeek",
+        "Llama",
+        "Grok",
+        "Claude",
+        "Gemini",
+        "ChatGPT"
       ]
     },
     {

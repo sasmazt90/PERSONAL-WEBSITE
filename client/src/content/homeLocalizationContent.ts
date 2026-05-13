@@ -92,14 +92,30 @@ const deProducts: Record<string, Partial<ProductItem>> = {
     ],
     tags: ["Growth Analytics", "Performance Marketing", "Forecasting", "Experimentation", "Budgetallokation"],
   },
-  "AI Verdict": {
+  "AI-swers": {
     category: "KI-gestützte Multi-Model-Video-Engine",
     linkLabel: "Zum Kanal",
     summary:
       "Automatisiertes KI-Video-System, das mehrere Modelle orchestriert, um dynamische Debattenvideos zu erzeugen.",
     outcome:
-      "Nutzer geben eine einzige Frage ein; das System verteilt sie an KI-Agenten, erzeugt Visuals und Voiceovers und rendert vollständige vertikale und horizontale Video-Outputs für Social Distribution.",
-    tags: ["KI-Videogenerierung", "Multi-Agenten-Systeme", "Content-Automation", "Voice-Synthese", "Social-Media-Content"],
+      "Nutzer geben eine einzige Frage ein; das System verteilt sie an KI-Agenten, erzeugt filmische Videos passend zu den Antworten, ergänzt individuelle Voiceovers für jeden KI-Modell-Charakter und erstellt ein Thumbnail-Bild mit SEO-optimiertem YouTube-Titel, Beschreibung und Tags für den Upload-Prozess.",
+    tags: [
+      "KI-Videogenerierung",
+      "Multi-Agenten-Systeme",
+      "Content-Automation",
+      "Voice-Synthese",
+      "Social-Media-Content",
+      "Codex",
+      "OpenAI API",
+      "Sora",
+      "Youtube",
+      "DeepSeek",
+      "Llama",
+      "Grok",
+      "Claude",
+      "Gemini",
+      "ChatGPT",
+    ],
   },
   "Bluff Room": {
     category: "Mobiles Social-Deduction-Game",
@@ -221,14 +237,30 @@ const trProducts: Record<string, Partial<ProductItem>> = {
     ],
     tags: ["Büyüme analitiği", "Performans pazarlaması", "Forecasting", "Deney yönetimi", "Bütçe dağılımı"],
   },
-  "AI Verdict": {
+  "AI-swers": {
     category: "Yapay Zeka Destekli Çoklu Model Video Üretim Motoru",
     linkLabel: "Kanala Git",
     summary:
       "Dinamik tartışma formatlı videolar üretmek için birden fazla yapay zeka modelini orkestre eden otomatik AI video içerik sistemi.",
     outcome:
-      "Kullanıcı tek bir soru girer; sistem bunu AI agent'lar arasında dağıtır, görseller ve seslendirmeler üretir ve sosyal dağıtım için dikey ve yatay tam video çıktıları oluşturur.",
-    tags: ["AI video üretimi", "Çoklu agent sistemleri", "İçerik otomasyonu", "Ses sentezi", "Sosyal medya içeriği"],
+      "Tek bir soru girilir; sistem bunu AI agent'lar arasında dağıtır, cevaplarla ilişkili sinematik videolar üretir, her AI model karakteri için özgün seslendirmeler ekler ve yükleme sürecinde kullanılmak üzere SEO optimize edilmiş YouTube başlığı, açıklaması ve tag'leriyle birlikte bir thumbnail görseli oluşturur.",
+    tags: [
+      "AI video üretimi",
+      "Çoklu agent sistemleri",
+      "İçerik otomasyonu",
+      "Ses sentezi",
+      "Sosyal medya içeriği",
+      "Codex",
+      "OpenAI API",
+      "Sora",
+      "Youtube",
+      "DeepSeek",
+      "Llama",
+      "Grok",
+      "Claude",
+      "Gemini",
+      "ChatGPT",
+    ],
   },
   "Bluff Room": {
     category: "Mobil sosyal çıkarım oyunu",
