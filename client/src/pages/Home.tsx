@@ -40,6 +40,14 @@ import {
 } from "@/content/homeLocalizationStatic";
 import { usePortfolioData } from "@/contexts/PortfolioDataContext";
 import { useSiteContent } from "@/contexts/SiteContentContext";
+import {
+  getFileNameFromUrl,
+  getFileTypeFromUrl,
+  getLinkDomain,
+  isDownloadUrl,
+  isExternalUrl,
+  trackEvent,
+} from "@/lib/analytics";
 import { fetchPublicBlogPosts } from "@/lib/blogApi";
 
 type Language = "en" | "de" | "tr";
@@ -891,10 +899,53 @@ export default function Home() {
           : "Technology Stack",
     advancedCertifications:
       language === "de"
-        ? "Weiterführende Zertifizierungen"
-        : language === "tr"
-          ? "İleri Düzey Sertifikalar"
-          : "Advanced Certifications",
+      ? "Weiterführende Zertifizierungen"
+      : language === "tr"
+        ? "İleri Düzey Sertifikalar"
+        : "Advanced Certifications",
+  };
+  const trackCta = (
+    ctaText: string,
+    ctaType: string,
+    destinationUrl: string,
+    sectionName: string
+  ) => {
+    trackEvent("cta_click", {
+      cta_text: ctaText,
+      cta_type: ctaType,
+      destination_url: destinationUrl,
+      section_name: sectionName,
+    });
+
+    if (isExternalUrl(destinationUrl)) {
+      trackEvent("external_link_click", {
+        link_text: ctaText,
+        destination_url: destinationUrl,
+        link_domain: getLinkDomain(destinationUrl),
+        section_name: sectionName,
+      });
+    }
+
+    if (isDownloadUrl(destinationUrl)) {
+      trackEvent("file_download_click", {
+        file_name: getFileNameFromUrl(destinationUrl),
+        file_url: destinationUrl,
+        file_type: getFileTypeFromUrl(destinationUrl),
+        section_name: sectionName,
+      });
+    }
+  };
+  const trackProject = (
+    product: (typeof aiProducts)[number],
+    sectionName: string,
+    destinationUrl?: string | null
+  ) => {
+    trackEvent("project_click", {
+      project_name: product.title,
+      project_category: product.category,
+      project_url: destinationUrl ?? product.url ?? "",
+      section_name: sectionName,
+    });
   };
 
   useEffect(() => {
@@ -1008,13 +1059,15 @@ export default function Home() {
           {product.video ? (
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                trackProject(product, "products", product.video);
+                trackCta(t.watchWalkthrough, "video", product.video!, "products");
                 setMediaModal({
                   type: product.videoType === "youtube" ? "youtube" : "video",
                   url: product.video!,
                   title: product.title,
-                })
-              }
+                });
+              }}
               className="inline-flex items-center gap-2 rounded-full bg-[#2563eb] px-4 py-2.5 text-sm font-bold text-white"
             >
               <Play size={15} />
@@ -1025,7 +1078,9 @@ export default function Home() {
           (product.detailBody?.length || product.summary || product.outcome) ? (
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                trackProject(product, "products");
+                trackCta(t.seeDetails, "details", "", "products");
                 setMediaModal({
                   type: "detail",
                   title: product.title,
@@ -1033,8 +1088,8 @@ export default function Home() {
                   body: product.detailBody?.length
                     ? product.detailBody
                     : [product.summary, product.outcome].filter(Boolean),
-                })
-              }
+                });
+              }}
               className={secondaryCtaClass}
             >
               {t.seeDetails}
@@ -1045,6 +1100,11 @@ export default function Home() {
               href={product.url}
               target="_blank"
               rel="noreferrer"
+              onClick={() => {
+                const label = product.linkLabel ?? t.openLive;
+                trackProject(product, "products", product.url);
+                trackCta(label, "external", product.url!, "products");
+              }}
               className={secondaryCtaClass}
             >
               {product.linkLabel ?? t.openLive}
@@ -1078,13 +1138,14 @@ export default function Home() {
         content: (
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
+              trackCta(t.watchVideo, "video", video.url, "video_portfolio");
               setMediaModal({
                 type: "youtube",
                 url: video.url,
                 title: video.title,
-              })
-            }
+              });
+            }}
                 className="group h-full overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white text-left transition hover:border-[#cadcf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-black">
@@ -1229,6 +1290,14 @@ export default function Home() {
                   <div className="mt-auto pt-7">
                     <a
                       href={`/blog/${post.slug.canonical}/${language}`}
+                      onClick={() =>
+                        trackEvent("blog_click", {
+                          blog_title: title,
+                          blog_slug: post.slug.canonical,
+                          blog_url: `/blog/${post.slug.canonical}/${language}`,
+                          section_name: "blog",
+                        })
+                      }
                       className="inline-flex items-center justify-center rounded-[1.1rem] bg-[#2563eb] px-5 py-3 text-sm font-bold uppercase tracking-[0.12em] text-white shadow-[0_14px_28px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
                     >
                       Read Now
@@ -1328,6 +1397,14 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-base text-[#64748b] dark:text-white/64">
                 <a
                   href={`mailto:${personalInfo.email}`}
+                  onClick={() =>
+                    trackCta(
+                      personalInfo.email,
+                      "email",
+                      `mailto:${personalInfo.email}`,
+                      "hero"
+                    )
+                  }
                   className="inline-flex items-center gap-2 transition hover:text-[#2563eb] dark:hover:text-[#8cc8ff]"
                 >
                   <Mail size={18} />
@@ -1337,6 +1414,14 @@ export default function Home() {
                   href={personalInfo.linkedin}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() =>
+                    trackCta(
+                      t.linkedinLabel,
+                      "linkedin",
+                      personalInfo.linkedin,
+                      "hero"
+                    )
+                  }
                   className="inline-flex items-center gap-2 transition hover:text-[#2563eb] dark:hover:text-[#8cc8ff]"
                 >
                   <ExternalLink size={18} />
@@ -1350,6 +1435,14 @@ export default function Home() {
               <div>
                 <a
                   href={`mailto:${personalInfo.email}`}
+                  onClick={() =>
+                    trackCta(
+                      t.cta,
+                      "email",
+                      `mailto:${personalInfo.email}`,
+                      "hero"
+                    )
+                  }
                   className="inline-flex items-center gap-2 rounded-[1.2rem] bg-[#2563eb] px-7 py-4 text-lg font-bold text-white shadow-[0_18px_40px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
                 >
                   <Mail size={20} />
@@ -1549,7 +1642,15 @@ export default function Home() {
                       <button
                         key={`${item.year}-${item.company}`}
                         type="button"
-                        onClick={() => setExperienceModal(item)}
+                        onClick={() => {
+                          trackEvent("experience_click", {
+                            company_name: getExperienceCompanyLabel(item),
+                            role_title: item.role,
+                            experience_period: item.year,
+                            section_name: "journey",
+                          });
+                          setExperienceModal(item);
+                        }}
                         className="group flex min-w-0 flex-col items-center text-center"
                       >
                         <div
@@ -1763,6 +1864,15 @@ export default function Home() {
                       href={study.url}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => {
+                        trackEvent("project_click", {
+                          project_name: study.brand,
+                          project_category: "case_study",
+                          project_url: study.url,
+                          section_name: "case_studies",
+                        });
+                        trackCta(t.openCase, "case_study", study.url, "case_studies");
+                      }}
                       className="block rounded-[1.75rem] border border-[#dce7f9] bg-[#fbfdff] p-6 transition hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_16px_30px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
                     >
                       <div className="text-xs font-bold uppercase tracking-[0.24em] text-[#2563eb] dark:text-[#8cc8ff]">
@@ -1795,6 +1905,14 @@ export default function Home() {
                       href={item.url}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() =>
+                        trackCta(
+                          item.title,
+                          "speaking",
+                          item.url,
+                          "speaking"
+                        )
+                      }
                       className="block h-full rounded-[1.75rem] border border-[#dce7f9] bg-[#fbfdff] p-6 transition hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_16px_30px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
                     >
                       <div className="flex h-full min-h-[20rem] flex-col">
@@ -1908,6 +2026,14 @@ export default function Home() {
                 label={t.emailLabel}
                 value={personalInfo.email}
                 href={`mailto:${personalInfo.email}`}
+                onClick={() =>
+                  trackCta(
+                    t.emailLabel,
+                    "email",
+                    `mailto:${personalInfo.email}`,
+                    "contact"
+                  )
+                }
                 dark={theme === "dark"}
               />
               <ContactCard
@@ -1915,6 +2041,14 @@ export default function Home() {
                 label={t.linkedinLabel}
                 value="/ibrahim-tolgar-sasmaz"
                 href={personalInfo.linkedin}
+                onClick={() =>
+                  trackCta(
+                    t.linkedinLabel,
+                    "linkedin",
+                    personalInfo.linkedin,
+                    "contact"
+                  )
+                }
                 dark={theme === "dark"}
               />
               <ContactCard
@@ -1922,6 +2056,14 @@ export default function Home() {
                 label={t.websiteLabel}
                 value="sasmaz.digital"
                 href="https://www.sasmaz.digital"
+                onClick={() =>
+                  trackCta(
+                    t.websiteLabel,
+                    "website",
+                    "https://www.sasmaz.digital",
+                    "contact"
+                  )
+                }
                 dark={theme === "dark"}
               />
             </div>
@@ -2247,12 +2389,14 @@ function ContactCard({
   label,
   value,
   href,
+  onClick,
   dark,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
   href?: string;
+  onClick?: () => void;
   dark: boolean;
 }) {
   const content = (
@@ -2279,7 +2423,7 @@ function ContactCard({
     </div>
   );
   return href ? (
-    <a href={href} target="_blank" rel="noreferrer">
+    <a href={href} target="_blank" rel="noreferrer" onClick={onClick}>
       {content}
     </a>
   ) : (

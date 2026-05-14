@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Search } from "lucide-react";
 import type { BlogLanguage, BlogPost } from "@shared/blog";
 import { blogLanguages } from "@shared/blog";
+import { trackEvent } from "@/lib/analytics";
 import { fetchPublicBlogPosts } from "@/lib/blogApi";
 
 const languageLabels: Record<BlogLanguage, string> = { en: "EN", de: "DE", tr: "TR" };
@@ -93,7 +94,20 @@ export default function BlogList() {
                     <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#5b667b]">{post.seo[language].metaDescription}</p>
                     <div className="mt-5 flex items-center justify-between gap-4 text-sm">
                       <span className="text-[#7a8699]">{post.publishedAt ? new Intl.DateTimeFormat(language).format(new Date(post.publishedAt)) : ""}</span>
-                      <Link href={`/blog/${post.slug.canonical}/${language}`} className="font-bold text-[#2563eb]">Read more</Link>
+                      <Link
+                        href={`/blog/${post.slug.canonical}/${language}`}
+                        onClick={() =>
+                          trackEvent("blog_click", {
+                            blog_title: post.seo[language].title || post.topic,
+                            blog_slug: post.slug.canonical,
+                            blog_url: `/blog/${post.slug.canonical}/${language}`,
+                            section_name: "blog_listing",
+                          })
+                        }
+                        className="font-bold text-[#2563eb]"
+                      >
+                        Read more
+                      </Link>
                     </div>
                   </div>
                 </article>

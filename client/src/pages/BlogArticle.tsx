@@ -3,6 +3,14 @@ import { Link, useRoute } from "wouter";
 import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
 import { sanitizeHtml, type BlogLanguage, type BlogPost } from "@shared/blog";
 import { blogLanguages } from "@shared/blog";
+import {
+  getFileNameFromUrl,
+  getFileTypeFromUrl,
+  getLinkDomain,
+  isDownloadUrl,
+  isExternalUrl,
+  trackEvent,
+} from "@/lib/analytics";
 import { fetchPublicBlogPost, fetchPublicBlogPosts } from "@/lib/blogApi";
 
 const languageLabels: Record<BlogLanguage, string> = { en: "EN", de: "DE", tr: "TR" };
@@ -30,6 +38,30 @@ function upsertHeadLink(id: string, attrs: Record<string, string>) {
   link.dataset.blogHead = id;
   Object.entries(attrs).forEach(([key, value]) => link.setAttribute(key, value));
   if (!existing) document.head.appendChild(link);
+}
+
+function trackBlogLinkClick(
+  linkText: string,
+  destinationUrl: string,
+  sectionName: string
+) {
+  if (isExternalUrl(destinationUrl)) {
+    trackEvent("external_link_click", {
+      link_text: linkText,
+      destination_url: destinationUrl,
+      link_domain: getLinkDomain(destinationUrl),
+      section_name: sectionName,
+    });
+  }
+
+  if (isDownloadUrl(destinationUrl)) {
+    trackEvent("file_download_click", {
+      file_name: getFileNameFromUrl(destinationUrl),
+      file_url: destinationUrl,
+      file_type: getFileTypeFromUrl(destinationUrl),
+      section_name: sectionName,
+    });
+  }
 }
 
 export default function BlogArticle() {
@@ -75,9 +107,25 @@ export default function BlogArticle() {
       const target = event.target as HTMLElement | null;
       const videoNode = target?.closest<HTMLElement>("[data-video-url]");
       const videoUrl = videoNode?.dataset.videoUrl;
-      if (!videoUrl) return;
-      event.preventDefault();
-      setActiveVideo(videoUrl);
+      if (videoUrl) {
+        event.preventDefault();
+        setActiveVideo(videoUrl);
+        trackEvent("cta_click", {
+          cta_text: "Play video",
+          cta_type: "video",
+          destination_url: videoUrl,
+          section_name: "blog_article_body",
+        });
+        return;
+      }
+      const linkNode = target?.closest<HTMLAnchorElement>(".blog-article-body a");
+      const destinationUrl = linkNode?.href;
+      if (!destinationUrl) return;
+      trackBlogLinkClick(
+        linkNode.textContent?.trim() || destinationUrl,
+        destinationUrl,
+        "blog_article_body"
+      );
     };
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
@@ -191,7 +239,18 @@ export default function BlogArticle() {
               <h2 className="font-['Space_Grotesk'] text-2xl font-bold">Related Systems</h2>
               <div className="mt-4 grid gap-3">
                 {post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).map((link) => (
-                  <a key={`${link.label}-${link.url}`} href={link.url} className="rounded-2xl border border-[#dce7f9] px-4 py-3 font-bold text-[#2563eb] hover:bg-[#f8fbff]">
+                  <a
+                    key={`${link.label}-${link.url}`}
+                    href={link.url}
+                    onClick={() =>
+                      trackBlogLinkClick(
+                        link.label,
+                        link.url,
+                        "related_systems"
+                      )
+                    }
+                    className="rounded-2xl border border-[#dce7f9] px-4 py-3 font-bold text-[#2563eb] hover:bg-[#f8fbff]"
+                  >
                     {link.label}
                   </a>
                 ))}
@@ -294,7 +353,20 @@ function ReadMoreSection({ post, posts, language }: { post: BlogPost; posts: Blo
             {candidates.map((item) => {
               const thumbnail = getThumbnailVisual(item);
               return (
-                <Link key={item.id} href={`/blog/${item.slug.canonical}/${language}`} className="shrink-0 overflow-hidden rounded-[1.25rem] border border-[#dce7f9] bg-white shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[#cadcf6]" style={{ flexBasis: `calc(${100 / visibleCards}% - ${(16 * (visibleCards - 1)) / visibleCards}px)` }}>
+                <Link
+                  key={item.id}
+                  href={`/blog/${item.slug.canonical}/${language}`}
+                  onClick={() =>
+                    trackEvent("blog_click", {
+                      blog_title: item.seo[language]?.title || item.topic,
+                      blog_slug: item.slug.canonical,
+                      blog_url: `/blog/${item.slug.canonical}/${language}`,
+                      section_name: "related_articles",
+                    })
+                  }
+                  className="shrink-0 overflow-hidden rounded-[1.25rem] border border-[#dce7f9] bg-white shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[#cadcf6]"
+                  style={{ flexBasis: `calc(${100 / visibleCards}% - ${(16 * (visibleCards - 1)) / visibleCards}px)` }}
+                >
                   {thumbnail?.url ? <img src={thumbnail.url} alt={thumbnail.alt[language] || item.topic} loading="lazy" decoding="async" className="aspect-video w-full bg-white object-cover" /> : null}
                   <div className="p-4">
                     <div className="mb-2 flex flex-wrap gap-1.5">
@@ -312,7 +384,14 @@ function ReadMoreSection({ post, posts, language }: { post: BlogPost; posts: Blo
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {fallbackLinks.map((link) => (
-            <a key={`${link.label}-${link.url}-read-more`} href={link.url} className="rounded-2xl border border-[#dce7f9] bg-white px-4 py-3 font-bold text-[#2563eb] hover:bg-[#f8fbff]">
+            <a
+              key={`${link.label}-${link.url}-read-more`}
+              href={link.url}
+              onClick={() =>
+                trackBlogLinkClick(link.label, link.url, "read_more")
+              }
+              className="rounded-2xl border border-[#dce7f9] bg-white px-4 py-3 font-bold text-[#2563eb] hover:bg-[#f8fbff]"
+            >
               {link.label}
             </a>
           ))}
@@ -372,7 +451,21 @@ function VisualMedia({
   );
   if (!visual.videoUrl) return image;
   return (
-    <button type="button" onClick={() => onVideo(visual.videoUrl || "")} className="group relative block w-full text-left" aria-label={`Play video: ${visual.caption[language]}`}>
+    <button
+      type="button"
+      onClick={() => {
+        const videoUrl = visual.videoUrl || "";
+        trackEvent("cta_click", {
+          cta_text: visual.caption[language] || "Play video",
+          cta_type: "video",
+          destination_url: videoUrl,
+          section_name: "blog_visuals",
+        });
+        onVideo(videoUrl);
+      }}
+      className="group relative block w-full text-left"
+      aria-label={`Play video: ${visual.caption[language]}`}
+    >
       {image}
       <span className="absolute inset-0 flex items-center justify-center bg-slate-950/20 transition group-hover:bg-slate-950/34">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white/92 text-[#2563eb] shadow-[0_18px_48px_rgba(15,23,42,0.22)]">
