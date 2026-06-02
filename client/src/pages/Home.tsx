@@ -21,6 +21,7 @@ import {
   Trophy,
   Workflow,
   X,
+  Youtube,
 } from "lucide-react";
 import type { BlogPost } from "@shared/blog";
 import {
@@ -769,6 +770,7 @@ export default function Home() {
   const { portfolioData } = usePortfolioData();
   const { siteContent } = useSiteContent();
   const { personalInfo } = portfolioData;
+  const youtubeUrl = "https://www.youtube.com/@AI-swers";
   const {
     aiProducts: sourceAiProducts,
     careerTimeline: sourceCareerTimeline,
@@ -1427,6 +1429,18 @@ export default function Home() {
                   <ExternalLink size={18} />
                   {t.linkedinLabel}
                 </a>
+                <a
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() =>
+                    trackCta("YouTube", "youtube", youtubeUrl, "hero")
+                  }
+                  className="inline-flex items-center gap-2 transition hover:text-[#2563eb] dark:hover:text-[#8cc8ff]"
+                >
+                  <Youtube size={18} />
+                  YouTube
+                </a>
                 <span className="inline-flex items-center gap-2">
                   <MapPin size={18} />
                   {t.locationValue}
@@ -2048,6 +2062,16 @@ export default function Home() {
                     personalInfo.linkedin,
                     "contact"
                   )
+                }
+                dark={theme === "dark"}
+              />
+              <ContactCard
+                icon={<Youtube size={18} />}
+                label="YouTube"
+                value="AI-SWERS"
+                href={youtubeUrl}
+                onClick={() =>
+                  trackCta("YouTube", "youtube", youtubeUrl, "contact")
                 }
                 dark={theme === "dark"}
               />
