@@ -132,6 +132,8 @@ const secondaryCtaClass =
   "inline-flex items-center gap-2 rounded-full border border-[#f4d68a] bg-[#fffbeb] px-4 py-2.5 text-sm font-bold text-[#bb4d00] shadow-[0_8px_18px_rgba(187,77,0,0.10)] transition hover:border-[#e7b84f] hover:bg-[#fff4d6] hover:text-[#963d00] dark:border-[#f4d68a]/45 dark:bg-[#fffbeb] dark:text-[#bb4d00]";
 
 const heroPhotos = [
+  "/assets/photos/tolgar-photo-1.webp",
+  "/assets/photos/tolgar-photo-5.webp",
   "/assets/profile/profile-picture.webp",
   "/assets/photos/naos-annual-meeting-2023.webp",
   "/assets/photos/naos-annual-meeting-2022.webp",

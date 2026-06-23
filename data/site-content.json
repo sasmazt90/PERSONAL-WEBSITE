@@ -414,6 +414,21 @@
   ],
   "aiProducts": [
     {
+      "title": "GEO OPTIMIZER AI",
+      "category": "Generative Engine Optimization",
+      "image": "/assets/apps/images/geo-optimizer-ai.webp",
+      "imageFit": "cover",
+      "url": "https://geo-optimizer-ai.sasmaz.digital/",
+      "summary": "AI-powered GEO workflow built to analyze brand visibility across answer engines, identify prompt-level gaps and turn search intent into optimization actions.",
+      "outcome": "Helps brands improve answer-engine presence with structured audits, entity signals, content recommendations and clear prioritization for AI discovery.",
+      "tags": [
+        "GEO",
+        "AI search visibility",
+        "Content optimization"
+      ],
+      "confidential": false
+    },
+    {
       "title": "Adaptif.AI",
       "category": "Content Localization & Resizing",
       "image": "/assets/apps/images/adaptif-ai.webp",
