@@ -827,6 +827,7 @@ export const caseStudies = [
 export const toolClusters = [
   {
     title: "Performance & retail media",
+    image: "/assets/technology-stack/performance-retail-media.webp",
     tools: [
       "Google Ads",
       "Meta Ads",
@@ -838,6 +839,7 @@ export const toolClusters = [
   },
   {
     title: "Analytics & BI",
+    image: "/assets/technology-stack/analytics-bi.webp",
     tools: [
       "GA4",
       "GTM",
@@ -849,25 +851,68 @@ export const toolClusters = [
   },
   {
     title: "CRM & lifecycle",
+    image: "/assets/technology-stack/crm-lifecycle.webp",
     tools: ["Emarsys", "Euromsg", "Insider", "Dynamics 365"],
   },
   {
-    title: "AI & automation",
+    title: "Enterprise automation",
+    image: "/assets/technology-stack/ai-automation.webp",
+    tools: ["Power Apps", "Power Automate", "n8n", "OCR", "PIM", "FFmpeg"],
+  },
+  {
+    title: "AI engineering & computer vision",
+    image: "/assets/apps/portfolio-source/adaptifai-workspace.webp",
     tools: [
       "OpenAI API",
+      "OpenRouter",
+      "GPT-4o",
       "Google AI Studio",
       "Vertex AI",
-      "Power Apps",
-      "Power Automate",
-      "n8n",
+      "EasyOCR",
+      "TrOCR",
+      "Stable Diffusion",
+      "OpenCV",
+      "VLM proxy",
+    ],
+  },
+  {
+    title: "Product engineering",
+    image: "/assets/apps/images/digital-growth-engine.webp",
+    tools: [
+      "React 19",
+      "React Native",
+      "Next.js",
+      "TypeScript",
+      "Vite",
+      "Express",
+      "FastAPI",
+      "Expo",
+      "Native bridge",
+    ],
+  },
+  {
+    title: "Data, platform & visualization",
+    image: "/assets/apps/portfolio-source/geo-seo-brand-entity.webp",
+    tools: [
+      "Supabase",
+      "JWT",
+      "Zod",
+      "Recharts",
+      "Zustand",
+      "XLSX",
+      "Stripe",
+      "OpenStreetMap",
+      "Rate limiting",
     ],
   },
   {
     title: "Market intelligence",
+    image: "/assets/technology-stack/market-intelligence.webp",
     tools: ["Profitero", "Helium 10", "IQVIA", "SEMrush", "MikMak"],
   },
   {
     title: "Delivery stack",
+    image: "/assets/technology-stack/delivery-stack.webp",
     tools: ["Jira", "Asana", "Wrike", "Canva", "Drupal", "Quable"],
   },
 ];
