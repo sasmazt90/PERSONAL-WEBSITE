@@ -46,7 +46,10 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Operativer Fokus", value: "E-Mail- und CRM-Operations" },
       { label: "Kampagnenumfang", value: "Kampagnenplanung und Segmentierung" },
-      { label: "Wachstumsbeitrag", value: "Unterstützung des Marketplace-Wachstums" },
+      {
+        label: "Wachstumsbeitrag",
+        value: "Unterstützung des Marketplace-Wachstums",
+      },
     ],
     keySystems: [
       {
@@ -87,7 +90,10 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     ],
     detailCards: [
       { label: "Kundenportfolio", value: "Enterprise-Kundenmandate" },
-      { label: "Plattformfokus", value: "E-Mail-Deliverability und Automation" },
+      {
+        label: "Plattformfokus",
+        value: "E-Mail-Deliverability und Automation",
+      },
       { label: "Enablement", value: "Workshops, Reporting und Integrationen" },
     ],
     keySystems: [
@@ -129,7 +135,10 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     ],
     detailCards: [
       { label: "Kundenkontext", value: "Multi-Vertical-Kundenportfolio" },
-      { label: "Analytischer Fokus", value: "CRO-Roadmaps und Funnel-Diagnostik" },
+      {
+        label: "Analytischer Fokus",
+        value: "CRO-Roadmaps und Funnel-Diagnostik",
+      },
       { label: "Delivery", value: "Jira- / Asana-Projektmanagement" },
     ],
     keySystems: [
@@ -172,7 +181,10 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Rollenfokus", value: "Hands-on-Ausführungsrolle" },
       { label: "Kanäle", value: "Fokus auf CRM, Mobile und Retargeting" },
-      { label: "Wachstumssystem", value: "Segmentierungsgetriebene Retention-Engine" },
+      {
+        label: "Wachstumssystem",
+        value: "Segmentierungsgetriebene Retention-Engine",
+      },
     ],
     keySystems: [
       {
@@ -214,7 +226,10 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Team", value: "2 direkte Mitarbeitende" },
       { label: "Budget", value: "8-stellige Budgetverantwortung" },
-      { label: "Funktionsbereich", value: "SEO/SEM, Paid Media, CRM und Mobile Growth" },
+      {
+        label: "Funktionsbereich",
+        value: "SEO/SEM, Paid Media, CRM und Mobile Growth",
+      },
     ],
     keySystems: [
       {
@@ -388,11 +403,11 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
     keySystems: [
       {
         title: "KI-gestützte Growth Engine",
-        body: "\"TranslAsset AI\" (OCR + LLM + Image Inpainting) für automatisierte Lokalisierung konzipiert und damit -5 % OPEX, +60 % CTR und +25 % CVR erzielt.",
+        body: '"TranslAsset AI" (OCR + LLM + Image Inpainting) für automatisierte Lokalisierung konzipiert und damit -5 % OPEX, +60 % CTR und +25 % CVR erzielt.',
       },
       {
         title: "Pricing & Commercial Intelligence",
-        body: "KI-gestützte Preisvalidierung und Wettbewerbs-Benchmarking entwickelt und damit +11 % AOV sowie +12 pp Buy-Box-Anteil erreicht.",
+        body: "KI-gestützte Preisvalidierung und Wettbewerbs-Benchmarking entwickelt und damit +11 % AOV, +12 pp Buy-Box-Anteil, +14 pp Deckungsbeitrag, +30 % Preis-Compliance und +50 % schnellere Entscheidungen bei 40 % weniger manuellem Pricing-Aufwand erreicht.",
       },
       {
         title: "Retail Media & Growth",
@@ -404,11 +419,11 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
       },
       {
         title: "Organisationale Effizienz",
-        body: "\"Tasky AI\" für Feedback-Routing und einen GenAI-gestützten PIM-Assistenten eingeführt, um eine compliant Self-Service-Produktintelligenzschicht aufzubauen.",
+        body: '"Tasky AI" für Feedback-Routing und einen GenAI-gestützten PIM-Assistenten eingeführt, um eine compliant Self-Service-Produktintelligenzschicht aufzubauen.',
       },
       {
         title: "Workflow-Automation",
-        body: "Power-Apps- / Power-Automate-Strukturen sowie KI-gestützte Sales-Planning-Anwendungen ausgerollt, um Feldeffizienz, Workflow-Geschwindigkeit und Reporting-Zuverlässigkeit zu steigern.",
+        body: "Power-Apps- / Power-Automate-Strukturen und KI-gestützte Sales-Planning-Anwendungen ausgerollt. Die E-Rezept-Journey erhöhte die Conversion von ca. 22 % auf 34 %, die Doctor Adoption um 40 % und die Pharmacy Funnel Completion um 25 % und senkte papierbasierten OPEX um 70 %; die KI-Visit-Planung steigerte Außendienstproduktivität um 25–30 %, High-Value-Account-Coverage um 35 % und Routeneffizienz um 20 % bei 40 % weniger Planungszeit.",
       },
       {
         title: "Commercial Visibility",
@@ -421,12 +436,12 @@ const deCareerTimeline: Record<string, Partial<CareerItem>> = {
       "Führung der KI-Transformation und DSGVO-konformer digitaler Operations",
     ],
     bullets: [
-      "KI-gestützte Growth Engine: \"TranslAsset AI\" (OCR + LLM + Image Inpainting) für automatisierte Lokalisierung konzipiert und damit -5 % OPEX, +60 % CTR und +25 % CVR erzielt.",
-      "Pricing & Commercial Intelligence: KI-gestützte Preisvalidierung und Wettbewerbs-Benchmarking entwickelt und damit +11 % AOV sowie +12 pp Buy-Box-Anteil erreicht.",
+      'KI-gestützte Growth Engine: "TranslAsset AI" (OCR + LLM + Image Inpainting) für automatisierte Lokalisierung konzipiert und damit -5 % OPEX, +60 % CTR und +25 % CVR erzielt.',
+      "Pricing & Commercial Intelligence: KI-gestützte Preisvalidierung und Wettbewerbs-Benchmarking entwickelt und damit +11 % AOV, +12 pp Buy-Box-Anteil, +14 pp Deckungsbeitrag, +30 % Preis-Compliance und +50 % schnellere Entscheidungen bei 40 % weniger manuellem Pricing-Aufwand erreicht.",
       "Retail Media & Growth: Eine KI-getriebene Growth Engine aufgebaut, die +35 % Sell-out-Wachstum, +14 pp Deckungsbeitrag und +36 % blended ROAS erzielte.",
       "SEO- & PDP-Framework: SEO-getriebene Produktbenennung und Full-Funnel-Content-Frameworks etabliert und damit +48 % First-Page-Visibilität sowie +9 pp Add-to-Cart-Rate erreicht.",
-      "Organisationale Effizienz: \"Tasky AI\" für Feedback-Routing und einen GenAI-gestützten PIM-Assistenten eingeführt, um eine compliant Self-Service-Produktintelligenzschicht aufzubauen.",
-      "Workflow-Automation: Power-Apps- / Power-Automate-Strukturen sowie KI-gestützte Sales-Planning-Anwendungen ausgerollt, um Feldeffizienz, Workflow-Geschwindigkeit und Reporting-Zuverlässigkeit zu steigern.",
+      'Organisationale Effizienz: "Tasky AI" für Feedback-Routing und einen GenAI-gestützten PIM-Assistenten eingeführt, um eine compliant Self-Service-Produktintelligenzschicht aufzubauen.',
+      "Workflow-Automation: Power-Apps- / Power-Automate-Strukturen und KI-gestützte Sales-Planning-Anwendungen ausgerollt. Die E-Rezept-Journey erhöhte die Conversion von ca. 22 % auf 34 %, die Doctor Adoption um 40 % und die Pharmacy Funnel Completion um 25 % und senkte papierbasierten OPEX um 70 %; die KI-Visit-Planung steigerte Außendienstproduktivität um 25–30 %, High-Value-Account-Coverage um 35 % und Routeneffizienz um 20 % bei 40 % weniger Planungszeit.",
       "Commercial Visibility: Executive-Dashboards und Forecasting-Systeme aufgebaut, um Echtzeitentscheidungen, Planungsdisziplin und funktionsübergreifende KPI-Transparenz zu stärken.",
       "Full-Funnel Paid Media, CRM Lifecycle, D2C sowie Marketplace- / E-Retail-Wachstum",
       "Executive-Dashboarding und Forecasting für Echtzeit-Commercial-Visibility",
@@ -492,7 +507,10 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Müşteri Portföyü", value: "Kurumsal müşteri portföyü" },
       { label: "Platform Odağı", value: "E-posta deliverability ve otomasyon" },
-      { label: "Yetkinleştirme", value: "Workshop, raporlama ve entegrasyonlar" },
+      {
+        label: "Yetkinleştirme",
+        value: "Workshop, raporlama ve entegrasyonlar",
+      },
     ],
     keySystems: [
       {
@@ -576,7 +594,10 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Rol Odağı", value: "Uygulama ağırlıklı yürütme rolü" },
       { label: "Kanallar", value: "CRM, mobil ve retargeting odağı" },
-      { label: "Büyüme Sistemi", value: "Segmentasyon odaklı retention engine" },
+      {
+        label: "Büyüme Sistemi",
+        value: "Segmentasyon odaklı retention engine",
+      },
     ],
     keySystems: [
       {
@@ -618,7 +639,10 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
     detailCards: [
       { label: "Ekip", value: "2 doğrudan ekip üyesi" },
       { label: "Bütçe", value: "8 haneli bütçe yönetimi" },
-      { label: "Fonksiyonel Kapsam", value: "SEO/SEM, paid media, CRM ve mobil büyüme" },
+      {
+        label: "Fonksiyonel Kapsam",
+        value: "SEO/SEM, paid media, CRM ve mobil büyüme",
+      },
     ],
     keySystems: [
       {
@@ -792,11 +816,11 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
     keySystems: [
       {
         title: "Yapay Zeka Destekli Growth Engine",
-        body: "\"TranslAsset AI\" (OCR + LLM + Image Inpainting) ile otomatik lokalizasyon kurgulanarak -%5 OPEX, +%60 CTR ve +%25 CVR sağlandı.",
+        body: '"TranslAsset AI" (OCR + LLM + Image Inpainting) ile otomatik lokalizasyon kurgulanarak -%5 OPEX, +%60 CTR ve +%25 CVR sağlandı.',
       },
       {
         title: "Fiyatlama ve Ticari Zeka",
-        body: "Yapay zeka destekli fiyat doğrulama ve rakip benchmark sistemi geliştirilerek +%11 AOV ve +12pp Buy Box payı elde edildi.",
+        body: "Yapay zeka destekli fiyat doğrulama ve rakip benchmark sistemi geliştirilerek +%11 AOV, +12pp Buy Box payı, +14pp katkı marjı, +%30 fiyat uyumu ve +%50 daha hızlı karar alma sağlanırken manuel fiyatlama eforu %40 azaltıldı.",
       },
       {
         title: "Retail Media ve Büyüme",
@@ -808,11 +832,11 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
       },
       {
         title: "Organizasyonel Verimlilik",
-        body: "\"Tasky AI\" ile feedback routing ve GenAI destekli PIM asistanı devreye alınarak compliant, self-service bir ürün zekası katmanı kuruldu.",
+        body: '"Tasky AI" ile feedback routing ve GenAI destekli PIM asistanı devreye alınarak compliant, self-service bir ürün zekası katmanı kuruldu.',
       },
       {
         title: "Workflow Otomasyonu",
-        body: "Power Apps / Power Automate yapıları ve yapay zeka destekli satış planlama uygulamaları devreye alınarak saha verimliliği, workflow hızı ve raporlama güvenilirliği artırıldı.",
+        body: "Power Apps / Power Automate yapıları ve yapay zeka destekli satış planlama uygulamaları devreye alındı. E-reçete yolculuğu dönüşümü yaklaşık %22'den %34'e, doktor kullanımını %40 ve eczane funnel completion oranını %25 artırırken kağıt bazlı OPEX'i %70 azalttı; AI ziyaret planlama saha verimliliğini %25–30, yüksek değerli hesap kapsamını %35 ve rota verimliliğini %20 artırırken planlama süresini %40 azalttı.",
       },
       {
         title: "Ticari Görünürlük",
@@ -825,12 +849,12 @@ const trCareerTimeline: Record<string, Partial<CareerItem>> = {
       "Yapay zeka dönüşümü ve GDPR uyumlu dijital operasyonların liderliği",
     ],
     bullets: [
-      "Yapay Zeka Destekli Growth Engine: \"TranslAsset AI\" (OCR + LLM + Image Inpainting) ile otomatik lokalizasyon kurgulanarak -%5 OPEX, +%60 CTR ve +%25 CVR sağlandı.",
-      "Fiyatlama ve Ticari Zeka: Yapay zeka destekli fiyat doğrulama ve rakip benchmark sistemi geliştirilerek +%11 AOV ve +12pp Buy Box payı elde edildi.",
+      'Yapay Zeka Destekli Growth Engine: "TranslAsset AI" (OCR + LLM + Image Inpainting) ile otomatik lokalizasyon kurgulanarak -%5 OPEX, +%60 CTR ve +%25 CVR sağlandı.',
+      "Fiyatlama ve Ticari Zeka: Yapay zeka destekli fiyat doğrulama ve rakip benchmark sistemi geliştirilerek +%11 AOV, +12pp Buy Box payı, +14pp katkı marjı, +%30 fiyat uyumu ve +%50 daha hızlı karar alma sağlanırken manuel fiyatlama eforu %40 azaltıldı.",
       "Retail Media ve Büyüme: +%35 sell-out büyümesi, +14pp katkı marjı ve +%36 blended ROAS iyileşmesi sağlayan yapay zeka odaklı growth engine kuruldu.",
       "SEO ve PDP Çerçevesi: SEO odaklı ürün isimlendirme ve full-funnel içerik çerçeveleri oluşturularak +%48 first-page görünürlüğü ve +9pp add-to-cart oranı sağlandı.",
-      "Organizasyonel Verimlilik: \"Tasky AI\" ile feedback routing ve GenAI destekli PIM asistanı devreye alınarak compliant, self-service bir ürün zekası katmanı kuruldu.",
-      "Workflow Otomasyonu: Power Apps / Power Automate yapıları ve yapay zeka destekli satış planlama uygulamaları devreye alınarak saha verimliliği, workflow hızı ve raporlama güvenilirliği artırıldı.",
+      'Organizasyonel Verimlilik: "Tasky AI" ile feedback routing ve GenAI destekli PIM asistanı devreye alınarak compliant, self-service bir ürün zekası katmanı kuruldu.',
+      "Workflow Otomasyonu: Power Apps / Power Automate yapıları ve yapay zeka destekli satış planlama uygulamaları devreye alındı. E-reçete yolculuğu dönüşümü yaklaşık %22'den %34'e, doktor kullanımını %40 ve eczane funnel completion oranını %25 artırırken kağıt bazlı OPEX'i %70 azalttı; AI ziyaret planlama saha verimliliğini %25–30, yüksek değerli hesap kapsamını %35 ve rota verimliliğini %20 artırırken planlama süresini %40 azalttı.",
       "Ticari Görünürlük: Gerçek zamanlı karar alma, planlama disiplini ve çapraz fonksiyonel KPI görünürlüğünü güçlendiren executive dashboard ve forecasting sistemleri kuruldu.",
       "Full-funnel Paid Media, CRM Lifecycle, D2C ve Marketplace / E-Retail büyümesi",
       "Gerçek zamanlı ticari görünürlük için executive dashboard ve forecasting",

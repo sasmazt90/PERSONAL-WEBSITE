@@ -37,7 +37,8 @@ export const careerTimeline = [
     role: "CRM & Email Marketing Specialist",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/lidyana-logo.webp",
-    focus: "Execution-focused role centered on lifecycle communication and personalization at scale.",
+    focus:
+      "Execution-focused role centered on lifecycle communication and personalization at scale.",
     meta: [
       "Email and CRM operations",
       "Campaign planning and segmentation",
@@ -76,7 +77,8 @@ export const careerTimeline = [
     role: "Client\nManager",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/emarsys-logo.webp",
-    focus: "Enterprise-level consulting for global brands on marketing automation, retention, and lifecycle economics.",
+    focus:
+      "Enterprise-level consulting for global brands on marketing automation, retention, and lifecycle economics.",
     meta: [
       "Enterprise client retainers",
       "Email deliverability and automation",
@@ -115,7 +117,8 @@ export const careerTimeline = [
     role: "Account Manager",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/8digits-logo.webp",
-    focus: "Consultative role providing behavioral diagnostics and CRO roadmaps for high-growth D2C and Shopify-based businesses.",
+    focus:
+      "Consultative role providing behavioral diagnostics and CRO roadmaps for high-growth D2C and Shopify-based businesses.",
     meta: [
       "Multi-vertical client portfolio",
       "CRO roadmaps and funnel diagnostics",
@@ -154,7 +157,8 @@ export const careerTimeline = [
     role: "Digital Marketing Specialist",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/d&r-logo.webp",
-    focus: "Individual contributor role focused on hands-on optimization of the digital funnel and retention systems.",
+    focus:
+      "Individual contributor role focused on hands-on optimization of the digital funnel and retention systems.",
     meta: [
       "Hands-on execution role",
       "CRM, mobile and retargeting focus",
@@ -193,7 +197,8 @@ export const careerTimeline = [
     role: "Digital Marketing Manager",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/d&r-logo.webp",
-    focus: "Managed performance and CRM for one of Turkey's largest culture and entertainment retail ecosystems, overseeing 2 FTEs and integrated agency partners.",
+    focus:
+      "Managed performance and CRM for one of Turkey's largest culture and entertainment retail ecosystems, overseeing 2 FTEs and integrated agency partners.",
     meta: [
       "2 direct reports",
       "8-figure budget governance",
@@ -237,7 +242,8 @@ export const careerTimeline = [
     role: "Digital Marketing Manager",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/naos-logo.webp",
-    focus: "Established the digital marketing function from scratch, building a 6-person team and creating the performance, attribution, and execution foundations for scalable cross-brand growth.",
+    focus:
+      "Established the digital marketing function from scratch, building a 6-person team and creating the performance, attribution, and execution foundations for scalable cross-brand growth.",
     meta: [
       "6-person digital team",
       "9-figure TRY budget",
@@ -291,7 +297,8 @@ export const careerTimeline = [
     role: "Digital Marketing & CRM Manager",
     location: "Istanbul, Turkey",
     logo: "/assets/logos/companies/naos-logo.webp",
-    focus: "Led a 10-person cross-functional team across Digital, CRM, and Analytics, building an integrated growth model spanning acquisition, lifecycle management, e-commerce, and channel profitability.",
+    focus:
+      "Led a 10-person cross-functional team across Digital, CRM, and Analytics, building an integrated growth model spanning acquisition, lifecycle management, e-commerce, and channel profitability.",
     meta: [
       "10-person organization",
       "9-figure TRY annual budget",
@@ -350,7 +357,8 @@ export const careerTimeline = [
     role: "Head of\nDigital",
     location: "Munich, Germany",
     logo: "/assets/logos/companies/naos-logo.webp",
-    focus: "Leading the digital commerce, data, analytics, and AI agenda for NAOS Deutschland across DACH, with cross-functional ownership spanning Marketing, Sales, Medical, and Commercial teams, as well as global partners and agencies.",
+    focus:
+      "Leading the digital commerce, data, analytics, and AI agenda for NAOS Deutschland across DACH, with cross-functional ownership spanning Marketing, Sales, Medical, and Commercial teams, as well as global partners and agencies.",
     meta: [
       "8-figure EUR annual digital budget",
       "Direct: 1 FTE + cross-functional squads",
@@ -359,11 +367,11 @@ export const careerTimeline = [
     keySystems: [
       {
         title: "AI-Powered Growth Engine",
-        body: "Architected \"TranslAsset AI\" (OCR + LLM + Image Inpainting) for automated localization, delivering -5% OPEX, +60% CTR, and +25% CVR uplift.",
+        body: 'Architected "TranslAsset AI" (OCR + LLM + Image Inpainting) for automated localization, delivering -5% OPEX, +60% CTR, and +25% CVR uplift.',
       },
       {
         title: "Pricing & Commercial Intelligence",
-        body: "Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV and +12pp Buy Box share.",
+        body: "Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV, +12pp Buy Box share, +14pp contribution margin, +30% pricing compliance and +50% faster decisions while reducing manual pricing effort by 40%.",
       },
       {
         title: "Retail Media & Growth",
@@ -375,11 +383,11 @@ export const careerTimeline = [
       },
       {
         title: "Organizational Efficiency",
-        body: "Launched \"Tasky AI\" for feedback routing and a GenAI-powered PIM assistant to establish a compliant, self-service product intelligence layer.",
+        body: 'Launched "Tasky AI" for feedback routing and a GenAI-powered PIM assistant to establish a compliant, self-service product intelligence layer.',
       },
       {
         title: "Workflow Automation",
-        body: "Deployed Power Apps / Power Automate structures and AI-driven sales planning applications to improve field efficiency, workflow speed, and reporting reliability.",
+        body: "Deployed Power Apps / Power Automate structures and AI-driven sales planning applications. The e-prescription journey moved conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%; AI visit planning improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40%.",
       },
       {
         title: "Commercial Visibility",
@@ -392,12 +400,12 @@ export const careerTimeline = [
       "Leading AI transformation and GDPR-compliant digital operations",
     ],
     bullets: [
-      "AI-Powered Growth Engine: Architected \"TranslAsset AI\" (OCR + LLM + Image Inpainting) for automated localization, delivering -5% OPEX, +60% CTR, and +25% CVR uplift.",
-      "Pricing & Commercial Intelligence: Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV and +12pp Buy Box share.",
+      'AI-Powered Growth Engine: Architected "TranslAsset AI" (OCR + LLM + Image Inpainting) for automated localization, delivering -5% OPEX, +60% CTR, and +25% CVR uplift.',
+      "Pricing & Commercial Intelligence: Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV, +12pp Buy Box share, +14pp contribution margin, +30% pricing compliance and +50% faster decisions while reducing manual pricing effort by 40%.",
       "Retail Media & Growth: Built an AI-driven growth engine resulting in +35% sell-out growth, +14pp contribution margin uplift, and +36% blended ROAS improvement.",
       "SEO & PDP Framework: Established SEO-driven product naming and full-funnel content frameworks, achieving +48% first-page visibility and +9pp Add-to-Cart rate.",
-      "Organizational Efficiency: Launched \"Tasky AI\" for feedback routing and a GenAI-powered PIM assistant to establish a compliant, self-service product intelligence layer.",
-      "Workflow Automation: Deployed Power Apps / Power Automate structures and AI-driven sales planning applications to improve field efficiency, workflow speed, and reporting reliability.",
+      'Organizational Efficiency: Launched "Tasky AI" for feedback routing and a GenAI-powered PIM assistant to establish a compliant, self-service product intelligence layer.',
+      "Workflow Automation: Deployed Power Apps / Power Automate structures and AI-driven sales planning applications. The e-prescription journey moved conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%; AI visit planning improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40%.",
       "Commercial Visibility: Built executive dashboards and forecasting systems to strengthen real-time decision-making, planning discipline, and cross-functional KPI visibility.",
       "Full-funnel Paid Media, CRM Lifecycle, D2C, and Marketplace / E-retail growth",
       "Executive dashboarding and forecasting for real-time commercial visibility",
@@ -417,6 +425,11 @@ export const aiProducts = [
       "AI-powered GEO workflow built to analyze brand visibility across answer engines, identify prompt-level gaps and turn search intent into optimization actions.",
     outcome:
       "Helps brands improve answer-engine presence with structured audits, entity signals, content recommendations and clear prioritization for AI discovery.",
+    detailBody: [
+      "SITUATION — Brands lacked a structured way to diagnose visibility inside LLM answers and translate prompt-level gaps into action.",
+      "TASK & ACTION — Built a repeatable GEO/LLMO workspace with eight tools covering brand entities, crawler simulation, query fan-out, prompt research, landing pages, content creation, content checks and benchmarking. The product combines OpenAI / OpenRouter, Express, React, Supabase, JWT, rate limiting and Zod.",
+      "RESULT — Delivered a production-oriented GEO product with live authentication, saved runs, persistence, fallback logic, crawler workflows and benchmark views.",
+    ],
     tags: ["GEO", "AI search visibility", "Content optimization"],
     confidential: false,
   },
@@ -429,7 +442,12 @@ export const aiProducts = [
     summary:
       "OCR and GenAI-powered localization workflow built to adapt marketing assets across languages, channels and campaign formats at scale.",
     outcome:
-      "Streamlined creative adaptation, reduced manual production load and supported materially stronger CTR and conversion performance in localization scenarios.",
+      "Compressed multilingual creative adaptation into one governed workflow; the professional use case reported -5% OPEX, +60% CTR and +25% CVR.",
+    detailBody: [
+      "SITUATION — Manual multilingual asset adaptation was slow, costly and inconsistent across languages, channels and placement formats.",
+      "TASK & ACTION — Built a governed workflow for 10 languages and six placement families using Next.js, FastAPI, EasyOCR + TrOCR, GPT-4o, Stable Diffusion and OpenCV. OCR filtering, translation, inpainting, safe-zone previews and editable export protect brand context while scaling production.",
+      "RESULT — In the professional workflow reported in the supplied portfolio and CVs, the system delivered -5% OPEX, +60% CTR and +25% CVR.",
+    ],
     tags: ["OCR", "Creative localization", "Automation"],
     confidential: false,
   },
@@ -448,6 +466,7 @@ export const aiProducts = [
       "DIGITAL GROWTH ENGINE is an AI-assisted internal SaaS product designed to help growth and performance teams operate with more clarity, speed, and financial discipline. Built with Codex, the platform combines campaign management, product economics, audience tracking, incrementality testing, forecasting, OPEX/CAPEX planning, and budget allocation into a single operating environment.",
       "Instead of relying on disconnected spreadsheets, dashboards, and ad platform exports, growth leaders can use DIGITAL GROWTH ENGINE to evaluate what is actually driving profitable growth. The platform supports key commercial metrics such as CAC, ROAS, LTV, LTV:CAC, contribution margin, allowable CAC, estimated net profit, and incremental contribution, helping teams move from passive reporting to active decision-making.",
       "It is especially valuable for operators who need to answer high-stakes questions quickly: which campaigns should scale, which should pause, which tests truly delivered incrementality, and how budget should be reallocated across channels and initiatives. The result is a more structured, executive-ready growth workflow that turns performance data into action.",
+      "RESULT — The related role scope reported +35% sell-out growth, +14pp contribution margin uplift and +36% blended ROAS improvement.",
     ],
     tags: [
       "Growth analytics",
@@ -471,6 +490,11 @@ export const aiProducts = [
       "Automated AI video content system that orchestrates multiple AI models to generate dynamic debate-style videos.",
     outcome:
       "Input a single question, then the system routes it across AI agents, generates cinematic videos related to the answers and adds unique voiceovers for each AI model character, and creates a thumbnail image with SEO-optimized YouTube title, description and tags to use in the uploading process.",
+    detailBody: [
+      "SITUATION — Multi-model comparison content required repetitive generation and post-production every week.",
+      "TASK & ACTION — Built a repeatable content engine that routes one question across ChatGPT, Claude, Gemini, DeepSeek, Llama and Grok, then orchestrates narration, cinematic scenes, FFmpeg composition, subtitles, thumbnails and SEO-ready YouTube metadata.",
+      "RESULT — The channel reached 10.3K subscribers and 102 published videos, verified live on 23 August 2026.",
+    ],
     tags: [
       "AI video generation",
       "Multi-agent systems",
@@ -502,7 +526,15 @@ export const aiProducts = [
       "AI-powered mobile application that identifies waste items from photos and determines the correct disposal category based on material and condition.",
     outcome:
       "Delivers location-aware recycling guidance, surfaces official municipality sources when available, and helps users find nearby drop-off points via map-based navigation. Designed to reduce sorting errors by combining computer vision, rule-based decisioning, and real-world recycling system constraints.",
-    tags: ["Computer Vision", "Mobile App", "Sustainability", "Location Intelligence", "Decision Engine", "Rule-based AI", "Image Recognition"],
+    tags: [
+      "Computer Vision",
+      "Mobile App",
+      "Sustainability",
+      "Location Intelligence",
+      "Decision Engine",
+      "Rule-based AI",
+      "Image Recognition",
+    ],
   },
   {
     title: "Bluff Room",
@@ -571,14 +603,14 @@ export const aiProducts = [
     tags: ["ESG", "Consumer product", "Scoring engine"],
   },
   {
-    title: "Pricing Validation & Intelligence",
-    category: "Confidential enterprise AI",
+    title: "Amazon Re-Pricing & Market Pricing Tracking",
+    category: "Marketplace Pricing & Unit Economics",
     image: "/assets/apps/images/powerapps-pricing-validation-intelligence.webp",
     imageFit: "cover",
     summary:
-      "AI-assisted pricing validation platform connecting PIM data, retailer price feeds and competitor normalization into one decision-support layer.",
+      "Amazon re-pricing and market-tracking system connecting PIM/MSRP, matched competitor SKUs, retailer prices, stock, seller, fulfillment and promotion signals to margin guardrails.",
     outcome:
-      "Enabled pricing compliance checks, competitive benchmarking and margin-aware decision-making with a cleaner, faster review workflow.",
+      "Pricing delivered +11% AOV and +12pp Buy Box share. The related Amazon hybrid operating model delivered +19% net profit, +8pp margin and -10pp OPEX; these P&L results are reported separately from the pricing-system outcomes.",
     tags: ["Pricing intelligence", "Retail analytics", "Decision support"],
     confidential: true,
   },
@@ -590,7 +622,7 @@ export const aiProducts = [
     summary:
       "Built a GDPR-compliant e-prescription journey that generates dynamic product recommendations for patients and delivers them instantly to mobile via NFC-triggered prescription links.",
     outcome:
-      "Connected prescription intent to discounted e-commerce and pharmacy conversion flows, enabling 360-degree journey mapping and prescription-to-purchase tracking through anonymized data capture.",
+      "Moved prescription-to-purchase conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%.",
     tags: ["Power Apps", "NFC journey", "Customer journey mapping"],
     confidential: true,
   },
@@ -602,7 +634,7 @@ export const aiProducts = [
     summary:
       "Developed a mobile planning tool for HCP field teams using CLV-based AI prioritization, engagement scoring and real-time traffic insight to optimize visit routing and daily calendars.",
     outcome:
-      "Helped field teams focus on the highest-value accounts, improve route efficiency and build more intelligent calendars around lifetime value and engagement potential.",
+      "Improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40% and achieving over 80% adoption.",
     tags: ["Power Apps", "CLV prioritization", "Field force optimization"],
     confidential: true,
   },
@@ -657,46 +689,80 @@ export const aiProducts = [
 ];
 
 export const videoPortfolio = [
-  { title: "Sensibio H2O - 30 Jahre Jubiläumskampagne", url: "https://youtu.be/AUyBGBKxwPM?si=A-UlUpqWSPrpykCb", image: "/assets/videos/sensibio-de.webp" },
-  { title: "BIODERMA x TVF", url: "https://youtu.be/dykDZW_29ws?si=osQ7vQnssu0bgdcs" },
-  { title: "BIODERMA x Eda Ece", url: "https://youtu.be/YtaaNzuXPdQ?si=C5WNpFRtLIn5Rc5h" },
-  { title: "BIODERMA Interactive Skin Stories", url: "https://youtu.be/FAPKz5FOyFg?si=OI3ykckcDN0fD_wE" },
-  { title: "BIODERMA Sensibio H2O x Seyda Erdogan", url: "https://youtu.be/D56eDn7YeJw?si=_oCHg1A8NGvxi0_F" },
-  { title: "BIODERMA x Ayca Aysin Turan", url: "https://youtu.be/9W87foQHZZ4?si=9SFDgu56OAwCvJZb" },
-  { title: "Institut Esthederm x Beren Saat", url: "https://youtu.be/xLLIuDlfnDY?si=flATr_d00AGq14_S" },
-  { title: "Etat Pur x Seyda Erdogan Pure Actives", url: "https://youtu.be/7q7p3bNe9a8?si=ZtVkHncvWZ4l4D25" },
-  { title: "Etat Pur Skin Talks", url: "https://youtu.be/ReoqU8GfHxs?si=gq0rjfGPe5iiCeKZ" },
+  {
+    title: "Sensibio H2O - 30 Jahre Jubiläumskampagne",
+    url: "https://youtu.be/AUyBGBKxwPM?si=A-UlUpqWSPrpykCb",
+    image: "/assets/videos/sensibio-de.webp",
+  },
+  {
+    title: "BIODERMA x TVF",
+    url: "https://youtu.be/dykDZW_29ws?si=osQ7vQnssu0bgdcs",
+  },
+  {
+    title: "BIODERMA x Eda Ece",
+    url: "https://youtu.be/YtaaNzuXPdQ?si=C5WNpFRtLIn5Rc5h",
+  },
+  {
+    title: "BIODERMA Interactive Skin Stories",
+    url: "https://youtu.be/FAPKz5FOyFg?si=OI3ykckcDN0fD_wE",
+  },
+  {
+    title: "BIODERMA Sensibio H2O x Seyda Erdogan",
+    url: "https://youtu.be/D56eDn7YeJw?si=_oCHg1A8NGvxi0_F",
+  },
+  {
+    title: "BIODERMA x Ayca Aysin Turan",
+    url: "https://youtu.be/9W87foQHZZ4?si=9SFDgu56OAwCvJZb",
+  },
+  {
+    title: "Institut Esthederm x Beren Saat",
+    url: "https://youtu.be/xLLIuDlfnDY?si=flATr_d00AGq14_S",
+  },
+  {
+    title: "Etat Pur x Seyda Erdogan Pure Actives",
+    url: "https://youtu.be/7q7p3bNe9a8?si=ZtVkHncvWZ4l4D25",
+  },
+  {
+    title: "Etat Pur Skin Talks",
+    url: "https://youtu.be/ReoqU8GfHxs?si=gq0rjfGPe5iiCeKZ",
+  },
 ];
 
 export const caseStudies = [
   {
     brand: "BIODERMA x RTB House",
-    result: "32% higher viewability and 22% higher video completion rate through deep-learning personalization.",
+    result:
+      "32% higher viewability and 22% higher video completion rate through deep-learning personalization.",
     url: "https://www.rtbhouse.com/case-studies/bioderma-streaming-video-ad",
   },
   {
     brand: "BIODERMA TR x MikMak",
-    result: "3.3x higher purchase intent rate and 5.6x higher attributable sales through omnichannel optimization.",
+    result:
+      "3.3x higher purchase intent rate and 5.6x higher attributable sales through omnichannel optimization.",
     url: "https://www.mikmak.com/case-studies/bioderma-turkey-ucs",
   },
   {
     brand: "D&R x Criteo",
-    result: "22% higher ROI with AI-powered personalization and predictive retargeting.",
+    result:
+      "22% higher ROI with AI-powered personalization and predictive retargeting.",
     url: "https://www.criteo.com/success-stories/dr/",
   },
   {
     brand: "idefix x Related Digital",
-    result: "600% ROI through AI-powered personalization and marketing automation.",
+    result:
+      "600% ROI through AI-powered personalization and marketing automation.",
     url: "https://www.relateddigital.com/wp-content/uploads/2023/08/idefix-CaseStudy-EN.pdf",
   },
   {
     brand: "idefix x Google",
-    result: "10% revenue growth and 5% lower acquisition cost via Smart Shopping automation.",
+    result:
+      "10% revenue growth and 5% lower acquisition cost via Smart Shopping automation.",
     url: "https://www.thinkwithgoogle.com/_qs/documents/10220/Google_Retail_Playbook_2020_FIN.pdf",
   },
   {
     brand: "Institut Esthederm x BYYD",
-    result: "75% new audience acquisition through interest-based targeting and programmatic video advertising.",
+    result:
+      "75% new audience acquisition through interest-based targeting and programmatic video advertising.",
     url: "https://www.byyd.me/en/case/esthederm/",
   },
 ];
@@ -704,11 +770,25 @@ export const caseStudies = [
 export const toolClusters = [
   {
     title: "Performance & retail media",
-    tools: ["Google Ads", "Meta Ads", "TikTok Ads", "Awin", "Merchant Center", "Primetag"],
+    tools: [
+      "Google Ads",
+      "Meta Ads",
+      "TikTok Ads",
+      "Awin",
+      "Merchant Center",
+      "Primetag",
+    ],
   },
   {
     title: "Analytics & BI",
-    tools: ["GA4", "GTM", "Looker Studio", "Power BI", "Search Console", "Hotjar"],
+    tools: [
+      "GA4",
+      "GTM",
+      "Looker Studio",
+      "Power BI",
+      "Search Console",
+      "Hotjar",
+    ],
   },
   {
     title: "CRM & lifecycle",
@@ -716,7 +796,14 @@ export const toolClusters = [
   },
   {
     title: "AI & automation",
-    tools: ["OpenAI API", "Google AI Studio", "Vertex AI", "Power Apps", "Power Automate", "n8n"],
+    tools: [
+      "OpenAI API",
+      "Google AI Studio",
+      "Vertex AI",
+      "Power Apps",
+      "Power Automate",
+      "n8n",
+    ],
   },
   {
     title: "Market intelligence",
@@ -734,6 +821,12 @@ export const certifications = [
     issuer: "Google Cloud",
     date: "2024",
     image: "/assets/certificates/Prompt Design in Vertex AI.webp",
+  },
+  {
+    title: "Digital Transformation",
+    issuer: "LinkedIn Learning",
+    date: "May 2026",
+    image: "/assets/certificates/LinkedIn-Digital-Transformation.webp",
   },
   {
     title: "Applied Marketing Analytics",
@@ -783,14 +876,16 @@ export const speaking = [
   {
     title: "Guest Speaker",
     org: "18 Mart University",
-    detail: "E-commerce, digital marketing, international career management and personal branding sessions.",
+    detail:
+      "E-commerce, digital marketing, international career management and personal branding sessions.",
     logo: "/assets/logos/universities/18-Mart-University.webp",
     url: "https://utl.bigaubf.comu.edu.tr/arsiv/etkinlikler/e-ticaret-ve-dijital-pazarlama-egitimi-r45.html",
   },
   {
     title: "Mentor",
     org: "Istanbul Technical University",
-    detail: "Annual career mentorship and leadership guidance within the ITU mentorship program.",
+    detail:
+      "Annual career mentorship and leadership guidance within the ITU mentorship program.",
     logo: "/assets/logos/universities/Istanbul-Technical-University.webp",
     url: "https://drive.google.com/file/d/1YZNB2IrMmGRpK-D4Thdsg7mRkoQVKpD7/view?usp=sharing",
   },

@@ -5,6 +5,8 @@ import { Award, Calendar, Hash, X, ExternalLink } from "lucide-react";
 import HorizontalSlider from "./HorizontalSlider";
 
 const certImages: Record<string, string> = {
+  "Digital Transformation":
+    "/assets/certificates/LinkedIn-Digital-Transformation.webp",
   "Prompt Design in Vertex AI":
     "/assets/certificates/Prompt Design in Vertex AI.webp",
   "Applied Marketing Analytics":

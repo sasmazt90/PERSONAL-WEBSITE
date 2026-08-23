@@ -370,7 +370,7 @@
         },
         {
           "title": "Pricing & Commercial Intelligence",
-          "body": "Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV and +12pp Buy Box share."
+          "body": "Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV, +12pp Buy Box share, +14pp contribution margin, +30% pricing compliance and +50% faster decisions while reducing manual pricing effort by 40%."
         },
         {
           "title": "Retail Media & Growth",
@@ -386,7 +386,7 @@
         },
         {
           "title": "Workflow Automation",
-          "body": "Deployed Power Apps / Power Automate structures and AI-driven sales planning applications to improve field efficiency, workflow speed, and reporting reliability."
+          "body": "Deployed Power Apps / Power Automate structures and AI-driven sales planning applications. The e-prescription journey moved conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%; AI visit planning improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40%."
         },
         {
           "title": "Commercial Visibility",
@@ -400,11 +400,11 @@
       ],
       "bullets": [
         "AI-Powered Growth Engine: Architected \"TranslAsset AI\" (OCR + LLM + Image Inpainting) for automated localization, delivering -5% OPEX, +60% CTR, and +25% CVR uplift.",
-        "Pricing & Commercial Intelligence: Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV and +12pp Buy Box share.",
+        "Pricing & Commercial Intelligence: Developed AI-driven pricing validation and competitor benchmarking, driving +11% AOV, +12pp Buy Box share, +14pp contribution margin, +30% pricing compliance and +50% faster decisions while reducing manual pricing effort by 40%.",
         "Retail Media & Growth: Built an AI-driven growth engine resulting in +35% sell-out growth, +14pp contribution margin uplift, and +36% blended ROAS improvement.",
         "SEO & PDP Framework: Established SEO-driven product naming and full-funnel content frameworks, achieving +48% first-page visibility and +9pp Add-to-Cart rate.",
         "Organizational Efficiency: Launched \"Tasky AI\" for feedback routing and a GenAI-powered PIM assistant to establish a compliant, self-service product intelligence layer.",
-        "Workflow Automation: Deployed Power Apps / Power Automate structures and AI-driven sales planning applications to improve field efficiency, workflow speed, and reporting reliability.",
+        "Workflow Automation: Deployed Power Apps / Power Automate structures and AI-driven sales planning applications. The e-prescription journey moved conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%; AI visit planning improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40%.",
         "Commercial Visibility: Built executive dashboards and forecasting systems to strengthen real-time decision-making, planning discipline, and cross-functional KPI visibility.",
         "Full-funnel Paid Media, CRM Lifecycle, D2C, and Marketplace / E-retail growth",
         "Executive dashboarding and forecasting for real-time commercial visibility",
@@ -421,11 +421,12 @@
       "url": "https://geo-optimizer-ai.sasmaz.digital/",
       "summary": "AI-powered GEO workflow built to analyze brand visibility across answer engines, identify prompt-level gaps and turn search intent into optimization actions.",
       "outcome": "Helps brands improve answer-engine presence with structured audits, entity signals, content recommendations and clear prioritization for AI discovery.",
-      "tags": [
-        "GEO",
-        "AI search visibility",
-        "Content optimization"
+      "detailBody": [
+        "SITUATION — Brands lacked a structured way to diagnose visibility inside LLM answers and translate prompt-level gaps into action.",
+        "TASK & ACTION — Built a repeatable GEO/LLMO workspace with eight tools covering brand entities, crawler simulation, query fan-out, prompt research, landing pages, content creation, content checks and benchmarking. The product combines OpenAI / OpenRouter, Express, React, Supabase, JWT, rate limiting and Zod.",
+        "RESULT — Delivered a production-oriented GEO product with live authentication, saved runs, persistence, fallback logic, crawler workflows and benchmark views."
       ],
+      "tags": ["GEO", "AI search visibility", "Content optimization"],
       "confidential": false
     },
     {
@@ -435,12 +436,13 @@
       "imageFit": "contain",
       "url": "https://adaptifai.sasmaz.digital/",
       "summary": "OCR and GenAI-powered localization workflow built to adapt marketing assets across languages, channels and campaign formats at scale.",
-      "outcome": "Streamlined creative adaptation, reduced manual production load and supported materially stronger CTR and conversion performance in localization scenarios.",
-      "tags": [
-        "OCR",
-        "Creative localization",
-        "Automation"
+      "outcome": "Compressed multilingual creative adaptation into one governed workflow; the professional use case reported -5% OPEX, +60% CTR and +25% CVR.",
+      "detailBody": [
+        "SITUATION — Manual multilingual asset adaptation was slow, costly and inconsistent across languages, channels and placement formats.",
+        "TASK & ACTION — Built a governed workflow for 10 languages and six placement families using Next.js, FastAPI, EasyOCR + TrOCR, GPT-4o, Stable Diffusion and OpenCV. OCR filtering, translation, inpainting, safe-zone previews and editable export protect brand context while scaling production.",
+        "RESULT — In the professional workflow reported in the supplied portfolio and CVs, the system delivered -5% OPEX, +60% CTR and +25% CVR."
       ],
+      "tags": ["OCR", "Creative localization", "Automation"],
       "confidential": false
     },
     {
@@ -455,7 +457,8 @@
       "detailBody": [
         "DIGITAL GROWTH ENGINE is an AI-assisted internal SaaS product designed to help growth and performance teams operate with more clarity, speed, and financial discipline. Built with Codex, the platform combines campaign management, product economics, audience tracking, incrementality testing, forecasting, OPEX/CAPEX planning, and budget allocation into a single operating environment.",
         "Instead of relying on disconnected spreadsheets, dashboards, and ad platform exports, growth leaders can use DIGITAL GROWTH ENGINE to evaluate what is actually driving profitable growth. The platform supports key commercial metrics such as CAC, ROAS, LTV, LTV:CAC, contribution margin, allowable CAC, estimated net profit, and incremental contribution, helping teams move from passive reporting to active decision-making.",
-        "It is especially valuable for operators who need to answer high-stakes questions quickly: which campaigns should scale, which should pause, which tests truly delivered incrementality, and how budget should be reallocated across channels and initiatives. The result is a more structured, executive-ready growth workflow that turns performance data into action."
+        "It is especially valuable for operators who need to answer high-stakes questions quickly: which campaigns should scale, which should pause, which tests truly delivered incrementality, and how budget should be reallocated across channels and initiatives. The result is a more structured, executive-ready growth workflow that turns performance data into action.",
+        "RESULT — The related role scope reported +35% sell-out growth, +14pp contribution margin uplift and +36% blended ROAS improvement."
       ],
       "tags": [
         "Growth analytics",
@@ -476,6 +479,11 @@
       "linkLabel": "Go To Channel",
       "summary": "Automated AI video content system that orchestrates multiple AI models to generate dynamic debate-style videos.",
       "outcome": "Input a single question, then the system routes it across AI agents, generates cinematic videos related to the answers and adds unique voiceovers for each AI model character, and creates a thumbnail image with SEO-optimized YouTube title, description and tags to use in the uploading process.",
+      "detailBody": [
+        "SITUATION — Multi-model comparison content required repetitive generation and post-production every week.",
+        "TASK & ACTION — Built a repeatable content engine that routes one question across ChatGPT, Claude, Gemini, DeepSeek, Llama and Grok, then orchestrates narration, cinematic scenes, FFmpeg composition, subtitles, thumbnails and SEO-ready YouTube metadata.",
+        "RESULT — The channel reached 10.3K subscribers and 102 published videos, verified live on 23 August 2026."
+      ],
       "tags": [
         "AI video generation",
         "Multi-agent systems",
@@ -525,12 +533,7 @@
       "url": "https://apps.apple.com/tr/app/bluff-room/id6760310629?l=tr",
       "summary": "Multiplayer social deduction party game for friends and groups, built around secret roles, clue rounds and group voting.",
       "outcome": "Players create or join rooms, receive Insider, Outsider or Chaos roles, give clues across rounds and score through bluffing, deduction and survival.",
-      "tags": [
-        "iOS",
-        "Multiplayer",
-        "Social deduction",
-        "Party game"
-      ]
+      "tags": ["iOS", "Multiplayer", "Social deduction", "Party game"]
     },
     {
       "title": "Gamebook AI",
@@ -541,11 +544,7 @@
       "url": "https://ai-gamebook.store/",
       "summary": "Interactive gamebook creation platform where users become characters inside AI-generated story worlds with visuals and sound.",
       "outcome": "Built as a multimodal creator economy concept with branching narrative logic, image generation and immersive audio layers.",
-      "tags": [
-        "LLM storytelling",
-        "Image generation",
-        "Personalization"
-      ]
+      "tags": ["LLM storytelling", "Image generation", "Personalization"]
     },
     {
       "title": "DIGITAL CARBON FOOTPRINT SCORE",
@@ -556,11 +555,7 @@
       "url": "https://apps.apple.com/au/app/digital-carbon-footprint-score/id6762527333",
       "summary": "iOS application that helps consumers understand carbon footprint signals and sustainability trade-offs.",
       "outcome": "Turned sustainability scoring into a lightweight, consumer-friendly mobile experience powered by intelligent analysis.",
-      "tags": [
-        "iOS",
-        "Sustainability intelligence",
-        "Consumer UX"
-      ]
+      "tags": ["iOS", "Sustainability intelligence", "Consumer UX"]
     },
     {
       "title": "360 Real Estate Suite",
@@ -570,11 +565,7 @@
       "url": "https://www.360estatesuite.com/",
       "summary": "Property intelligence platform for virtual staging, listing workflows, operational management and immersive showcasing.",
       "outcome": "Combined AI staging and property operations into one platform instead of fragmented real-estate tooling.",
-      "tags": [
-        "PropTech",
-        "Virtual staging",
-        "Workflow system"
-      ]
+      "tags": ["PropTech", "Virtual staging", "Workflow system"]
     },
     {
       "title": "See The Impact",
@@ -584,24 +575,16 @@
       "url": "https://www.seetheimpact.info/",
       "summary": "Sustainability intelligence platform that helps users evaluate brands and products through environmental insight layers.",
       "outcome": "Positioned as a consumer-facing ESG transparency interface with scoring, comparison and education features.",
-      "tags": [
-        "ESG",
-        "Consumer product",
-        "Scoring engine"
-      ]
+      "tags": ["ESG", "Consumer product", "Scoring engine"]
     },
     {
-      "title": "Pricing Validation & Intelligence",
-      "category": "Enterprise AI",
+      "title": "Amazon Re-Pricing & Market Pricing Tracking",
+      "category": "Marketplace Pricing & Unit Economics",
       "image": "/assets/apps/images/powerapps-pricing-validation-intelligence.webp",
       "imageFit": "cover",
-      "summary": "AI-assisted pricing validation platform connecting PIM data, retailer price feeds and competitor normalization into one decision-support layer.",
-      "outcome": "Enabled pricing compliance checks, competitive benchmarking and margin-aware decision-making with a cleaner, faster review workflow.",
-      "tags": [
-        "Pricing intelligence",
-        "Retail analytics",
-        "Decision support"
-      ],
+      "summary": "Amazon re-pricing and market-tracking system connecting PIM/MSRP, matched competitor SKUs, retailer prices, stock, seller, fulfillment and promotion signals to margin guardrails.",
+      "outcome": "Pricing delivered +11% AOV and +12pp Buy Box share. The related Amazon hybrid operating model delivered +19% net profit, +8pp margin and -10pp OPEX; these P&L results are reported separately from the pricing-system outcomes.",
+      "tags": ["Pricing intelligence", "Retail analytics", "Decision support"],
       "confidential": true
     },
     {
@@ -610,12 +593,8 @@
       "image": "/assets/apps/images/powerapps-360-e-prescription-system.webp",
       "imageFit": "cover",
       "summary": "Built a GDPR-compliant e-prescription journey that generates dynamic product recommendations for patients and delivers them instantly to mobile via NFC-triggered prescription links.",
-      "outcome": "Connected prescription intent to discounted e-commerce and pharmacy conversion flows, enabling 360-degree journey mapping and prescription-to-purchase tracking through anonymized data capture.",
-      "tags": [
-        "Power Apps",
-        "NFC journey",
-        "Customer journey mapping"
-      ],
+      "outcome": "Moved prescription-to-purchase conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%.",
+      "tags": ["Power Apps", "NFC journey", "Customer journey mapping"],
       "confidential": true
     },
     {
@@ -624,12 +603,8 @@
       "image": "/assets/apps/images/powerapps-ai-driven-visit-planning.webp",
       "imageFit": "cover",
       "summary": "Developed a mobile planning tool for HCP field teams using CLV-based AI prioritization, engagement scoring and real-time traffic insight to optimize visit routing and daily calendars.",
-      "outcome": "Helped field teams focus on the highest-value accounts, improve route efficiency and build more intelligent calendars around lifetime value and engagement potential.",
-      "tags": [
-        "Power Apps",
-        "CLV prioritization",
-        "Field force optimization"
-      ],
+      "outcome": "Improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40% and achieving over 80% adoption.",
+      "tags": ["Power Apps", "CLV prioritization", "Field force optimization"],
       "confidential": true
     },
     {
@@ -639,11 +614,7 @@
       "imageFit": "cover",
       "summary": "Designed an internal task and workflow management application for cross-functional and intra-department collaboration, inspired by structured operating models used in tools like Wrike and Asana.",
       "outcome": "Reduced coordination friction, improved task visibility and created a more disciplined system for tracking ownership, deadlines and inter-team execution.",
-      "tags": [
-        "Power Apps",
-        "Workflow automation",
-        "Task management"
-      ],
+      "tags": ["Power Apps", "Workflow automation", "Task management"],
       "confidential": true
     },
     {
@@ -653,11 +624,7 @@
       "imageFit": "cover",
       "summary": "Developed predictive analytics dashboards combining sell-out signals, seasonality patterns and sales trends to support executive decision-making in forecasting and stock management.",
       "outcome": "Created a real-time management layer that improved visibility into demand shifts and supported more proactive planning across inventory and commercial operations.",
-      "tags": [
-        "Power BI",
-        "Forecasting",
-        "Executive dashboard"
-      ],
+      "tags": ["Power BI", "Forecasting", "Executive dashboard"],
       "confidential": true
     },
     {
@@ -667,11 +634,7 @@
       "imageFit": "cover",
       "summary": "Built a Power Automate workflow that extracts invoice information from inbound email attachments using OCR and consolidates the validated data into a single operational document.",
       "outcome": "Removed repetitive manual handling, reduced operational workload and created a more reliable, searchable finance intake process.",
-      "tags": [
-        "Power Automate",
-        "OCR",
-        "Back-office automation"
-      ],
+      "tags": ["Power Automate", "OCR", "Back-office automation"],
       "confidential": true
     },
     {
@@ -681,11 +644,7 @@
       "imageFit": "cover",
       "summary": "Created a pharmacy challenge application where cash receipts are scanned, BIODERMA products are extracted via OCR and sales quantities and prices are submitted against participant accounts.",
       "outcome": "Enabled transparent leaderboard-based incentive programs for pharmacy teams and simplified campaign tracking for reward-based sales activations.",
-      "tags": [
-        "Power Apps",
-        "OCR validation",
-        "Sales activation"
-      ],
+      "tags": ["Power Apps", "OCR validation", "Sales activation"],
       "confidential": true
     }
   ],
@@ -788,12 +747,7 @@
     {
       "title": "CRM & lifecycle",
       "image": "/assets/technology-stack/crm-lifecycle.webp",
-      "tools": [
-        "Emarsys",
-        "Euromsg",
-        "Insider",
-        "Dynamics 365"
-      ]
+      "tools": ["Emarsys", "Euromsg", "Insider", "Dynamics 365"]
     },
     {
       "title": "AI & automation",
@@ -810,25 +764,12 @@
     {
       "title": "Market intelligence",
       "image": "/assets/technology-stack/market-intelligence.webp",
-      "tools": [
-        "Profitero",
-        "Helium 10",
-        "IQVIA",
-        "SEMrush",
-        "MikMak"
-      ]
+      "tools": ["Profitero", "Helium 10", "IQVIA", "SEMrush", "MikMak"]
     },
     {
       "title": "Delivery stack",
       "image": "/assets/technology-stack/delivery-stack.webp",
-      "tools": [
-        "Jira",
-        "Asana",
-        "Wrike",
-        "Canva",
-        "Drupal",
-        "Quable"
-      ]
+      "tools": ["Jira", "Asana", "Wrike", "Canva", "Drupal", "Quable"]
     }
   ],
   "certifications": [
@@ -837,6 +778,12 @@
       "issuer": "Google Cloud",
       "date": "2024",
       "image": "/assets/certificates/Prompt Design in Vertex AI.webp"
+    },
+    {
+      "title": "Digital Transformation",
+      "issuer": "LinkedIn Learning",
+      "date": "May 2026",
+      "image": "/assets/certificates/LinkedIn-Digital-Transformation.webp"
     },
     {
       "title": "Applied Marketing Analytics",

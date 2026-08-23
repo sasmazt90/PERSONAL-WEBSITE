@@ -1,6 +1,6 @@
 export const productLongDescriptions = {
-  "en": {
-    "Pricing Validation & Intelligence": [
+  en: {
+    "Amazon Re-Pricing & Market Pricing Tracking": [
       "PROBLEM",
       "Pricing decisions across e-retailers and marketplaces were highly fragmented and reactive.",
       "Retailer price data, competitor benchmarks and internal pricing logic were disconnected",
@@ -29,7 +29,9 @@ export const productLongDescriptions = {
       "+30% Pricing Compliance Rate with automated guardrail enforcement",
       "-40% Manual Pricing Effort by eliminating Excel-based workflows",
       "+50% Faster Decision-Making through real-time insights",
-      "+25% Cross-channel Price Consistency improving brand and channel control"
+      "+25% Cross-channel Price Consistency improving brand and channel control",
+      "RELATED AMAZON P&L — The connected hybrid 1P/3P operating model delivered +19% net profit, +8pp margin and -10pp OPEX. These business-model results are kept separate from the pricing-system results above.",
+      "UNIT ECONOMICS GUARDRAIL — Realized price minus COGS, marketplace and fulfillment costs, variable media and returns equals contribution margin. Pricing actions advance only when the margin floor is protected.",
     ],
     "BIODERMA 360 e-Prescription System": [
       "PROBLEM",
@@ -71,7 +73,7 @@ export const productLongDescriptions = {
       "Smarter budget allocation",
       "Real-time journey optimization",
       "Stronger alignment between medical strategy and revenue outcomes",
-      "Positioning BIODERMA not just as a product brand, but as a digitally-enabled healthcare ecosystem player."
+      "Positioning BIODERMA not just as a product brand, but as a digitally-enabled healthcare ecosystem player.",
     ],
     "BIODERMA AI-Driven Visit Planning Mobile Application": [
       "PROBLEM",
@@ -111,7 +113,7 @@ export const productLongDescriptions = {
       "It enabled a shift from:",
       "“Who is closest?” → “Who creates the most value?”",
       "“Where should I go?” → “What is the optimal commercial route today?”",
-      "Ultimately positioning the field force as a data-driven growth engine, not just an execution layer."
+      "Ultimately positioning the field force as a data-driven growth engine, not just an execution layer.",
     ],
     "BIODERMA Tasky AI Web Application": [
       "PROBLEM",
@@ -151,7 +153,7 @@ export const productLongDescriptions = {
       "It enabled a shift from:",
       "“Who is doing this?” → “It’s already tracked, visible and accountable”",
       "“What’s the status?” → “Everything is measurable in real-time”",
-      "Positioning Tasky AI as a digital operating system layer that scales execution quality, speed and organizational discipline."
+      "Positioning Tasky AI as a digital operating system layer that scales execution quality, speed and organizational discipline.",
     ],
     "360? Real-Time Executive Dashboard and Forecast": [
       "PROBLEM",
@@ -191,7 +193,7 @@ export const productLongDescriptions = {
       "It enabled a shift from:",
       "“What happened?” → “What will happen next?”",
       "“Let’s analyze later” → “Let’s act now”",
-      "Positioning the dashboard not as a reporting tool, but as a real-time commercial control tower driving forecasting accuracy, inventory efficiency and business performance."
+      "Positioning the dashboard not as a reporting tool, but as a real-time commercial control tower driving forecasting accuracy, inventory efficiency and business performance.",
     ],
     "BIODERMA Invoice Automation System": [
       "PROBLEM",
@@ -231,7 +233,7 @@ export const productLongDescriptions = {
       "It enabled a shift from:",
       "“Open, read, input” → “Auto-ingest, validate, store”",
       "“Where is this invoice?” → “Everything is searchable and structured”",
-      "Positioning finance operations as a data-driven and automation-enabled function, not a manual processing layer."
+      "Positioning finance operations as a data-driven and automation-enabled function, not a manual processing layer.",
     ],
     "BIODERMA PTA Challenge Web Application": [
       "PROBLEM",
@@ -271,11 +273,11 @@ export const productLongDescriptions = {
       "It enabled a shift from:",
       "“Report your sales” → “Prove and track it instantly”",
       "“Who is performing?” → “See it live on the leaderboard”",
-      "Positioning the platform as a scalable sales activation engine, combining gamification, validation and performance visibility in one system."
-    ]
+      "Positioning the platform as a scalable sales activation engine, combining gamification, validation and performance visibility in one system.",
+    ],
   },
-  "de": {
-    "Pricing Validation & Intelligence": [
+  de: {
+    "Amazon Re-Pricing & Market Pricing Tracking": [
       "PROBLEM",
       "Die Preisgestaltung im Online-Handel und auf Marktplätzen war stark fragmentiert und reaktiv.",
       "Preisdaten von Einzelhändlern, Vergleichswerte von Wettbewerbern und interne Preislogik waren nicht miteinander verbunden.",
@@ -304,7 +306,9 @@ export const productLongDescriptions = {
       "+30 % höhere Einhaltungsquote der Preise durch automatisierte Leitplankenüberwachung",
       "-40 % manueller Preisgestaltungsaufwand durch Abschaffung Excel-basierter Arbeitsabläufe",
       "+50 % schnellere Entscheidungsfindung durch Echtzeit-Einblicke",
-      "+25 % kanalübergreifende Preiskonsistenz zur Verbesserung der Marken- und Kanalkontrolle"
+      "+25 % kanalübergreifende Preiskonsistenz zur Verbesserung der Marken- und Kanalkontrolle",
+      "ZUGEHÖRIGE AMAZON P&L — Das verbundene hybride 1P/3P-Betriebsmodell erzielte +19 % Nettogewinn, +8 pp Marge und -10 pp OPEX. Diese Geschäftsmodell-Ergebnisse werden getrennt von den Pricing-System-Ergebnissen ausgewiesen.",
+      "UNIT-ECONOMICS-GUARDRAIL — Realisierter Preis minus COGS, Marketplace- und Fulfillment-Kosten, variable Media-Kosten und Retouren ergibt den Deckungsbeitrag. Pricing-Aktionen werden nur umgesetzt, wenn die Margenuntergrenze geschützt bleibt.",
     ],
     "BIODERMA 360 e-Prescription System": [
       "PROBLEM",
@@ -346,7 +350,7 @@ export const productLongDescriptions = {
       "Intelligentere Budgetverteilung",
       "Echtzeit-Reiseoptimierung",
       "Stärkere Abstimmung zwischen medizinischer Strategie und Umsatzergebnissen",
-      "BIODERMA soll nicht nur als Produktmarke, sondern als Akteur im digital vernetzten Ökosystem des Gesundheitswesens positioniert werden ."
+      "BIODERMA soll nicht nur als Produktmarke, sondern als Akteur im digital vernetzten Ökosystem des Gesundheitswesens positioniert werden .",
     ],
     "BIODERMA AI-Driven Visit Planning Mobile Application": [
       "PROBLEM",
@@ -386,7 +390,7 @@ export const productLongDescriptions = {
       "Es ermöglichte einen Wechsel von:",
       "„Wer ist am nächsten dran?“ → „Wer schafft den größten Wert?“",
       "„Wohin soll ich gehen?“ → „Was ist heute die optimale Geschäftsroute?“",
-      "Letztendlich geht es darum, den Außendienst als datengetriebenen Wachstumsmotor zu positionieren , nicht nur als Ausführungsebene."
+      "Letztendlich geht es darum, den Außendienst als datengetriebenen Wachstumsmotor zu positionieren , nicht nur als Ausführungsebene.",
     ],
     "BIODERMA Tasky AI Web Application": [
       "PROBLEM",
@@ -426,7 +430,7 @@ export const productLongDescriptions = {
       "Es ermöglichte einen Wechsel von:",
       "„Wer macht das?“ → „Es wird bereits erfasst, ist sichtbar und nachvollziehbar.“",
       "„Wie ist der aktuelle Stand?“ → „Alles ist in Echtzeit messbar.“",
-      "Tasky AI positioniert sich als digitale Betriebssystemschicht, die Ausführungsqualität, Geschwindigkeit und organisatorische Disziplin skaliert."
+      "Tasky AI positioniert sich als digitale Betriebssystemschicht, die Ausführungsqualität, Geschwindigkeit und organisatorische Disziplin skaliert.",
     ],
     "360? Real-Time Executive Dashboard and Forecast": [
       "PROBLEM",
@@ -466,7 +470,7 @@ export const productLongDescriptions = {
       "Es ermöglichte einen Wechsel von:",
       "„Was ist passiert?“ → „Was wird als Nächstes passieren?“",
       "„Lass uns das später analysieren“ → „Lass uns jetzt handeln“",
-      "Das Dashboard wird nicht als reines Berichtsinstrument positioniert, sondern als Echtzeit-Kontrollturm für den kommerziellen Bereich, der die Prognosegenauigkeit, die Lagereffizienz und die Geschäftsleistung optimiert."
+      "Das Dashboard wird nicht als reines Berichtsinstrument positioniert, sondern als Echtzeit-Kontrollturm für den kommerziellen Bereich, der die Prognosegenauigkeit, die Lagereffizienz und die Geschäftsleistung optimiert.",
     ],
     "BIODERMA Invoice Automation System": [
       "PROBLEM",
@@ -506,7 +510,7 @@ export const productLongDescriptions = {
       "Es ermöglichte einen Wechsel von:",
       "„Öffnen, lesen, eingeben“ → „Automatisch erfassen, validieren, speichern“",
       "„Wo ist diese Rechnung?“ → „Alles ist durchsuchbar und strukturiert.“",
-      "Positionierung der Finanzprozesse als datengesteuerte und automatisierungsfähige Funktion , nicht als manuelle Verarbeitungsschicht."
+      "Positionierung der Finanzprozesse als datengesteuerte und automatisierungsfähige Funktion , nicht als manuelle Verarbeitungsschicht.",
     ],
     "BIODERMA PTA Challenge Web Application": [
       "PROBLEM",
@@ -546,11 +550,11 @@ export const productLongDescriptions = {
       "Es ermöglichte einen Wechsel von:",
       "„Melden Sie Ihre Verkäufe“ → „Beweisen und verfolgen Sie sie sofort“",
       "„Wer tritt auf?“ → „Verfolge es live auf der Rangliste“",
-      "Die Plattform positioniert sich als skalierbare Vertriebsaktivierungsmaschine , die Gamifizierung, Validierung und Leistungstransparenz in einem System vereint."
-    ]
+      "Die Plattform positioniert sich als skalierbare Vertriebsaktivierungsmaschine , die Gamifizierung, Validierung und Leistungstransparenz in einem System vereint.",
+    ],
   },
-  "tr": {
-    "Pricing Validation & Intelligence": [
+  tr: {
+    "Amazon Re-Pricing & Market Pricing Tracking": [
       "SORUN",
       "E-ticaret siteleri ve pazar yerlerindeki fiyatlandırma kararları oldukça parçalı ve tepkiseldi.",
       "Perakendeci fiyat verileri, rakip kıyaslamaları ve şirket içi fiyatlandırma mantığı birbirinden kopuktu.",
@@ -579,7 +583,9 @@ export const productLongDescriptions = {
       "Otomatik güvenlik bariyeri denetimi ile %30'dan fazla fiyat uyumluluk oranı.",
       "Excel tabanlı iş akışlarının ortadan kaldırılmasıyla manuel fiyatlandırma çabasında %40 azalma sağlandı.",
       "Gerçek zamanlı veriler sayesinde %50 daha hızlı karar verme",
-      "+%25 Kanallar Arası Fiyat Tutarlılığı, marka ve kanal kontrolünü iyileştiriyor"
+      "+%25 Kanallar Arası Fiyat Tutarlılığı, marka ve kanal kontrolünü iyileştiriyor",
+      "İLGİLİ AMAZON P&L — Bağlantılı hibrit 1P/3P işletim modeli +%19 net kâr, +8pp marj ve -10pp OPEX sağladı. Bu iş modeli sonuçları fiyatlama sistemi sonuçlarından ayrı gösterilmektedir.",
+      "BİRİM EKONOMİSİ GUARDRAIL'I — Gerçekleşen fiyat eksi COGS, marketplace ve fulfillment maliyetleri, değişken medya gideri ve iadeler katkı marjını verir. Fiyatlama aksiyonları yalnızca marj tabanı korunduğunda ilerler.",
     ],
     "BIODERMA 360 e-Prescription System": [
       "SORUN",
@@ -621,7 +627,7 @@ export const productLongDescriptions = {
       "Daha akıllı bütçe tahsisi",
       "Gerçek zamanlı yolculuk optimizasyonu",
       "Tıbbi strateji ve gelir sonuçları arasında daha güçlü bir uyum",
-      "BIODERMA'yı sadece bir ürün markası olarak değil, dijital olarak desteklenen bir sağlık hizmetleri ekosistemi oyuncusu olarak konumlandırmak ."
+      "BIODERMA'yı sadece bir ürün markası olarak değil, dijital olarak desteklenen bir sağlık hizmetleri ekosistemi oyuncusu olarak konumlandırmak .",
     ],
     "BIODERMA AI-Driven Visit Planning Mobile Application": [
       "SORUN",
@@ -661,7 +667,7 @@ export const productLongDescriptions = {
       "Bu, şu durumlara geçişi mümkün kıldı:",
       "“En yakın kim?” → “En çok değeri kim yaratıyor?”",
       "“Nereye gitmeliyim?” → “Bugün en uygun ticari rota hangisi?”",
-      "Sonuç olarak, saha ekibini sadece bir uygulama katmanı olarak değil, veri odaklı bir büyüme motoru olarak konumlandırmak."
+      "Sonuç olarak, saha ekibini sadece bir uygulama katmanı olarak değil, veri odaklı bir büyüme motoru olarak konumlandırmak.",
     ],
     "BIODERMA Tasky AI Web Application": [
       "SORUN",
@@ -701,7 +707,7 @@ export const productLongDescriptions = {
       "Bu, şu durumlara geçişi mümkün kıldı:",
       "“Bunu kim yapıyor?” → “Zaten takip ediliyor, görünür ve hesap verilebilir durumda.”",
       "“Durum nedir?” → “Her şey gerçek zamanlı olarak ölçülebilir.”",
-      "Tasky AI'yı, uygulama kalitesini, hızı ve organizasyonel disiplini ölçeklendiren dijital bir işletim sistemi katmanı olarak konumlandırıyoruz."
+      "Tasky AI'yı, uygulama kalitesini, hızı ve organizasyonel disiplini ölçeklendiren dijital bir işletim sistemi katmanı olarak konumlandırıyoruz.",
     ],
     "360? Real-Time Executive Dashboard and Forecast": [
       "SORUN",
@@ -741,7 +747,7 @@ export const productLongDescriptions = {
       "Bu, şu durumlara geçişi mümkün kıldı:",
       "“Ne oldu?” → “Bundan sonra ne olacak?”",
       "“Analizini sonra yapalım” → “Şimdi harekete geçelim”",
-      "Kontrol panelini bir raporlama aracı olarak değil, tahmin doğruluğunu, envanter verimliliğini ve iş performansını yönlendiren gerçek zamanlı bir ticari kontrol kulesi olarak konumlandırmak."
+      "Kontrol panelini bir raporlama aracı olarak değil, tahmin doğruluğunu, envanter verimliliğini ve iş performansını yönlendiren gerçek zamanlı bir ticari kontrol kulesi olarak konumlandırmak.",
     ],
     "BIODERMA Invoice Automation System": [
       "SORUN",
@@ -781,7 +787,7 @@ export const productLongDescriptions = {
       "Bu, şu durumlara geçişi mümkün kıldı:",
       "“Aç, oku, gir” → “Otomatik olarak al, doğrula, sakla”",
       "“Bu fatura nerede?” → “Her şey aranabilir ve yapılandırılmış durumda”",
-      "manuel işlem katmanı olarak değil, veri odaklı ve otomasyon destekli bir işlev olarak konumlandırmak ."
+      "manuel işlem katmanı olarak değil, veri odaklı ve otomasyon destekli bir işlev olarak konumlandırmak .",
     ],
     "BIODERMA PTA Challenge Web Application": [
       "SORUN",
@@ -821,7 +827,7 @@ export const productLongDescriptions = {
       "Bu, şu durumlara geçişi mümkün kıldı:",
       "“Satışlarınızı bildirin” → “Anında kanıtlayın ve takip edin”",
       "“Kim sahne alacak?” → “Skor tablosunda canlı olarak izleyin”",
-      "Platformu , oyunlaştırma, doğrulama ve performans görünürlüğünü tek bir sistemde birleştiren, ölçeklenebilir bir satış aktivasyon motoru olarak konumlandırıyoruz."
-    ]
-  }
+      "Platformu , oyunlaştırma, doğrulama ve performans görünürlüğünü tek bir sistemde birleştiren, ölçeklenebilir bir satış aktivasyon motoru olarak konumlandırıyoruz.",
+    ],
+  },
 } as const;
