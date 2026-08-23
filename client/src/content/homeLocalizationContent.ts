@@ -8,6 +8,7 @@ type ProductItem = {
   imageFit?: string;
   imagePosition?: string;
   imageClassName?: string;
+  detailImages?: string[];
   video?: string;
   videoType?: string;
   detailLabel?: string;
@@ -78,7 +79,7 @@ function localizeCollection<T extends Record<string, unknown>>(
 }
 
 const deProducts: Record<string, Partial<ProductItem>> = {
-  "GEO OPTIMIZER AI": {
+  "GEO and SEO Optimizer AI": {
     category: "Generative Engine Optimization",
     summary:
       "KI-gestützter GEO-Workflow zur Analyse der Markensichtbarkeit in Antwortmaschinen, zur Identifikation von Prompt-Lücken und zur Ableitung konkreter Optimierungsmaßnahmen.",
@@ -181,7 +182,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Als verbrauchernahe ESG-Transparenzoberfläche mit Scoring-, Vergleichs- und Bildungsfunktionen positioniert.",
     tags: ["ESG", "Consumer Product", "Scoring Engine"],
   },
-  "Adaptif.AI": {
+  AdaptifAI: {
     category: "Content-Lokalisierung & Resizing",
     summary:
       "OCR- und GenAI-gestützter Lokalisierungsworkflow, der Marketing-Assets über Sprachen, Kanäle und Formate hinweg skaliert anpasst.",
@@ -202,7 +203,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Pricing erzielte +11 % AOV und +12 pp Buy-Box-Anteil. Das verbundene hybride Amazon-Betriebsmodell erzielte +19 % Nettogewinn, +8 pp Marge und -10 pp OPEX; diese P&L-Ergebnisse werden getrennt von den Pricing-System-Ergebnissen ausgewiesen.",
     tags: ["Pricing Intelligence", "Retail Analytics", "Decision Support"],
   },
-  "BIODERMA 360 e-Prescription System": {
+  "Omnichannel e-Prescription Journey": {
     category: "Connected Patient Journey Platform",
     summary:
       "DSGVO-konforme E-Rezept-Journey aufgebaut, die dynamische Produktempfehlungen erzeugt und sie per NFC-getriggerten Rezeptlinks direkt aufs Smartphone ausspielt.",
@@ -210,7 +211,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Prescription-to-Purchase-Conversion von ca. 22 % auf ca. 34 % erhöht, Doctor Adoption um 40 % und Pharmacy Funnel Completion um 25 % gesteigert sowie papierbasierten OPEX um 70 % reduziert.",
     tags: ["Power Apps", "NFC Journey", "Customer Journey Mapping"],
   },
-  "BIODERMA AI-Driven Visit Planning Mobile Application": {
+  "CLV-Based AI Visit Planning": {
     category: "Field-Force-Planungsintelligenz",
     summary:
       "Mobile Planungsanwendung für HCP-Außendienstteams mit CLV-basierter KI-Priorisierung, Engagement-Scoring und Echtzeit-Traffic-Insights zur Optimierung von Routen und Tagesplänen.",
@@ -218,7 +219,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Außendienstproduktivität um 25–30 %, High-Value-Account-Coverage um 35 % und Routeneffizienz um 20 % verbessert; Planungszeit um 40 % reduziert und über 80 % Adoption erreicht.",
     tags: ["Power Apps", "CLV-Priorisierung", "Außendienstoptimierung"],
   },
-  "BIODERMA Tasky AI Web Application": {
+  "Tasky AI Workflow": {
     category: "Interne Workflow-Orchestrierung",
     summary:
       "Interne Aufgaben- und Workflow-Anwendung für funktionsübergreifende und abteilungsinterne Zusammenarbeit entwickelt, inspiriert von strukturierten Operating Models wie Wrike und Asana.",
@@ -226,7 +227,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Koordinationsaufwand reduziert, Aufgaben-Transparenz erhöht und ein disziplinierteres System für Ownership, Deadlines und teamübergreifende Umsetzung geschaffen.",
     tags: ["Power Apps", "Workflow-Automation", "Task Management"],
   },
-  "360° Real-Time Executive Dashboard and Forecast": {
+  "Real-Time Executive Forecast": {
     category: "Executive Analytics & Forecasting",
     summary:
       "Prädiktive Analytics-Dashboards entwickelt, die Sell-out-Signale, Saisonalität und Sales-Trends kombinieren, um Forecasting und Bestandssteuerung zu unterstützen.",
@@ -234,7 +235,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Eine Echtzeit-Managementebene geschaffen, die Nachfrageschwankungen sichtbarer macht und proaktiveres Planen in Inventory und Commercial Operations unterstützt.",
     tags: ["Power BI", "Forecasting", "Executive Dashboard"],
   },
-  "BIODERMA Invoice Automation System": {
+  "Invoice OCR Automation": {
     category: "Finance Process Automation",
     summary:
       "Power-Automate-Workflow aufgebaut, der Rechnungsdaten per OCR aus E-Mail-Anhängen extrahiert und validierte Informationen in einem einzigen operativen Dokument bündelt.",
@@ -252,7 +253,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
   },
 };
 const trProducts: Record<string, Partial<ProductItem>> = {
-  "GEO OPTIMIZER AI": {
+  "GEO and SEO Optimizer AI": {
     category: "Generative Engine Optimization",
     summary:
       "Markaların cevap motorlarındaki görünürlüğünü analiz eden, prompt düzeyindeki boşlukları belirleyen ve arama niyetini optimizasyon aksiyonlarına dönüştüren AI destekli GEO workflow'u.",
@@ -355,7 +356,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Skorlama, karşılaştırma ve eğitim özelliklerine sahip kullanıcı odaklı bir ESG şeffaflık arayüzü olarak konumlandı.",
     tags: ["ESG", "Tüketici ürünü", "Skorlama motoru"],
   },
-  "Adaptif.AI": {
+  AdaptifAI: {
     category: "İçerik Lokalizasyonu & Resizing",
     summary:
       "Pazarlama asset'lerini dil, kanal ve kampanya formatları arasında ölçekli biçimde uyarlamak için geliştirilen OCR ve GenAI destekli lokalizasyon workflow'u.",
@@ -376,7 +377,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Fiyatlama +%11 AOV ve +12pp Buy Box payı sağladı. İlgili hibrit Amazon işletim modeli +%19 net kâr, +8pp marj ve -10pp OPEX sağladı; bu P&L sonuçları fiyatlama sistemi çıktılarından ayrı raporlanmaktadır.",
     tags: ["Fiyatlama zekası", "Perakende analitiği", "Karar desteği"],
   },
-  "BIODERMA 360 e-Prescription System": {
+  "Omnichannel e-Prescription Journey": {
     category: "Bağlantılı hasta yolculuğu platformu",
     summary:
       "Hastalar için dinamik ürün önerileri üreten ve bunları NFC tetiklemeli reçete linkleriyle mobile anında ileten GDPR uyumlu e-reçete yolculuğu geliştirildi.",
@@ -384,7 +385,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Prescription-to-purchase dönüşümünü yaklaşık %22'den %34'e çıkardı; doktor kullanımını %40, eczane funnel completion oranını %25 artırdı ve kağıt bazlı OPEX'i %70 azalttı.",
     tags: ["Power Apps", "NFC yolculuğu", "Müşteri yolculuğu haritalama"],
   },
-  "BIODERMA AI-Driven Visit Planning Mobile Application": {
+  "CLV-Based AI Visit Planning": {
     category: "Saha ekipleri planlama zekası",
     summary:
       "HCP saha ekipleri için CLV tabanlı AI önceliklendirmesi, engagement scoring ve gerçek zamanlı trafik içgörüleri kullanan mobil ziyaret planlama aracı geliştirildi.",
@@ -392,7 +393,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Saha verimliliğini %25–30, yüksek değerli hesap kapsamını %35 ve rota verimliliğini %20 artırdı; planlama süresini %40 azaltırken %80'in üzerinde kullanım oranına ulaştı.",
     tags: ["Power Apps", "CLV önceliklendirme", "Saha optimizasyonu"],
   },
-  "BIODERMA Tasky AI Web Application": {
+  "Tasky AI Workflow": {
     category: "İç workflow orkestrasyonu",
     summary:
       "Wrike ve Asana gibi araçlardaki yapılandırılmış operating model yaklaşımından esinlenen, departman içi ve çapraz fonksiyonel iş birliği için iç görev ve workflow uygulaması tasarlandı.",
@@ -400,7 +401,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Koordinasyon sürtünmesini azalttı, görev görünürlüğünü artırdı ve sahiplik, termin ve ekipler arası execution takibi için daha disiplinli bir sistem yarattı.",
     tags: ["Power Apps", "Workflow otomasyonu", "Görev yönetimi"],
   },
-  "360° Real-Time Executive Dashboard and Forecast": {
+  "Real-Time Executive Forecast": {
     category: "Yönetici analitiği ve forecasting",
     summary:
       "Sell-out sinyalleri, mevsimsellik desenleri ve satış trendlerini birleştiren predictive analytics dashboard'ları geliştirilerek forecasting ve stok yönetimi desteklendi.",
@@ -408,7 +409,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Talep değişimlerinin görünürlüğünü artıran ve envanter ile ticari operasyonlarda daha proaktif planlamayı destekleyen gerçek zamanlı bir yönetim katmanı oluşturdu.",
     tags: ["Power BI", "Forecasting", "Yönetici dashboard'u"],
   },
-  "BIODERMA Invoice Automation System": {
+  "Invoice OCR Automation": {
     category: "Finans süreç otomasyonu",
     summary:
       "Gelen e-posta eklerindeki fatura bilgilerini OCR ile çıkaran ve doğrulanan veriyi tek bir operasyon dokümanında toplayan Power Automate workflow'u geliştirildi.",
@@ -558,6 +559,108 @@ const trVideos: Record<string, Partial<VideoItem>> = {
   },
 };
 
+const portfolioVerifiedDetailOverrides: Record<
+  SupportedLanguage,
+  Record<string, string[]>
+> = {
+  en: {
+    "Tasky AI Workflow": [
+      "SITUATION",
+      "Cross-functional work was fragmented across messages, meetings and manual follow-ups, limiting visibility into ownership, deadlines and dependencies.",
+      "TASK",
+      "Reduce coordination friction safely and turn recurring collaboration into a structured operating workflow.",
+      "ACTION",
+      "Built a Power Apps workflow inspired by structured task-management operating models, with standardized intake, ownership, status, deadlines, dependencies, notifications and cross-team visibility.",
+      "RESULT",
+      "Created faster, more reliable operating workflows with clearer accountability, less manual coordination and a reusable governance layer across Marketing, Sales and Medical teams.",
+    ],
+    "Real-Time Executive Forecast": [
+      "SITUATION",
+      "Commercial and stock decisions relied on fragmented, backward-looking reporting across sell-out, seasonality, demand and campaign signals.",
+      "TASK",
+      "Give leadership one real-time decision surface for forecasting, stock management and scenario planning.",
+      "ACTION",
+      "Unified sell-out, stock, media and demand signals in Power BI with predictive forecasting, SKU/category views and executive scenario-planning dashboards.",
+      "RESULT",
+      "Improved planning speed, stock visibility and executive decision quality by replacing disconnected reporting with a single forward-looking commercial view.",
+    ],
+    "Invoice OCR Automation": [
+      "SITUATION",
+      "Invoice intake depended on repetitive manual reading, validation and consolidation of attachments arriving in different formats.",
+      "TASK",
+      "Reduce finance-process friction while preserving reliable, searchable and traceable records.",
+      "ACTION",
+      "Built a Power Automate workflow that detects inbound invoices, extracts fields with OCR, validates structured data and consolidates records into one operational dataset.",
+      "RESULT",
+      "Reduced repetitive finance administration and created a faster, more reliable and searchable invoice-intake workflow.",
+    ],
+  },
+  de: {
+    "Tasky AI Workflow": [
+      "SITUATION",
+      "Funktionsübergreifende Arbeit war über Nachrichten, Meetings und manuelle Follow-ups fragmentiert; Ownership, Deadlines und Abhängigkeiten waren nur begrenzt sichtbar.",
+      "TASK",
+      "Koordinationsaufwand sicher reduzieren und wiederkehrende Zusammenarbeit in einen strukturierten Operating Workflow überführen.",
+      "ACTION",
+      "Power-Apps-Workflow mit standardisiertem Intake, Ownership, Status, Deadlines, Abhängigkeiten, Benachrichtigungen und teamübergreifender Transparenz aufgebaut.",
+      "RESULT",
+      "Schnellere und verlässlichere Operating Workflows mit klarerer Verantwortlichkeit, weniger manueller Koordination und einer wiederverwendbaren Governance-Schicht für Marketing, Sales und Medical geschaffen.",
+    ],
+    "Real-Time Executive Forecast": [
+      "SITUATION",
+      "Commercial- und Bestandsentscheidungen basierten auf fragmentiertem, rückwärtsgerichtetem Reporting über Sell-out, Saisonalität, Nachfrage und Kampagnensignale.",
+      "TASK",
+      "Leadership eine Echtzeit-Entscheidungsoberfläche für Forecasting, Bestandssteuerung und Szenarioplanung geben.",
+      "ACTION",
+      "Sell-out-, Bestands-, Media- und Nachfragesignale in Power BI mit Predictive Forecasting, SKU-/Kategorieansichten und Executive-Szenariodashboards vereint.",
+      "RESULT",
+      "Planungsgeschwindigkeit, Bestandstransparenz und Qualität von Executive-Entscheidungen durch eine einheitliche, vorausschauende Commercial View verbessert.",
+    ],
+    "Invoice OCR Automation": [
+      "SITUATION",
+      "Der Rechnungseingang erforderte wiederkehrendes manuelles Lesen, Validieren und Konsolidieren unterschiedlich formatierter Anhänge.",
+      "TASK",
+      "Reibung im Finance-Prozess reduzieren und zugleich verlässliche, durchsuchbare und nachvollziehbare Datensätze erhalten.",
+      "ACTION",
+      "Power-Automate-Workflow zur Erkennung eingehender Rechnungen, OCR-Feldextraktion, Validierung strukturierter Daten und Konsolidierung in einem operativen Dataset aufgebaut.",
+      "RESULT",
+      "Wiederkehrende Finance-Administration reduziert und einen schnelleren, verlässlicheren und durchsuchbaren Invoice-Intake-Workflow geschaffen.",
+    ],
+  },
+  tr: {
+    "Tasky AI Workflow": [
+      "SITUATION",
+      "Çapraz fonksiyonlu işler mesajlar, toplantılar ve manuel takipler arasında parçalıydı; sahiplik, termin ve bağımlılık görünürlüğü sınırlıydı.",
+      "TASK",
+      "Koordinasyon sürtünmesini güvenli biçimde azaltmak ve tekrarlayan iş birliğini yapılandırılmış bir operating workflow'a dönüştürmek.",
+      "ACTION",
+      "Standart intake, sahiplik, durum, termin, bağımlılık, bildirim ve ekipler arası görünürlük içeren Power Apps workflow'u geliştirildi.",
+      "RESULT",
+      "Marketing, Sales ve Medical ekipleri için daha net accountability, daha az manuel koordinasyon ve tekrar kullanılabilir governance katmanıyla daha hızlı ve güvenilir operating workflow'lar oluşturuldu.",
+    ],
+    "Real-Time Executive Forecast": [
+      "SITUATION",
+      "Ticari ve stok kararları sell-out, mevsimsellik, talep ve kampanya sinyallerini parçalı ve geriye dönük biçimde raporlayan yapılara dayanıyordu.",
+      "TASK",
+      "Leadership'a forecasting, stok yönetimi ve senaryo planlama için tek bir gerçek zamanlı karar yüzeyi sunmak.",
+      "ACTION",
+      "Sell-out, stok, medya ve talep sinyalleri Power BI içinde predictive forecasting, SKU/kategori görünümleri ve executive senaryo dashboard'larıyla birleştirildi.",
+      "RESULT",
+      "Kopuk raporlamanın yerine ileriye dönük tek bir ticari görünüm kurularak planlama hızı, stok görünürlüğü ve executive karar kalitesi güçlendirildi.",
+    ],
+    "Invoice OCR Automation": [
+      "SITUATION",
+      "Fatura intake süreci farklı formatlardaki eklerin tekrar tekrar manuel okunmasına, doğrulanmasına ve birleştirilmesine dayanıyordu.",
+      "TASK",
+      "Güvenilir, aranabilir ve izlenebilir kayıtları korurken finans sürecindeki sürtünmeyi azaltmak.",
+      "ACTION",
+      "Gelen faturaları algılayan, alanları OCR ile çıkaran, yapılandırılmış veriyi doğrulayan ve kayıtları tek bir operasyonel dataset'te birleştiren Power Automate workflow'u geliştirildi.",
+      "RESULT",
+      "Tekrar eden finans yönetimi azaltıldı; daha hızlı, güvenilir ve aranabilir bir invoice-intake workflow'u oluşturuldu.",
+    ],
+  },
+};
+
 export function localizeProducts(
   items: ProductItem[],
   language: SupportedLanguage
@@ -574,7 +677,9 @@ export function localizeProducts(
   >;
 
   return localizedItems.map(item => {
-    const detailBody = descriptions[item.title];
+    const detailBody =
+      portfolioVerifiedDetailOverrides[language][item.title] ??
+      descriptions[item.title];
 
     return {
       ...item,

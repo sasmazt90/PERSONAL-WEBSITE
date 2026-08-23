@@ -56,7 +56,13 @@ type ThemeMode = "light" | "dark";
 type MediaModal =
   | { type: "youtube"; url: string; title: string }
   | { type: "video"; url: string; title: string }
-  | { type: "detail"; title: string; image?: string; body: string[] }
+  | {
+      type: "detail";
+      title: string;
+      image?: string;
+      images?: string[];
+      body: string[];
+    }
   | null;
 
 type ExperienceModal = TimelineItem | null;
@@ -215,11 +221,7 @@ function getAwardIcon(level: string) {
   return <Trophy size={18} />;
 }
 
-function getToolClusterVisual(
-  title: string,
-  dark: boolean,
-  image?: string
-) {
+function getToolClusterVisual(title: string, dark: boolean, image?: string) {
   if (image) {
     return (
       <div
@@ -436,7 +438,8 @@ const translations = {
     themeToggleDark: "Toggle dark mode",
     themeToggleLight: "Toggle light mode",
     heroPhotoLabel: "Hero photo",
-    privateProject: "Private enterprise project. Public visuals intentionally withheld.",
+    privateProject:
+      "Private enterprise project. Public visuals intentionally withheld.",
     toolsCountSuffix: "tools",
     linkedinLabel: "LinkedIn",
     aboutCompetenciesTitle: "Core Competencies",
@@ -543,7 +546,8 @@ const translations = {
     themeToggleDark: "Dunkelmodus aktivieren",
     themeToggleLight: "Hellmodus aktivieren",
     heroPhotoLabel: "Hero-Foto",
-    privateProject: "Vertrauliches Unternehmensprojekt. Öffentliche Visuals werden bewusst nicht gezeigt.",
+    privateProject:
+      "Vertrauliches Unternehmensprojekt. Öffentliche Visuals werden bewusst nicht gezeigt.",
     toolsCountSuffix: "Tools",
     linkedinLabel: "LinkedIn",
     aboutCompetenciesTitle: "Kernkompetenzen",
@@ -649,7 +653,8 @@ const translations = {
     themeToggleDark: "Karanlık modu aç",
     themeToggleLight: "Aydınlık modu aç",
     heroPhotoLabel: "Hero fotoğrafı",
-    privateProject: "Gizli kurumsal proje. Kamuya açık görseller bilinçli olarak paylaşılmıyor.",
+    privateProject:
+      "Gizli kurumsal proje. Kamuya açık görseller bilinçli olarak paylaşılmıyor.",
     toolsCountSuffix: "araç",
     linkedinLabel: "LinkedIn",
     aboutCompetenciesTitle: "Temel Yetkinlikler",
@@ -903,10 +908,10 @@ export default function Home() {
           : "Technology Stack",
     advancedCertifications:
       language === "de"
-      ? "Weiterführende Zertifizierungen"
-      : language === "tr"
-        ? "İleri Düzey Sertifikalar"
-        : "Advanced Certifications",
+        ? "Weiterführende Zertifizierungen"
+        : language === "tr"
+          ? "İleri Düzey Sertifikalar"
+          : "Advanced Certifications",
   };
   const trackCta = (
     ctaText: string,
@@ -1001,58 +1006,68 @@ export default function Home() {
     product: (typeof aiProducts)[number],
     portrait: boolean
   ) => ({
-      key: product.title,
-      content: (
-        <article className="portfolio-panel-light flex h-full min-h-[480px] flex-col transition duration-300 hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:hover:border-white/20 dark:hover:shadow-none">
-          <div className={`flex items-start justify-between gap-3 ${product.confidential ? "min-h-[12rem]" : "min-h-[8.5rem]"}`}>
-            <div className={`flex flex-1 flex-col ${product.confidential ? "min-h-[12rem]" : "min-h-[8.5rem]"}`}>
-              <p className={`${product.confidential ? "min-h-[3.5rem]" : "min-h-[2.5rem]"} text-xs font-bold uppercase tracking-[0.24em] text-[#2563eb] dark:text-[#8cc8ff]`}>
-                {product.category}
-              </p>
-              <h3 className={`mt-3 font-['Space_Grotesk'] text-2xl font-bold text-[#0f172a] dark:text-white ${product.confidential ? "min-h-[8.5rem]" : "min-h-[4.5rem]"}`}>
-                {product.title}
-              </h3>
-            </div>
-            {product.confidential ? (
-              <span className="shrink-0 rounded-full border border-amber-300/40 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-300/25 dark:bg-amber-500/10 dark:text-amber-200">
-                {t.confidential}
-              </span>
-            ) : null}
-          </div>
-          {product.image ? (
-            <div
-              className={`mt-5 w-full overflow-hidden rounded-[1.5rem] border border-[#e4ecf8] bg-white dark:border-white/10 dark:bg-black/20 ${portrait ? "aspect-[4/5]" : "aspect-[312/250]"}`}
+    key: product.title,
+    content: (
+      <article className="portfolio-panel-light flex h-full min-h-[480px] flex-col transition duration-300 hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:hover:border-white/20 dark:hover:shadow-none">
+        <div
+          className={`flex items-start justify-between gap-3 ${product.confidential ? "min-h-[12rem]" : "min-h-[8.5rem]"}`}
+        >
+          <div
+            className={`flex flex-1 flex-col ${product.confidential ? "min-h-[12rem]" : "min-h-[8.5rem]"}`}
+          >
+            <p
+              className={`${product.confidential ? "min-h-[3.5rem]" : "min-h-[2.5rem]"} text-xs font-bold uppercase tracking-[0.24em] text-[#2563eb] dark:text-[#8cc8ff]`}
             >
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  loading="lazy"
-                  decoding="async"
-                className={`h-full w-full ${portrait ? "aspect-[4/5]" : "aspect-[312/250]"} ${product.imageFit === "contain" ? "object-contain p-4" : "object-cover"} ${product.imageClassName ?? ""}`}
-                  style={{
-                    objectPosition:
-                      product.imagePosition ??
-                    (product.title === "DIGITAL GROWTH ENGINE" ? "left top" : "center"),
-                  }}
-                />
-            </div>
-          ) : (
-            <div className="mt-5 flex aspect-[312/250] w-full items-center rounded-[1.5rem] border border-dashed border-[#d8e6ff] bg-[#f8fbff] px-5 py-12 text-sm text-[#64748b] dark:border-white/12 dark:bg-white/4 dark:text-white/78">
-              {t.privateProject}
-            </div>
-          )}
-          <div className="mt-5 min-h-[16rem]">
-            <p className="text-[0.98rem] leading-8 text-[#4b5b72] dark:text-white/88">
-              {product.summary}
+              {product.category}
             </p>
-            <p className="mt-3 text-[0.98rem] leading-8 text-[#617086] dark:text-white/74">
-              {product.outcome}
-            </p>
+            <h3
+              className={`mt-3 font-['Space_Grotesk'] text-2xl font-bold text-[#0f172a] dark:text-white ${product.confidential ? "min-h-[8.5rem]" : "min-h-[4.5rem]"}`}
+            >
+              {product.title}
+            </h3>
           </div>
-          <div className="mt-4 min-h-[6.5rem] flex flex-wrap content-start gap-2">
-            {product.tags.map(tag => (
-              <span
-                key={tag}
+          {product.confidential ? (
+            <span className="shrink-0 rounded-full border border-amber-300/40 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-300/25 dark:bg-amber-500/10 dark:text-amber-200">
+              {t.confidential}
+            </span>
+          ) : null}
+        </div>
+        {product.image ? (
+          <div
+            className={`mt-5 w-full overflow-hidden rounded-[1.5rem] border border-[#e4ecf8] bg-white dark:border-white/10 dark:bg-black/20 ${portrait ? "aspect-[4/5]" : "aspect-[312/250]"}`}
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              loading="lazy"
+              decoding="async"
+              className={`h-full w-full ${portrait ? "aspect-[4/5]" : "aspect-[312/250]"} ${product.imageFit === "contain" ? "object-contain p-4" : "object-cover"} ${product.imageClassName ?? ""}`}
+              style={{
+                objectPosition:
+                  product.imagePosition ??
+                  (product.title === "DIGITAL GROWTH ENGINE"
+                    ? "left top"
+                    : "center"),
+              }}
+            />
+          </div>
+        ) : (
+          <div className="mt-5 flex aspect-[312/250] w-full items-center rounded-[1.5rem] border border-dashed border-[#d8e6ff] bg-[#f8fbff] px-5 py-12 text-sm text-[#64748b] dark:border-white/12 dark:bg-white/4 dark:text-white/78">
+            {t.privateProject}
+          </div>
+        )}
+        <div className="mt-5 min-h-[16rem]">
+          <p className="text-[0.98rem] leading-8 text-[#4b5b72] dark:text-white/88">
+            {product.summary}
+          </p>
+          <p className="mt-3 text-[0.98rem] leading-8 text-[#617086] dark:text-white/74">
+            {product.outcome}
+          </p>
+        </div>
+        <div className="mt-4 min-h-[6.5rem] flex flex-wrap content-start gap-2">
+          {product.tags.map(tag => (
+            <span
+              key={tag}
               className="rounded-full border border-[#dce7f9] bg-[#f7faff] px-3 py-1 text-xs font-semibold text-[#4b5b72] dark:border-white/10 dark:bg-white/8 dark:text-white/88"
             >
               {tag}
@@ -1065,7 +1080,12 @@ export default function Home() {
               type="button"
               onClick={() => {
                 trackProject(product, "products", product.video);
-                trackCta(t.watchWalkthrough, "video", product.video!, "products");
+                trackCta(
+                  t.watchWalkthrough,
+                  "video",
+                  product.video!,
+                  "products"
+                );
                 setMediaModal({
                   type: product.videoType === "youtube" ? "youtube" : "video",
                   url: product.video!,
@@ -1078,8 +1098,8 @@ export default function Home() {
               {t.watchWalkthrough}
             </button>
           ) : null}
-          {product.confidential &&
-          (product.detailBody?.length || product.summary || product.outcome) ? (
+          {product.detailBody?.length ||
+          (product.confidential && (product.summary || product.outcome)) ? (
             <button
               type="button"
               onClick={() => {
@@ -1089,6 +1109,7 @@ export default function Home() {
                   type: "detail",
                   title: product.title,
                   image: product.image,
+                  images: product.detailImages,
                   body: product.detailBody?.length
                     ? product.detailBody
                     : [product.summary, product.outcome].filter(Boolean),
@@ -1120,10 +1141,10 @@ export default function Home() {
   });
 
   const vibeCards = useMemo<CarouselCard[]>(
-      () =>
-        aiProducts
-          .filter(product => !product.confidential)
-          .map(product => buildProductCard(product, false)),
+    () =>
+      aiProducts
+        .filter(product => !product.confidential)
+        .map(product => buildProductCard(product, false)),
     [aiProducts, t.openLive, t.seeDetails, t.watchWalkthrough]
   );
 
@@ -1150,14 +1171,14 @@ export default function Home() {
                 title: video.title,
               });
             }}
-                className="group h-full overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white text-left transition hover:border-[#cadcf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
-            >
-              <div className="relative aspect-video w-full overflow-hidden bg-black">
-                <img
-                  src={video.image ?? toYoutubeThumbnail(video.url)}
-                  alt={video.title}
-                  className="h-full w-full object-cover object-center"
-                />
+            className="group h-full overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white text-left transition hover:border-[#cadcf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
+          >
+            <div className="relative aspect-video w-full overflow-hidden bg-black">
+              <img
+                src={video.image ?? toYoutubeThumbnail(video.url)}
+                alt={video.title}
+                className="h-full w-full object-cover object-center"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
               <div className="absolute bottom-4 left-4 flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#0f172a]">
@@ -1185,7 +1206,11 @@ export default function Home() {
         key: cluster.title,
         content: (
           <div className="h-full rounded-[1.75rem] border border-[#dce7f9] bg-white p-6 shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[#cadcf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none dark:hover:border-white/20 dark:hover:shadow-none">
-            {getToolClusterVisual(cluster.title, theme === "dark", cluster.image)}
+            {getToolClusterVisual(
+              cluster.title,
+              theme === "dark",
+              cluster.image
+            )}
             <div className="mt-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef4ff] text-[#2563eb] dark:bg-[#0f2530] dark:text-[#8cc8ff]">
               {getToolClusterIcon(cluster.title)}
             </div>
@@ -1246,7 +1271,9 @@ export default function Home() {
           post.visuals.find(visual => visual.visualType === "hero") ||
           post.visuals[0];
         const title = post.seo[language]?.title || post.topic;
-        const tags = post.categories?.length ? post.categories : ["Digital Growth Systems"];
+        const tags = post.categories?.length
+          ? post.categories
+          : ["Digital Growth Systems"];
         return {
           key: post.id,
           content: (
@@ -1260,11 +1287,11 @@ export default function Home() {
               >
                 <div className="h-52 overflow-hidden bg-[#eef4ff] dark:bg-[#0f2530]">
                   {thumbnail?.url ? (
-                <img
-                  src={thumbnail.url}
-                  alt={thumbnail.alt[language] || title}
-                  loading="lazy"
-                  decoding="async"
+                    <img
+                      src={thumbnail.url}
+                      alt={thumbnail.alt[language] || title}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -1274,7 +1301,9 @@ export default function Home() {
                   )}
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <h3 className={`font-['Space_Grotesk'] text-2xl font-bold leading-tight ${theme === "dark" ? "text-white" : "text-[#0f172a]"}`}>
+                  <h3
+                    className={`font-['Space_Grotesk'] text-2xl font-bold leading-tight ${theme === "dark" ? "text-white" : "text-[#0f172a]"}`}
+                  >
                     {title}
                   </h3>
                   <div className="mt-5 flex flex-wrap gap-1.5">
@@ -1887,7 +1916,12 @@ export default function Home() {
                           project_url: study.url,
                           section_name: "case_studies",
                         });
-                        trackCta(t.openCase, "case_study", study.url, "case_studies");
+                        trackCta(
+                          t.openCase,
+                          "case_study",
+                          study.url,
+                          "case_studies"
+                        );
                       }}
                       className="block rounded-[1.75rem] border border-[#dce7f9] bg-[#fbfdff] p-6 transition hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_16px_30px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
                     >
@@ -1922,12 +1956,7 @@ export default function Home() {
                       target="_blank"
                       rel="noreferrer"
                       onClick={() =>
-                        trackCta(
-                          item.title,
-                          "speaking",
-                          item.url,
-                          "speaking"
-                        )
+                        trackCta(item.title, "speaking", item.url, "speaking")
                       }
                       className="block h-full rounded-[1.75rem] border border-[#dce7f9] bg-[#fbfdff] p-6 transition hover:-translate-y-1 hover:border-[#c9daf6] hover:shadow-[0_16px_30px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#102230] dark:hover:border-white/20 dark:hover:shadow-none"
                     >
@@ -2138,7 +2167,34 @@ export default function Home() {
                 />
               ) : mediaModal.type === "detail" ? (
                 <div className="p-6 sm:p-8">
-                  {mediaModal.image ? (
+                  {mediaModal.images?.length ? (
+                    <div
+                      className={`grid gap-4 ${
+                        mediaModal.images.length > 1
+                          ? "md:grid-cols-[1.45fr_0.55fr]"
+                          : "grid-cols-1"
+                      }`}
+                    >
+                      {mediaModal.images.map((image, index) => (
+                        <div
+                          key={image}
+                          className={`overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#06151b] ${
+                            index === 0
+                              ? "aspect-[16/9]"
+                              : "min-h-[18rem] md:min-h-0"
+                          }`}
+                        >
+                          <img
+                            src={image}
+                            alt={`${mediaModal.title} — ${index + 1}`}
+                            className={`h-full w-full ${
+                              index === 0 ? "object-cover" : "object-contain"
+                            } object-center`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : mediaModal.image ? (
                     <div className="aspect-[16/9] max-h-[32rem] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#06151b]">
                       <img
                         src={mediaModal.image}

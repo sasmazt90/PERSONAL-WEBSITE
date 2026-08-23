@@ -416,13 +416,13 @@ export const careerTimeline = [
 
 export const aiProducts = [
   {
-    title: "GEO OPTIMIZER AI",
+    title: "GEO and SEO Optimizer AI",
     category: "Generative Engine Optimization",
     image: "/assets/apps/images/geo-optimizer-ai.webp",
     imageFit: "cover",
     url: "https://geo-optimizer-ai.sasmaz.digital/",
     summary:
-      "AI-powered GEO workflow built to analyze brand visibility across answer engines, identify prompt-level gaps and turn search intent into optimization actions.",
+      "AI-powered GEO and SEO workflow built to analyze brand visibility across answer engines and search, identify prompt-level and content gaps, and turn intent into optimization actions.",
     outcome:
       "Helps brands improve answer-engine presence with structured audits, entity signals, content recommendations and clear prioritization for AI discovery.",
     detailBody: [
@@ -430,11 +430,12 @@ export const aiProducts = [
       "TASK & ACTION — Built a repeatable GEO/LLMO workspace with eight tools covering brand entities, crawler simulation, query fan-out, prompt research, landing pages, content creation, content checks and benchmarking. The product combines OpenAI / OpenRouter, Express, React, Supabase, JWT, rate limiting and Zod.",
       "RESULT — Delivered a production-oriented GEO product with live authentication, saved runs, persistence, fallback logic, crawler workflows and benchmark views.",
     ],
-    tags: ["GEO", "AI search visibility", "Content optimization"],
+    detailImages: ["/assets/apps/details/geo-seo-optimizer-live.webp"],
+    tags: ["GEO", "SEO", "AI search visibility", "Content optimization"],
     confidential: false,
   },
   {
-    title: "Adaptif.AI",
+    title: "AdaptifAI",
     category: "Content Localization & Resizing",
     image: "/assets/apps/images/adaptif-ai.webp",
     imageFit: "contain",
@@ -447,6 +448,10 @@ export const aiProducts = [
       "SITUATION — Manual multilingual asset adaptation was slow, costly and inconsistent across languages, channels and placement formats.",
       "TASK & ACTION — Built a governed workflow for 10 languages and six placement families using Next.js, FastAPI, EasyOCR + TrOCR, GPT-4o, Stable Diffusion and OpenCV. OCR filtering, translation, inpainting, safe-zone previews and editable export protect brand context while scaling production.",
       "RESULT — In the professional workflow reported in the supplied portfolio and CVs, the system delivered -5% OPEX, +60% CTR and +25% CVR.",
+    ],
+    detailImages: [
+      "/assets/apps/details/adaptifai-live.webp",
+      "/assets/apps/details/adaptifai-mobile-mockup.webp",
     ],
     tags: ["OCR", "Creative localization", "Automation"],
     confidential: false,
@@ -615,7 +620,7 @@ export const aiProducts = [
     confidential: true,
   },
   {
-    title: "BIODERMA 360 e-Prescription System",
+    title: "Omnichannel e-Prescription Journey",
     category: "Connected patient journey platform",
     image: "/assets/apps/images/powerapps-360-e-prescription-system.webp",
     imageFit: "cover",
@@ -627,7 +632,7 @@ export const aiProducts = [
     confidential: true,
   },
   {
-    title: "BIODERMA AI-Driven Visit Planning Mobile Application",
+    title: "CLV-Based AI Visit Planning",
     category: "Field force planning intelligence",
     image: "/assets/apps/images/powerapps-ai-driven-visit-planning.webp",
     imageFit: "cover",
@@ -639,7 +644,7 @@ export const aiProducts = [
     confidential: true,
   },
   {
-    title: "BIODERMA Tasky AI Web Application",
+    title: "Tasky AI Workflow",
     category: "Internal workflow orchestration",
     image: "/assets/apps/images/powerapps-tasky-ai-web-application.webp",
     imageFit: "cover",
@@ -651,7 +656,7 @@ export const aiProducts = [
     confidential: true,
   },
   {
-    title: "360° Real-Time Executive Dashboard and Forecast",
+    title: "Real-Time Executive Forecast",
     category: "Executive analytics and forecasting",
     image: "/assets/apps/images/powerapps-executive-dashboard-forecast.webp",
     imageFit: "cover",
@@ -663,7 +668,7 @@ export const aiProducts = [
     confidential: true,
   },
   {
-    title: "BIODERMA Invoice Automation System",
+    title: "Invoice OCR Automation",
     category: "Finance process automation",
     image: "/assets/apps/images/powerapps-invoice-automation-system.webp",
     imageFit: "cover",

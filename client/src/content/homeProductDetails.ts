@@ -33,7 +33,7 @@ export const productLongDescriptions = {
       "RELATED AMAZON P&L — The connected hybrid 1P/3P operating model delivered +19% net profit, +8pp margin and -10pp OPEX. These business-model results are kept separate from the pricing-system results above.",
       "UNIT ECONOMICS GUARDRAIL — Realized price minus COGS, marketplace and fulfillment costs, variable media and returns equals contribution margin. Pricing actions advance only when the margin floor is protected.",
     ],
-    "BIODERMA 360 e-Prescription System": [
+    "Omnichannel e-Prescription Journey": [
       "PROBLEM",
       "Healthcare and dermocosmetic journeys were fundamentally disconnected between prescription intent and actual purchase behavior.",
       "Doctors generated recommendations, but no measurable link existed between prescription and purchase",
@@ -75,7 +75,7 @@ export const productLongDescriptions = {
       "Stronger alignment between medical strategy and revenue outcomes",
       "Positioning BIODERMA not just as a product brand, but as a digitally-enabled healthcare ecosystem player.",
     ],
-    "BIODERMA AI-Driven Visit Planning Mobile Application": [
+    "CLV-Based AI Visit Planning": [
       "PROBLEM",
       "Field force visit planning was largely manual, static and not aligned with commercial value.",
       "Visit plans were based on habit, territory proximity or intuition, not data",
@@ -115,7 +115,7 @@ export const productLongDescriptions = {
       "“Where should I go?” → “What is the optimal commercial route today?”",
       "Ultimately positioning the field force as a data-driven growth engine, not just an execution layer.",
     ],
-    "BIODERMA Tasky AI Web Application": [
+    "Tasky AI Workflow": [
       "PROBLEM",
       "Cross-functional execution across Marketing, Sales, Medical and Commercial teams was fragmented and difficult to scale.",
       "Tasks were managed across emails, meetings and disconnected tools",
@@ -155,7 +155,7 @@ export const productLongDescriptions = {
       "“What’s the status?” → “Everything is measurable in real-time”",
       "Positioning Tasky AI as a digital operating system layer that scales execution quality, speed and organizational discipline.",
     ],
-    "360? Real-Time Executive Dashboard and Forecast": [
+    "Real-Time Executive Forecast": [
       "PROBLEM",
       "Commercial and supply chain decisions were based on delayed, fragmented and backward-looking data.",
       "Sell-out data, inventory levels and campaign performance were not unified",
@@ -195,7 +195,7 @@ export const productLongDescriptions = {
       "“Let’s analyze later” → “Let’s act now”",
       "Positioning the dashboard not as a reporting tool, but as a real-time commercial control tower driving forecasting accuracy, inventory efficiency and business performance.",
     ],
-    "BIODERMA Invoice Automation System": [
+    "Invoice OCR Automation": [
       "PROBLEM",
       "Invoice processing was manual, repetitive and error-prone, creating inefficiencies in finance operations.",
       "Invoices arrived via email attachments in different formats (PDF, image, scan)",
@@ -310,7 +310,7 @@ export const productLongDescriptions = {
       "ZUGEHÖRIGE AMAZON P&L — Das verbundene hybride 1P/3P-Betriebsmodell erzielte +19 % Nettogewinn, +8 pp Marge und -10 pp OPEX. Diese Geschäftsmodell-Ergebnisse werden getrennt von den Pricing-System-Ergebnissen ausgewiesen.",
       "UNIT-ECONOMICS-GUARDRAIL — Realisierter Preis minus COGS, Marketplace- und Fulfillment-Kosten, variable Media-Kosten und Retouren ergibt den Deckungsbeitrag. Pricing-Aktionen werden nur umgesetzt, wenn die Margenuntergrenze geschützt bleibt.",
     ],
-    "BIODERMA 360 e-Prescription System": [
+    "Omnichannel e-Prescription Journey": [
       "PROBLEM",
       "Im Gesundheitswesen und im Bereich der Dermokosmetik bestanden grundsätzliche Diskrepanzen zwischen der Verschreibungsabsicht und dem tatsächlichen Kaufverhalten.",
       "Ärzte erstellten Empfehlungen, aber es bestand kein messbarer Zusammenhang zwischen Verschreibung und Kauf.",
@@ -352,7 +352,7 @@ export const productLongDescriptions = {
       "Stärkere Abstimmung zwischen medizinischer Strategie und Umsatzergebnissen",
       "BIODERMA soll nicht nur als Produktmarke, sondern als Akteur im digital vernetzten Ökosystem des Gesundheitswesens positioniert werden .",
     ],
-    "BIODERMA AI-Driven Visit Planning Mobile Application": [
+    "CLV-Based AI Visit Planning": [
       "PROBLEM",
       "Die Planung der Außendienstbesuche erfolgte größtenteils manuell, statisch und nicht auf den kommerziellen Nutzen ausgerichtet.",
       "Die Besuchspläne basierten auf Gewohnheit, Gebietsnähe oder Intuition , nicht auf Daten.",
@@ -392,7 +392,7 @@ export const productLongDescriptions = {
       "„Wohin soll ich gehen?“ → „Was ist heute die optimale Geschäftsroute?“",
       "Letztendlich geht es darum, den Außendienst als datengetriebenen Wachstumsmotor zu positionieren , nicht nur als Ausführungsebene.",
     ],
-    "BIODERMA Tasky AI Web Application": [
+    "Tasky AI Workflow": [
       "PROBLEM",
       "Die funktionsübergreifende Umsetzung zwischen den Teams aus Marketing, Vertrieb, Medizin und Handel war fragmentiert und schwer skalierbar.",
       "E-Mails, Meetings und nicht zusammenhängende Tools hinweg verwaltet.",
@@ -432,7 +432,7 @@ export const productLongDescriptions = {
       "„Wie ist der aktuelle Stand?“ → „Alles ist in Echtzeit messbar.“",
       "Tasky AI positioniert sich als digitale Betriebssystemschicht, die Ausführungsqualität, Geschwindigkeit und organisatorische Disziplin skaliert.",
     ],
-    "360? Real-Time Executive Dashboard and Forecast": [
+    "Real-Time Executive Forecast": [
       "PROBLEM",
       "Die Entscheidungen im Bereich Handel und Lieferkette basierten auf verzögerten, fragmentierten und rückwärtsgewandten Daten.",
       "Abverkaufsdaten, Lagerbestände und Kampagnenleistung waren nicht einheitlich.",
@@ -472,7 +472,7 @@ export const productLongDescriptions = {
       "„Lass uns das später analysieren“ → „Lass uns jetzt handeln“",
       "Das Dashboard wird nicht als reines Berichtsinstrument positioniert, sondern als Echtzeit-Kontrollturm für den kommerziellen Bereich, der die Prognosegenauigkeit, die Lagereffizienz und die Geschäftsleistung optimiert.",
     ],
-    "BIODERMA Invoice Automation System": [
+    "Invoice OCR Automation": [
       "PROBLEM",
       "Die Rechnungsverarbeitung erfolgte manuell, war repetitiv und fehleranfällig, was zu Ineffizienzen im Finanzbereich führte.",
       "Die Rechnungen trafen als E-Mail-Anhang in verschiedenen Formaten ein (PDF, Bild, Scan).",
@@ -587,7 +587,7 @@ export const productLongDescriptions = {
       "İLGİLİ AMAZON P&L — Bağlantılı hibrit 1P/3P işletim modeli +%19 net kâr, +8pp marj ve -10pp OPEX sağladı. Bu iş modeli sonuçları fiyatlama sistemi sonuçlarından ayrı gösterilmektedir.",
       "BİRİM EKONOMİSİ GUARDRAIL'I — Gerçekleşen fiyat eksi COGS, marketplace ve fulfillment maliyetleri, değişken medya gideri ve iadeler katkı marjını verir. Fiyatlama aksiyonları yalnızca marj tabanı korunduğunda ilerler.",
     ],
-    "BIODERMA 360 e-Prescription System": [
+    "Omnichannel e-Prescription Journey": [
       "SORUN",
       "Sağlık hizmetleri ve dermokozmetik yolculukları, reçete yazma niyeti ile gerçek satın alma davranışı arasında temel bir kopukluk gösteriyordu.",
       "Doktorlar tavsiyelerde bulundu, ancak reçete ile satın alma arasında ölçülebilir bir bağlantı yoktu.",
@@ -629,7 +629,7 @@ export const productLongDescriptions = {
       "Tıbbi strateji ve gelir sonuçları arasında daha güçlü bir uyum",
       "BIODERMA'yı sadece bir ürün markası olarak değil, dijital olarak desteklenen bir sağlık hizmetleri ekosistemi oyuncusu olarak konumlandırmak .",
     ],
-    "BIODERMA AI-Driven Visit Planning Mobile Application": [
+    "CLV-Based AI Visit Planning": [
       "SORUN",
       "Saha ekibi ziyaret planlaması büyük ölçüde manuel, statik ve ticari değerle uyumlu değildi.",
       "verilere değil, alışkanlığa, bölgeye yakınlığa veya sezgiye dayanıyordu .",
@@ -669,7 +669,7 @@ export const productLongDescriptions = {
       "“Nereye gitmeliyim?” → “Bugün en uygun ticari rota hangisi?”",
       "Sonuç olarak, saha ekibini sadece bir uygulama katmanı olarak değil, veri odaklı bir büyüme motoru olarak konumlandırmak.",
     ],
-    "BIODERMA Tasky AI Web Application": [
+    "Tasky AI Workflow": [
       "SORUN",
       "Pazarlama, Satış, Tıbbi ve Ticari ekipler arasında çapraz fonksiyonel uygulama parçalıydı ve ölçeklendirilmesi zordu.",
       "e-postalar, toplantılar ve birbirinden bağımsız araçlar aracılığıyla yönetildi.",
@@ -709,7 +709,7 @@ export const productLongDescriptions = {
       "“Durum nedir?” → “Her şey gerçek zamanlı olarak ölçülebilir.”",
       "Tasky AI'yı, uygulama kalitesini, hızı ve organizasyonel disiplini ölçeklendiren dijital bir işletim sistemi katmanı olarak konumlandırıyoruz.",
     ],
-    "360? Real-Time Executive Dashboard and Forecast": [
+    "Real-Time Executive Forecast": [
       "SORUN",
       "Ticari ve tedarik zinciri kararları gecikmeli, parçalı ve geçmişe dönük verilere dayanıyordu.",
       "Satış verileri, stok seviyeleri ve kampanya performansı birleştirilmemişti .",
@@ -749,7 +749,7 @@ export const productLongDescriptions = {
       "“Analizini sonra yapalım” → “Şimdi harekete geçelim”",
       "Kontrol panelini bir raporlama aracı olarak değil, tahmin doğruluğunu, envanter verimliliğini ve iş performansını yönlendiren gerçek zamanlı bir ticari kontrol kulesi olarak konumlandırmak.",
     ],
-    "BIODERMA Invoice Automation System": [
+    "Invoice OCR Automation": [
       "SORUN",
       "Faturaların işlenmesi manuel, tekrarlayan ve hataya açık bir süreçti; bu da finans operasyonlarında verimsizliğe yol açıyordu.",
       "e-posta eki olarak farklı formatlarda (PDF, resim, tarama) geldi .",
