@@ -79,16 +79,16 @@ function localizeCollection<T extends Record<string, unknown>>(
 }
 
 const deProducts: Record<string, Partial<ProductItem>> = {
-  "GEO and SEO Optimizer AI": {
+  "GEO & SEO Optimizer": {
     category: "Generative Engine Optimization",
     summary:
       "KI-gestützter GEO-Workflow zur Analyse der Markensichtbarkeit in Antwortmaschinen, zur Identifikation von Prompt-Lücken und zur Ableitung konkreter Optimierungsmaßnahmen.",
     outcome:
-      "Produktionsorientiertes GEO/LLMO-Produkt mit Live-Authentifizierung, gespeicherten Runs, Persistenz, Fallback-Logik, Crawler-Workflows und Benchmark-Ansichten.",
+      "+34 pp KI-Sichtbarkeit, +43 Brand-Entity-Match-Score, +26 pp Traffic-Uplift und +4 pp Deckungsbeitrag.",
     detailBody: [
       "SITUATION — Marken fehlte eine strukturierte Methode, ihre Sichtbarkeit in LLM-Antworten zu diagnostizieren und Prompt-Lücken in Maßnahmen zu übersetzen.",
       "TASK & ACTION — Aufbau eines wiederholbaren GEO/LLMO-Workspace mit acht Werkzeugen für Brand Entities, Crawler-Simulation, Query Fan-Out, Prompt Research, Landingpages, Content-Erstellung, Content Checks und Benchmarking. Der Stack kombiniert OpenAI / OpenRouter, Express, React, Supabase, JWT, Rate Limiting und Zod.",
-      "RESULT — Ein produktionsorientiertes GEO-Produkt mit Live-Authentifizierung, gespeicherten Runs, Persistenz, Fallback-Logik, Crawler-Workflows und Benchmark-Ansichten wurde bereitgestellt.",
+      "RESULT — +34 pp KI-Sichtbarkeit, +43 Brand-Entity-Match-Score, +26 pp Traffic-Uplift und +4 pp Deckungsbeitrag.",
     ],
   },
   "DIGITAL GROWTH ENGINE": {
@@ -203,44 +203,44 @@ const deProducts: Record<string, Partial<ProductItem>> = {
       "Pricing erzielte +11 % AOV und +12 pp Buy-Box-Anteil. Das verbundene hybride Amazon-Betriebsmodell erzielte +19 % Nettogewinn, +8 pp Marge und -10 pp OPEX; diese P&L-Ergebnisse werden getrennt von den Pricing-System-Ergebnissen ausgewiesen.",
     tags: ["Pricing Intelligence", "Retail Analytics", "Decision Support"],
   },
-  "Omnichannel e-Prescription Journey": {
-    category: "Connected Patient Journey Platform",
+  "Omnichannel Funnel Tracking": {
+    category: "Omnichannel Funnel Tracking",
     summary:
-      "DSGVO-konforme E-Rezept-Journey aufgebaut, die dynamische Produktempfehlungen erzeugt und sie per NFC-getriggerten Rezeptlinks direkt aufs Smartphone ausspielt.",
+      "Power-Apps- / Power-Automate-gestützter Omnichannel-Workflow zur Reduktion repetitiver Arbeit und fragmentierter Entscheidungen.",
     outcome:
-      "Prescription-to-Purchase-Conversion von ca. 22 % auf ca. 34 % erhöht, Doctor Adoption um 40 % und Pharmacy Funnel Completion um 25 % gesteigert sowie papierbasierten OPEX um 70 % reduziert.",
+      "+12 pp Conversion Rate, +25 % Omnichannel Completion und -70 % OPEX gegenüber dem gedruckten Prozess.",
     tags: ["Power Apps", "NFC Journey", "Customer Journey Mapping"],
   },
-  "CLV-Based AI Visit Planning": {
+  "CLV Based AI-Driven Visit Plan and Reporting": {
     category: "Field-Force-Planungsintelligenz",
     summary:
       "Mobile Planungsanwendung für HCP-Außendienstteams mit CLV-basierter KI-Priorisierung, Engagement-Scoring und Echtzeit-Traffic-Insights zur Optimierung von Routen und Tagesplänen.",
     outcome:
-      "Außendienstproduktivität um 25–30 %, High-Value-Account-Coverage um 35 % und Routeneffizienz um 20 % verbessert; Planungszeit um 40 % reduziert und über 80 % Adoption erreicht.",
+      "+30 % Außendienstproduktivität, +35 % High-Value-Account-Coverage, +20 % Routeneffizienz und -40 % Planungszeit.",
     tags: ["Power Apps", "CLV-Priorisierung", "Außendienstoptimierung"],
   },
-  "Tasky AI Workflow": {
+  "Cross-Functional Project and Task Management": {
     category: "Interne Workflow-Orchestrierung",
     summary:
       "Interne Aufgaben- und Workflow-Anwendung für funktionsübergreifende und abteilungsinterne Zusammenarbeit entwickelt, inspiriert von strukturierten Operating Models wie Wrike und Asana.",
     outcome:
-      "Koordinationsaufwand reduziert, Aufgaben-Transparenz erhöht und ein disziplinierteres System für Ownership, Deadlines und teamübergreifende Umsetzung geschaffen.",
+      "Schnellere funktionsübergreifende Umsetzung, standardisierte Workflows sowie weniger Koordination und manueller Aufwand.",
     tags: ["Power Apps", "Workflow-Automation", "Task Management"],
   },
-  "Real-Time Executive Forecast": {
+  "Executive Reporting and Forecast": {
     category: "Executive Analytics & Forecasting",
     summary:
       "Prädiktive Analytics-Dashboards entwickelt, die Sell-out-Signale, Saisonalität und Sales-Trends kombinieren, um Forecasting und Bestandssteuerung zu unterstützen.",
     outcome:
-      "Eine Echtzeit-Managementebene geschaffen, die Nachfrageschwankungen sichtbarer macht und proaktiveres Planen in Inventory und Commercial Operations unterstützt.",
+      "Echtzeit-Commercial-Visibility, schnelleres Forecasting und Entscheiden sowie einheitliches Sales-, Stock- und Performance-Reporting.",
     tags: ["Power BI", "Forecasting", "Executive Dashboard"],
   },
-  "Invoice OCR Automation": {
+  "Auto-Invoice OCR": {
     category: "Finance Process Automation",
     summary:
       "Power-Automate-Workflow aufgebaut, der Rechnungsdaten per OCR aus E-Mail-Anhängen extrahiert und validierte Informationen in einem einzigen operativen Dokument bündelt.",
     outcome:
-      "Wiederkehrende manuelle Arbeit entfernt, operativen Aufwand reduziert und einen verlässlicheren, durchsuchbaren Finance-Intake-Prozess geschaffen.",
+      "-70 % manueller Bearbeitungsaufwand, -50 % Bearbeitungszeit, +25 % Datenqualität und 100 % Nachverfolgbarkeit.",
     tags: ["Power Automate", "OCR", "Back-Office-Automation"],
   },
   "BIODERMA PTA Challenge Web Application": {
@@ -253,16 +253,16 @@ const deProducts: Record<string, Partial<ProductItem>> = {
   },
 };
 const trProducts: Record<string, Partial<ProductItem>> = {
-  "GEO and SEO Optimizer AI": {
+  "GEO & SEO Optimizer": {
     category: "Generative Engine Optimization",
     summary:
       "Markaların cevap motorlarındaki görünürlüğünü analiz eden, prompt düzeyindeki boşlukları belirleyen ve arama niyetini optimizasyon aksiyonlarına dönüştüren AI destekli GEO workflow'u.",
     outcome:
-      "Canlı kimlik doğrulama, kayıtlı analizler, kalıcı veri, fallback mantığı, crawler workflow'ları ve benchmark ekranları içeren production-oriented bir GEO/LLMO ürünü.",
+      "+34pp AI görünürlüğü, +43 marka varlığı eşleşme skoru, +26pp trafik artışı ve +4pp katkı marjı.",
     detailBody: [
       "SITUATION — Markaların LLM cevaplarındaki görünürlüğünü teşhis etmek ve prompt düzeyindeki boşlukları aksiyona çevirmek için yapılandırılmış bir yöntemi yoktu.",
       "TASK & ACTION — Brand entity, crawler simulation, query fan-out, prompt research, landing page, içerik üretimi, content check ve benchmark fonksiyonlarını kapsayan sekiz araçlı, tekrarlanabilir bir GEO/LLMO workspace'i geliştirildi. Stack; OpenAI / OpenRouter, Express, React, Supabase, JWT, rate limiting ve Zod'u birleştirir.",
-      "RESULT — Canlı kimlik doğrulama, kayıtlı analizler, kalıcı veri, fallback mantığı, crawler workflow'ları ve benchmark ekranları içeren production-oriented bir GEO ürünü teslim edildi.",
+      "RESULT — +34pp AI görünürlüğü, +43 marka varlığı eşleşme skoru, +26pp trafik artışı ve +4pp katkı marjı.",
     ],
   },
   "DIGITAL GROWTH ENGINE": {
@@ -377,44 +377,44 @@ const trProducts: Record<string, Partial<ProductItem>> = {
       "Fiyatlama +%11 AOV ve +12pp Buy Box payı sağladı. İlgili hibrit Amazon işletim modeli +%19 net kâr, +8pp marj ve -10pp OPEX sağladı; bu P&L sonuçları fiyatlama sistemi çıktılarından ayrı raporlanmaktadır.",
     tags: ["Fiyatlama zekası", "Perakende analitiği", "Karar desteği"],
   },
-  "Omnichannel e-Prescription Journey": {
-    category: "Bağlantılı hasta yolculuğu platformu",
+  "Omnichannel Funnel Tracking": {
+    category: "Omnichannel Funnel Takibi",
     summary:
-      "Hastalar için dinamik ürün önerileri üreten ve bunları NFC tetiklemeli reçete linkleriyle mobile anında ileten GDPR uyumlu e-reçete yolculuğu geliştirildi.",
+      "Tekrarlayan işleri ve parçalı kararları azaltmak üzere Power Apps / Power Automate destekli omnichannel workflow geliştirildi.",
     outcome:
-      "Prescription-to-purchase dönüşümünü yaklaşık %22'den %34'e çıkardı; doktor kullanımını %40, eczane funnel completion oranını %25 artırdı ve kağıt bazlı OPEX'i %70 azalttı.",
+      "+12pp conversion rate, +%25 omnichannel completion ve basılı sürece kıyasla -%70 OPEX.",
     tags: ["Power Apps", "NFC yolculuğu", "Müşteri yolculuğu haritalama"],
   },
-  "CLV-Based AI Visit Planning": {
+  "CLV Based AI-Driven Visit Plan and Reporting": {
     category: "Saha ekipleri planlama zekası",
     summary:
       "HCP saha ekipleri için CLV tabanlı AI önceliklendirmesi, engagement scoring ve gerçek zamanlı trafik içgörüleri kullanan mobil ziyaret planlama aracı geliştirildi.",
     outcome:
-      "Saha verimliliğini %25–30, yüksek değerli hesap kapsamını %35 ve rota verimliliğini %20 artırdı; planlama süresini %40 azaltırken %80'in üzerinde kullanım oranına ulaştı.",
+      "+%30 saha verimliliği, +%35 yüksek değerli hesap kapsamı, +%20 rota verimliliği ve -%40 planlama süresi.",
     tags: ["Power Apps", "CLV önceliklendirme", "Saha optimizasyonu"],
   },
-  "Tasky AI Workflow": {
+  "Cross-Functional Project and Task Management": {
     category: "İç workflow orkestrasyonu",
     summary:
       "Wrike ve Asana gibi araçlardaki yapılandırılmış operating model yaklaşımından esinlenen, departman içi ve çapraz fonksiyonel iş birliği için iç görev ve workflow uygulaması tasarlandı.",
     outcome:
-      "Koordinasyon sürtünmesini azalttı, görev görünürlüğünü artırdı ve sahiplik, termin ve ekipler arası execution takibi için daha disiplinli bir sistem yarattı.",
+      "Daha hızlı çapraz fonksiyonlu execution, standartlaştırılmış workflow'lar ve daha az koordinasyon ile manuel efor.",
     tags: ["Power Apps", "Workflow otomasyonu", "Görev yönetimi"],
   },
-  "Real-Time Executive Forecast": {
+  "Executive Reporting and Forecast": {
     category: "Yönetici analitiği ve forecasting",
     summary:
       "Sell-out sinyalleri, mevsimsellik desenleri ve satış trendlerini birleştiren predictive analytics dashboard'ları geliştirilerek forecasting ve stok yönetimi desteklendi.",
     outcome:
-      "Talep değişimlerinin görünürlüğünü artıran ve envanter ile ticari operasyonlarda daha proaktif planlamayı destekleyen gerçek zamanlı bir yönetim katmanı oluşturdu.",
+      "Gerçek zamanlı ticari görünürlük, daha hızlı forecasting ve karar alma ile birleşik satış, stok ve performans raporlaması.",
     tags: ["Power BI", "Forecasting", "Yönetici dashboard'u"],
   },
-  "Invoice OCR Automation": {
+  "Auto-Invoice OCR": {
     category: "Finans süreç otomasyonu",
     summary:
       "Gelen e-posta eklerindeki fatura bilgilerini OCR ile çıkaran ve doğrulanan veriyi tek bir operasyon dokümanında toplayan Power Automate workflow'u geliştirildi.",
     outcome:
-      "Tekrarlayan manuel işleri ortadan kaldırdı, operasyonel yükü azalttı ve daha güvenilir, aranabilir bir finans intake süreci oluşturdu.",
+      "-%70 manuel işlem eforu, -%50 işlem süresi, +%25 veri doğruluğu ve %100 izlenebilirlik.",
     tags: ["Power Automate", "OCR", "Back-office otomasyonu"],
   },
   "BIODERMA PTA Challenge Web Application": {

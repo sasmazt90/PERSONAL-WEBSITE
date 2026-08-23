@@ -416,28 +416,31 @@ export const careerTimeline = [
 
 export const aiProducts = [
   {
-    title: "GEO and SEO Optimizer AI",
+    title: "GEO & SEO Optimizer",
     category: "Generative Engine Optimization",
-    image: "/assets/apps/images/geo-optimizer-ai.webp",
-    imageFit: "cover",
+    image: "/assets/apps/portfolio-source/geo-seo-brand-entity.webp",
+    imageFit: "contain",
     url: "https://geo-optimizer-ai.sasmaz.digital/",
     summary:
       "AI-powered GEO and SEO workflow built to analyze brand visibility across answer engines and search, identify prompt-level and content gaps, and turn intent into optimization actions.",
     outcome:
-      "Helps brands improve answer-engine presence with structured audits, entity signals, content recommendations and clear prioritization for AI discovery.",
+      "+34pp AI visibility, +43 brand entity match score, +26pp traffic uplift and +4pp contribution margin.",
     detailBody: [
       "SITUATION — Brands lacked a structured way to diagnose visibility inside LLM answers and translate prompt-level gaps into action.",
       "TASK & ACTION — Built a repeatable GEO/LLMO workspace with eight tools covering brand entities, crawler simulation, query fan-out, prompt research, landing pages, content creation, content checks and benchmarking. The product combines OpenAI / OpenRouter, Express, React, Supabase, JWT, rate limiting and Zod.",
-      "RESULT — Delivered a production-oriented GEO product with live authentication, saved runs, persistence, fallback logic, crawler workflows and benchmark views.",
+      "RESULT — +34pp AI visibility, +43 brand entity match score, +26pp traffic uplift and +4pp contribution margin.",
     ],
-    detailImages: ["/assets/apps/details/geo-seo-optimizer-live.webp"],
+    detailImages: [
+      "/assets/apps/portfolio-source/geo-seo-brand-entity.webp",
+      "/assets/apps/portfolio-source/geo-seo-ai-visibility.webp",
+    ],
     tags: ["GEO", "SEO", "AI search visibility", "Content optimization"],
     confidential: false,
   },
   {
     title: "AdaptifAI",
     category: "Content Localization & Resizing",
-    image: "/assets/apps/images/adaptif-ai.webp",
+    image: "/assets/apps/portfolio-source/adaptifai-workspace.webp",
     imageFit: "contain",
     url: "https://adaptifai.sasmaz.digital/",
     summary:
@@ -447,11 +450,14 @@ export const aiProducts = [
     detailBody: [
       "SITUATION — Manual multilingual asset adaptation was slow, costly and inconsistent across languages, channels and placement formats.",
       "TASK & ACTION — Built a governed workflow for 10 languages and six placement families using Next.js, FastAPI, EasyOCR + TrOCR, GPT-4o, Stable Diffusion and OpenCV. OCR filtering, translation, inpainting, safe-zone previews and editable export protect brand context while scaling production.",
-      "RESULT — In the professional workflow reported in the supplied portfolio and CVs, the system delivered -5% OPEX, +60% CTR and +25% CVR.",
+      "RESULT — Professional workflow: -5% OPEX, +60% CTR and +25% CVR.",
     ],
     detailImages: [
-      "/assets/apps/details/adaptifai-live.webp",
-      "/assets/apps/details/adaptifai-mobile-mockup.webp",
+      "/assets/apps/portfolio-source/adaptifai-workspace.webp",
+      "/assets/apps/portfolio-source/adaptifai-process-1.webp",
+      "/assets/apps/portfolio-source/adaptifai-process-2.webp",
+      "/assets/apps/portfolio-source/adaptifai-process-3.webp",
+      "/assets/apps/portfolio-source/adaptifai-process-4.webp",
     ],
     tags: ["OCR", "Creative localization", "Automation"],
     confidential: false,
@@ -610,72 +616,118 @@ export const aiProducts = [
   {
     title: "Amazon Re-Pricing & Market Pricing Tracking",
     category: "Marketplace Pricing & Unit Economics",
-    image: "/assets/apps/images/powerapps-pricing-validation-intelligence.webp",
-    imageFit: "cover",
+    image:
+      "/assets/apps/portfolio-source/market-tracking-margin-safe-repricing.webp",
+    imageFit: "contain",
     summary:
       "Amazon re-pricing and market-tracking system connecting PIM/MSRP, matched competitor SKUs, retailer prices, stock, seller, fulfillment and promotion signals to margin guardrails.",
     outcome:
       "Pricing delivered +11% AOV and +12pp Buy Box share. The related Amazon hybrid operating model delivered +19% net profit, +8pp margin and -10pp OPEX; these P&L results are reported separately from the pricing-system outcomes.",
+    detailImages: [
+      "/assets/apps/portfolio-source/market-tracking-margin-safe-repricing.webp",
+    ],
     tags: ["Pricing intelligence", "Retail analytics", "Decision support"],
     confidential: true,
   },
   {
-    title: "Omnichannel e-Prescription Journey",
+    title: "Omnichannel Funnel Tracking",
     category: "Connected patient journey platform",
-    image: "/assets/apps/images/powerapps-360-e-prescription-system.webp",
-    imageFit: "cover",
+    image: "/assets/apps/portfolio-source/e-prescription-journey.webp",
+    imageFit: "contain",
     summary:
-      "Built a GDPR-compliant e-prescription journey that generates dynamic product recommendations for patients and delivers them instantly to mobile via NFC-triggered prescription links.",
+      "A Power Apps / Power Automate-enabled e-prescription journey designed to reduce repetitive work and fragmented decisions through a faster, more reliable operating workflow.",
     outcome:
-      "Moved prescription-to-purchase conversion from ~22% to ~34%, increased doctor adoption by 40% and pharmacy funnel completion by 25%, and reduced paper-based OPEX by 70%.",
+      "+12pp conversion rate, +25% omnichannel completion and -70% OPEX compared with the printed process.",
+    detailBody: [
+      "SITUATION — Repetitive work and fragmented decisions created friction across the omnichannel funnel.",
+      "TASK — Reduce friction safely and create a faster, more reliable operating workflow.",
+      "ACTION — Connected the workflow through Power Apps / Power Automate and a measurable omnichannel operating layer.",
+      "RESULT — +12pp conversion rate, +25% omnichannel completion and -70% OPEX compared with the printed process.",
+    ],
+    detailImages: ["/assets/apps/portfolio-source/e-prescription-journey.webp"],
     tags: ["Power Apps", "NFC journey", "Customer journey mapping"],
     confidential: true,
   },
   {
-    title: "CLV-Based AI Visit Planning",
+    title: "CLV Based AI-Driven Visit Plan and Reporting",
     category: "Field force planning intelligence",
-    image: "/assets/apps/images/powerapps-ai-driven-visit-planning.webp",
-    imageFit: "cover",
+    image: "/assets/apps/portfolio-source/clv-ai-visit-plan-reporting.webp",
+    imageFit: "contain",
     summary:
       "Developed a mobile planning tool for HCP field teams using CLV-based AI prioritization, engagement scoring and real-time traffic insight to optimize visit routing and daily calendars.",
     outcome:
-      "Improved field productivity by 25-30%, high-value account coverage by 35% and route efficiency by 20%, while reducing planning time by 40% and achieving over 80% adoption.",
+      "+30% field productivity, +35% high-value account coverage, +20% route efficiency and -40% planning time.",
+    detailBody: [
+      "SITUATION — Repetitive planning work and fragmented decisions limited field execution.",
+      "TASK — Reduce planning friction safely and improve the reliability of daily field workflows.",
+      "ACTION — Combined CLV-based prioritization, engagement signals, reporting and route planning in a mobile operating workflow.",
+      "RESULT — +30% field productivity, +35% high-value account coverage, +20% route efficiency and -40% planning time.",
+    ],
+    detailImages: [
+      "/assets/apps/portfolio-source/clv-ai-visit-plan-reporting.webp",
+    ],
     tags: ["Power Apps", "CLV prioritization", "Field force optimization"],
     confidential: true,
   },
   {
-    title: "Tasky AI Workflow",
+    title: "Cross-Functional Project and Task Management",
     category: "Internal workflow orchestration",
-    image: "/assets/apps/images/powerapps-tasky-ai-web-application.webp",
-    imageFit: "cover",
+    image:
+      "/assets/apps/portfolio-source/cross-functional-project-task-management.webp",
+    imageFit: "contain",
     summary:
       "Designed an internal task and workflow management application for cross-functional and intra-department collaboration, inspired by structured operating models used in tools like Wrike and Asana.",
     outcome:
-      "Reduced coordination friction, improved task visibility and created a more disciplined system for tracking ownership, deadlines and inter-team execution.",
+      "Faster cross-functional execution, standardized workflows, and reduced coordination and manual effort.",
+    detailBody: [
+      "SITUATION — Repetitive work and fragmented decisions slowed cross-functional execution.",
+      "TASK — Reduce coordination friction safely and standardize daily operating workflows.",
+      "ACTION — Built a cross-functional project and task management workflow with Power Apps / Power Automate.",
+      "RESULT — Faster cross-functional execution, standardized workflows, and reduced coordination and manual effort.",
+    ],
+    detailImages: [
+      "/assets/apps/portfolio-source/cross-functional-project-task-management.webp",
+    ],
     tags: ["Power Apps", "Workflow automation", "Task management"],
     confidential: true,
   },
   {
-    title: "Real-Time Executive Forecast",
+    title: "Executive Reporting and Forecast",
     category: "Executive analytics and forecasting",
-    image: "/assets/apps/images/powerapps-executive-dashboard-forecast.webp",
-    imageFit: "cover",
+    image: "/assets/apps/portfolio-source/executive-reporting-forecast.webp",
+    imageFit: "contain",
     summary:
       "Developed predictive analytics dashboards combining sell-out signals, seasonality patterns and sales trends to support executive decision-making in forecasting and stock management.",
     outcome:
-      "Created a real-time management layer that improved visibility into demand shifts and supported more proactive planning across inventory and commercial operations.",
+      "Real-time commercial visibility, faster forecasting and decision-making, and unified sales, stock and performance reporting.",
+    detailBody: [
+      "SITUATION — Fragmented decisions and reporting limited executive visibility.",
+      "TASK — Reduce decision friction and create a faster, more reliable reporting workflow.",
+      "ACTION — Unified sales, stock and performance reporting in an executive forecasting and BI layer.",
+      "RESULT — Real-time commercial visibility, faster forecasting and decision-making, and unified sales, stock and performance reporting.",
+    ],
+    detailImages: [
+      "/assets/apps/portfolio-source/executive-reporting-forecast.webp",
+    ],
     tags: ["Power BI", "Forecasting", "Executive dashboard"],
     confidential: true,
   },
   {
-    title: "Invoice OCR Automation",
+    title: "Auto-Invoice OCR",
     category: "Finance process automation",
-    image: "/assets/apps/images/powerapps-invoice-automation-system.webp",
-    imageFit: "cover",
+    image: "/assets/apps/portfolio-source/auto-invoice-ocr.webp",
+    imageFit: "contain",
     summary:
       "Built a Power Automate workflow that extracts invoice information from inbound email attachments using OCR and consolidates the validated data into a single operational document.",
     outcome:
-      "Removed repetitive manual handling, reduced operational workload and created a more reliable, searchable finance intake process.",
+      "-70% manual processing effort, -50% processing time, +25% data accuracy and 100% traceability.",
+    detailBody: [
+      "SITUATION — Repetitive invoice work and fragmented processing created operational friction.",
+      "TASK — Reduce manual processing safely while improving speed, accuracy and traceability.",
+      "ACTION — Combined Power Automate and OCR in a standardized invoice-processing workflow.",
+      "RESULT — -70% manual processing effort, -50% processing time, +25% data accuracy and 100% traceability.",
+    ],
+    detailImages: ["/assets/apps/portfolio-source/auto-invoice-ocr.webp"],
     tags: ["Power Automate", "OCR", "Back-office automation"],
     confidential: true,
   },

@@ -2187,9 +2187,7 @@ export default function Home() {
                           <img
                             src={image}
                             alt={`${mediaModal.title} — ${index + 1}`}
-                            className={`h-full w-full ${
-                              index === 0 ? "object-cover" : "object-contain"
-                            } object-center`}
+                            className="h-full w-full object-contain object-center"
                           />
                         </div>
                       ))}
