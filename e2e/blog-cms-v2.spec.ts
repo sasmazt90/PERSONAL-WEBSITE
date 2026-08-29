@@ -56,8 +56,12 @@ test('Medium-style editor controls and Preview → Edit persistence', async ({ p
   await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('Click any uploaded image to insert it at the cursor.')).toBeVisible();
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR42mP8z8AARMAgYKSgAAAj9QH9URhZVwAAAABJRU5ErkJggg==', 'base64');
-  await page.locator('input[type="file"]').first().setInputFiles({ name: 'ai-survival-test.png', mimeType: 'image/png', buffer: png });
+  const editorRoot = editor.locator('xpath=ancestor::div[contains(@class,"relative")][1]');
+  await editorRoot.locator('input[type="file"]').setInputFiles({ name: 'ai-survival-test.png', mimeType: 'image/png', buffer: png });
+  await expect(editor.locator('img')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('ai-survival-test.png')).toBeVisible();
+  await page.getByRole('button', { name: 'Media library' }).click();
 
   const sticky = page.getByRole('button', { name: 'H1' }).locator('xpath=ancestor::div[contains(@class,"sticky")][1]');
   expect(await sticky.evaluate(el => getComputedStyle(el).position)).toBe('sticky');
@@ -69,6 +73,7 @@ test('Medium-style editor controls and Preview → Edit persistence', async ({ p
   await page.getByRole('button', { name: 'Edit' }).click();
   await expect(page.locator('.ProseMirror h1').filter({ hasText: title })).toHaveCount(1);
   await expect(page.locator('.ProseMirror [data-cta-wrap] a')).toHaveText('Watch the full video');
+  await expect(page.locator('.ProseMirror img')).toHaveCount(1);
 });
 
 test('CMS API saves, publishes and publicly renders supplied article fixture', async ({ page, request }) => {
