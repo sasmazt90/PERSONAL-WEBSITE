@@ -245,21 +245,18 @@ function BlogEditor({
   }, [draft]);
 
   const updateDraft = (patch: Partial<BlogPost>) => {
-    setDraft((current) => {
-      const next = { ...current, ...patch };
-      currentDraftRef.current = next;
-      return next;
-    });
+    const next = { ...currentDraftRef.current, ...patch };
+    currentDraftRef.current = next;
+    setDraft(next);
     setSaveState("unsaved");
   };
 
   const updateLanguageContent = (value: string) => {
     const sanitizedValue = sanitizeHtml(value);
-    setDraft((current) => {
-      const next = { ...current, content: { ...current.content, [language]: sanitizedValue } };
-      currentDraftRef.current = next;
-      return next;
-    });
+    const current = currentDraftRef.current;
+    const next = { ...current, content: { ...current.content, [language]: sanitizedValue } };
+    currentDraftRef.current = next;
+    setDraft(next);
     setSaveState("unsaved");
   };
 
