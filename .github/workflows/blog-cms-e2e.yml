@@ -47,7 +47,7 @@ jobs:
           cat /tmp/sasmaz-server.log
           exit 1
       - name: Run blog CMS browser tests
-        run: pnpm exec playwright test e2e/blog-cms-v2.spec.ts
+        run: pnpm exec playwright test e2e/blog-cms.spec.ts
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
