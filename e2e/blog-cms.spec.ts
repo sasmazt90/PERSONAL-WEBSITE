@@ -86,7 +86,7 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(editor.locator('blockquote')).toContainText('Five models chose');
 
   await page.getByRole('button', { name: 'Paragraph' }).click();
-  await expect(editor.locator('p')).toContainText('Five models chose');
+  await expect(editor.locator('p').filter({ hasText: 'Five models chose' })).toHaveCount(1);
 
   const dialogAnswers = [videoUrl, 'Watch the full video'];
   page.on('dialog', async (dialog) => {
@@ -139,7 +139,7 @@ test('full article can be saved, published through CMS API and rendered publicly
   expect(published.ok()).toBeTruthy();
 
   await page.goto(`${BASE_URL}/blog/${slug}`);
-  await expect(page.getByRole('heading', { name: articleTitle })).toBeVisible();
+  await expect(page.locator('header').getByRole('heading', { name: articleTitle })).toBeVisible();
   await expect(page.getByText('The Verdict That Wasn’t Asked')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Watch the full video here' })).toHaveAttribute('href', videoUrl);
 });
