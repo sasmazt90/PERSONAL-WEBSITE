@@ -170,11 +170,14 @@ export function RichTextEditor({
     onTransaction: () => setToolbarVersion((value) => value + 1),
   });
 
+  const previousLanguageRef = useRef(language);
   useEffect(() => {
     if (!editor) return;
+    if (previousLanguageRef.current === language) return;
+    previousLanguageRef.current = language;
     const nextContent = content || "<p></p>";
-    if (editor.getHTML() !== nextContent) editor.commands.setContent(nextContent, { emitUpdate: false });
-  }, [content, editor]);
+    editor.commands.setContent(nextContent, { emitUpdate: false });
+  }, [language, editor, content]);
 
   if (!editor) {
     return <div className="min-h-[420px] rounded-2xl border border-white/10 bg-slate-950/60 p-5 text-sm text-slate-400">Loading editor...</div>;
