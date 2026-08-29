@@ -5,7 +5,7 @@ on:
     branches:
       - test/blog-cms-e2e-v2
     paths:
-      - '.github/workflows/apply-blog-cms-race-fix.yml'
+      - '.github/trigger-blog-cms-race-fix'
 
 permissions:
   contents: write
