@@ -237,6 +237,7 @@ function BlogEditor({
   const [settingsOpen, setSettingsOpen] = useState(true);
   const currentDraftRef = useRef(draft);
   const lastSavedFingerprintRef = useRef(fingerprint(post));
+  const saveRequestRef = useRef(0);
   const validation = validateBlogPost(draft);
 
   useEffect(() => {
@@ -244,31 +245,42 @@ function BlogEditor({
   }, [draft]);
 
   const updateDraft = (patch: Partial<BlogPost>) => {
-    setDraft((current) => ({ ...current, ...patch }));
+    const next = { ...currentDraftRef.current, ...patch };
+    currentDraftRef.current = next;
+    setDraft(next);
     setSaveState("unsaved");
   };
 
   const updateLanguageContent = (value: string) => {
-    setDraft((current) => ({ ...current, content: { ...current.content, [language]: sanitizeHtml(value) } }));
+    const sanitizedValue = sanitizeHtml(value);
+    const current = currentDraftRef.current;
+    const next = { ...current, content: { ...current.content, [language]: sanitizedValue } };
+    currentDraftRef.current = next;
+    setDraft(next);
     setSaveState("unsaved");
   };
 
   const persistSnapshot = async (snapshot: BlogPost, surfaceErrors = false) => {
+    const requestId = ++saveRequestRef.current;
     setSaveState("saving");
     try {
       const saved = await saveBlogPost({ ...snapshot, docReadyContent: buildDocReadyContent(snapshot) }, password);
-      lastSavedFingerprintRef.current = fingerprint(saved);
-      onSaved(saved);
-      if (fingerprint(currentDraftRef.current) === fingerprint(snapshot)) {
+      const isLatestRequest = requestId === saveRequestRef.current;
+      const currentMatchesSnapshot = fingerprint(currentDraftRef.current) === fingerprint(snapshot);
+      if (isLatestRequest) {
+        lastSavedFingerprintRef.current = fingerprint(saved);
+        onSaved(saved);
+      }
+      if (isLatestRequest && currentMatchesSnapshot) {
         currentDraftRef.current = saved;
         setDraft(saved);
         setSaveState("saved");
-      } else {
+      } else if (isLatestRequest) {
         setSaveState("unsaved");
       }
       return saved;
     } catch (saveError) {
-      setSaveState("error");
+      if (requestId === saveRequestRef.current) setSaveState("error");
       if (surfaceErrors) setError(saveError instanceof Error ? saveError.message : "Failed to save draft.");
       throw saveError;
     }
@@ -417,18 +429,33 @@ function BlogEditor({
       fileName: file.name,
       alt: { en: stripExtension(file.name), de: stripExtension(file.name), tr: stripExtension(file.name) },
       caption: { en: "", de: "", tr: "" },
-      prompt: `Uploaded editorial visual for ${draft.topic}`,
+      prompt: `Uploaded editorial visual for ${currentDraftRef.current.topic}`,
       placement: "Inline article body",
       stylePreset: "editorial-lifestyle",
       status: "placeholder",
     };
-    const withVisual = { ...currentDraftRef.current, visuals: [...currentDraftRef.current.visuals, visual] };
+    ++saveRequestRef.current;
+    const uploadBase = currentDraftRef.current;
+    const withVisual = { ...uploadBase, visuals: [...uploadBase.visuals, visual] };
+    currentDraftRef.current = withVisual;
+    setDraft(withVisual);
+    setSaveState("saving");
     const persisted = await saveBlogPost(withVisual, password);
     const uploaded = await uploadBlogVisual(persisted.id, visual.id, file, password);
-    currentDraftRef.current = uploaded;
-    setDraft(uploaded);
-    lastSavedFingerprintRef.current = fingerprint(uploaded);
-    onSaved(uploaded);
+    const latest = currentDraftRef.current;
+    const contentChangedDuringUpload = fingerprint({ ...latest, visuals: withVisual.visuals }) !== fingerprint(withVisual);
+    const merged = contentChangedDuringUpload
+      ? { ...latest, visuals: uploaded.visuals }
+      : uploaded;
+    currentDraftRef.current = merged;
+    setDraft(merged);
+    onSaved(merged);
+    if (contentChangedDuringUpload) {
+      setSaveState("unsaved");
+    } else {
+      lastSavedFingerprintRef.current = fingerprint(merged);
+      setSaveState("saved");
+    }
     const result = uploaded.visuals.find((item) => item.id === visual.id);
     if (!result?.url) throw new Error("Image upload completed but no URL was returned.");
     return { url: result.url, alt: result.alt[language] || stripExtension(file.name) };

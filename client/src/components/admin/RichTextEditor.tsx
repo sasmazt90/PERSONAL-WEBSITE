@@ -170,11 +170,14 @@ export function RichTextEditor({
     onTransaction: () => setToolbarVersion((value) => value + 1),
   });
 
+  const previousLanguageRef = useRef(language);
   useEffect(() => {
     if (!editor) return;
+    if (previousLanguageRef.current === language) return;
+    previousLanguageRef.current = language;
     const nextContent = content || "<p></p>";
-    if (editor.getHTML() !== nextContent) editor.commands.setContent(nextContent, { emitUpdate: false });
-  }, [content, editor]);
+    editor.commands.setContent(nextContent, { emitUpdate: false });
+  }, [language, editor, content]);
 
   if (!editor) {
     return <div className="min-h-[420px] rounded-2xl border border-white/10 bg-slate-950/60 p-5 text-sm text-slate-400">Loading editor...</div>;
@@ -195,7 +198,8 @@ export function RichTextEditor({
 
   const insertVisual = (visual: BlogVisual) => {
     if (!visual.url) return;
-    editor.chain().focus().setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();
+    const insertionPoint = editor.state.selection.to;
+    editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();
     setMediaOpen(false);
   };
 
@@ -206,8 +210,9 @@ export function RichTextEditor({
     }
     setUploading(true);
     try {
+      const insertionPoint = editor.state.selection.to;
       const result = await onUploadImage(file);
-      editor.chain().focus().setImage({ src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, "") }).run();
+      editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, "") }).run();
       setMediaOpen(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Image upload failed.");
@@ -226,7 +231,8 @@ export function RichTextEditor({
     const href = window.prompt("CTA destination URL", "https://www.sasmaz.digital")?.trim();
     if (!href) return;
     const label = window.prompt("Button text", "Learn more")?.trim() || "Learn more";
-    editor.chain().focus().insertContent({ type: "ctaButton", attrs: { href, label } }).run();
+    const insertionPoint = editor.state.selection.to;
+    editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "ctaButton", attrs: { href, label } }).run();
   };
 
   const insertFaq = () => {
@@ -323,7 +329,7 @@ export function RichTextEditor({
         </div>
 
         {mediaOpen ? (
-          <div className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">
+          <div data-testid="media-picker" className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-bold text-white">Media library</div>

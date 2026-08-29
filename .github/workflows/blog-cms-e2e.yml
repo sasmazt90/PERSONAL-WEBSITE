@@ -1,7 +1,20 @@
 name: Blog CMS E2E
 
+# Regression suite for editor persistence, CTA/media serialization, and public publishing.
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - test/blog-cms-e2e-v2
+    paths:
+      - 'client/src/components/admin/**'
+      - 'client/src/pages/Admin.tsx'
+      - 'client/src/lib/blogApi.ts'
+      - 'server/**'
+      - 'shared/blog.ts'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - '.github/workflows/blog-cms-e2e.yml'
   pull_request:
     branches:
       - main
