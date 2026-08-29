@@ -40,4 +40,24 @@ patchFile('client/src/components/admin/RichTextEditor.tsx', [
     before: `  useEffect(() => {\n    if (!editor) return;\n    const nextContent = content || "<p></p>";\n    if (editor.getHTML() !== nextContent) editor.commands.setContent(nextContent, { emitUpdate: false });\n  }, [content, editor]);`,
     after: `  const previousLanguageRef = useRef(language);\n  useEffect(() => {\n    if (!editor) return;\n    if (previousLanguageRef.current === language) return;\n    previousLanguageRef.current = language;\n    const nextContent = content || "<p></p>";\n    editor.commands.setContent(nextContent, { emitUpdate: false });\n  }, [language, editor, content]);`,
   },
+  {
+    label: 'safe visual insertion',
+    before: `  const insertVisual = (visual: BlogVisual) => {\n    if (!visual.url) return;\n    editor.chain().focus().setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();\n    setMediaOpen(false);\n  };`,
+    after: `  const insertVisual = (visual: BlogVisual) => {\n    if (!visual.url) return;\n    const insertionPoint = editor.state.selection.to;\n    editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();\n    setMediaOpen(false);\n  };`,
+  },
+  {
+    label: 'safe uploaded image insertion',
+    before: `      const result = await onUploadImage(file);\n      editor.chain().focus().setImage({ src: result.url, alt: result.alt || file.name.replace(/\\.[^.]+$/, "") }).run();\n      setMediaOpen(false);`,
+    after: `      const insertionPoint = editor.state.selection.to;\n      const result = await onUploadImage(file);\n      editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: result.url, alt: result.alt || file.name.replace(/\\.[^.]+$/, "") }).run();\n      setMediaOpen(false);`,
+  },
+  {
+    label: 'safe CTA insertion',
+    before: `    const label = window.prompt("Button text", "Learn more")?.trim() || "Learn more";\n    editor.chain().focus().insertContent({ type: "ctaButton", attrs: { href, label } }).run();`,
+    after: `    const label = window.prompt("Button text", "Learn more")?.trim() || "Learn more";\n    const insertionPoint = editor.state.selection.to;\n    editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "ctaButton", attrs: { href, label } }).run();`,
+  },
+  {
+    label: 'media picker test id',
+    before: `<div className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">`,
+    after: `<div data-testid="media-picker" className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">`,
+  },
 ]);
