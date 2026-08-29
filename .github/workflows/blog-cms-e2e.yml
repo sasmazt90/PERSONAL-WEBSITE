@@ -2,9 +2,9 @@ name: Blog CMS E2E
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
-      - test/blog-cms-e2e
+      - main
     paths:
       - 'client/src/components/admin/**'
       - 'client/src/pages/Admin.tsx'
@@ -40,7 +40,6 @@ jobs:
       - name: Start local production server
         run: |
           pnpm start > /tmp/sasmaz-server.log 2>&1 &
-          echo $! > /tmp/sasmaz-server.pid
           for i in {1..40}; do
             if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then
               exit 0
