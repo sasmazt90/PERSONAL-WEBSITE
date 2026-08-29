@@ -120,7 +120,7 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
 
   await expect(page.getByText('Saved', { exact: true })).toBeVisible({ timeout: 10000 });
   await page.getByRole('button', { name: 'Preview' }).click();
-  await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Preview', exact: true })).toBeVisible();
   await expect(page.getByText(articleTitle, { exact: true }).first()).toBeVisible();
   await page.getByRole('button', { name: 'Edit' }).click();
   await expect(page.locator('.ProseMirror h1')).toContainText(articleTitle);
