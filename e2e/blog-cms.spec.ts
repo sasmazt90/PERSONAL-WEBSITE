@@ -86,7 +86,8 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(editor.locator('blockquote')).toContainText('Five models chose');
 
   await page.getByRole('button', { name: 'Paragraph' }).click();
-  await expect(editor.locator('p').filter({ hasText: 'Five models chose' })).toHaveCount(1);
+  const preservedParagraph = editor.locator('p').filter({ hasText: 'Five models chose' });
+  await expect(preservedParagraph).toHaveCount(1);
 
   const dialogAnswers = [videoUrl, 'Watch the full video'];
   page.on('dialog', async (dialog) => {
@@ -95,12 +96,23 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await page.getByRole('button', { name: 'CTA button' }).click();
   await expect(editor.locator('[data-cta-wrap] a')).toHaveAttribute('href', videoUrl);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
+  await expect(preservedParagraph).toHaveCount(1);
 
   await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('Click any uploaded image to insert it at the cursor.')).toBeVisible();
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR42mP8z8AARMAgYKSgAAAj9QH9URhZVwAAAABJRU5ErkJggg==', 'base64');
   await page.locator('input[type="file"]').first().setInputFiles({ name: 'ai-survival-test.png', mimeType: 'image/png', buffer: png });
-  await expect(page.getByText('ai-survival-test.png')).toBeVisible();
+  await expect(editor.locator('img')).toHaveCount(1, { timeout: 10000 });
+  await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
+  await expect(preservedParagraph).toHaveCount(1);
+
+  await page.getByRole('button', { name: 'Media library' }).click();
+  const mediaPicker = page.getByTestId('media-picker');
+  await expect(mediaPicker).toBeVisible();
+  await expect(mediaPicker.locator('img').first()).toBeVisible();
+  await mediaPicker.locator('img').first().locator('xpath=ancestor::button[1]').click();
+  await expect(editor.locator('img')).toHaveCount(2);
+  await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
 
   const toolbar = page.getByRole('button', { name: 'H1' }).locator('xpath=ancestor::div[contains(@class,"sticky")][1]');
   await expect(toolbar).toBeVisible();
@@ -113,6 +125,7 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await page.getByRole('button', { name: 'Edit' }).click();
   await expect(page.locator('.ProseMirror h1')).toContainText(articleTitle);
   await expect(page.locator('.ProseMirror [data-cta-wrap] a')).toHaveText('Watch the full video');
+  await expect(page.locator('.ProseMirror img')).toHaveCount(2);
 });
 
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {
