@@ -1,0 +1,63 @@
+name: Apply Blog CMS Race Fix
+
+on:
+  push:
+    branches:
+      - test/blog-cms-e2e-v2
+    paths:
+      - '.github/trigger-blog-cms-race-fix'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/blog-cms-e2e-v2
+      - name: Patch synchronous draft ref updates
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('client/src/components/admin/BlogAdmin.tsx')
+          s = p.read_text()
+          old = '''  const updateDraft = (patch: Partial<BlogPost>) => {
+    setDraft((current) => ({ ...current, ...patch }));
+    setSaveState("unsaved");
+  };
+
+  const updateLanguageContent = (value: string) => {
+    setDraft((current) => ({ ...current, content: { ...current.content, [language]: sanitizeHtml(value) } }));
+    setSaveState("unsaved");
+  };'''
+          new = '''  const updateDraft = (patch: Partial<BlogPost>) => {
+    setDraft((current) => {
+      const next = { ...current, ...patch };
+      currentDraftRef.current = next;
+      return next;
+    });
+    setSaveState("unsaved");
+  };
+
+  const updateLanguageContent = (value: string) => {
+    const sanitizedValue = sanitizeHtml(value);
+    setDraft((current) => {
+      const next = { ...current, content: { ...current.content, [language]: sanitizedValue } };
+      currentDraftRef.current = next;
+      return next;
+    });
+    setSaveState("unsaved");
+  };'''
+          if old not in s:
+              raise SystemExit('Expected BlogAdmin draft update block not found')
+          p.write_text(s.replace(old, new))
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add client/src/components/admin/BlogAdmin.tsx
+          git commit -m 'Fix stale draft race during editor updates' || exit 0
+          git push origin HEAD:test/blog-cms-e2e-v2
