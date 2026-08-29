@@ -68,7 +68,7 @@ test('Medium-style editor controls and Preview → Edit persistence', async ({ p
 
   await expect(page.getByText('Saved', { exact: true })).toBeVisible({ timeout: 10000 });
   await page.getByRole('button', { name: 'Preview' }).click();
-  await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Preview', exact: true })).toBeVisible();
   await expect(page.getByText(title, { exact: true }).first()).toBeVisible();
   await page.getByRole('button', { name: 'Edit' }).click();
   await expect(page.locator('.ProseMirror h1').filter({ hasText: title })).toHaveCount(1);
