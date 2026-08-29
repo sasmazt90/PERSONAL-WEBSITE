@@ -1,0 +1,21 @@
+name: Patch Blog Admin
+on:
+  push:
+    branches: [test/blog-cms-e2e-v2]
+    paths: [.github/trigger-blog-admin-patch]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/blog-cms-e2e-v2
+      - run: node scripts/patch-blog-admin-race.mjs
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add client/src/components/admin/BlogAdmin.tsx
+          git diff --cached --quiet || git commit -m "Fix editor draft persistence race"
+          git push origin HEAD:test/blog-cms-e2e-v2
