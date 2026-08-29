@@ -1,0 +1,65 @@
+name: Blog CMS E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/blog-cms-e2e
+    paths:
+      - 'client/src/components/admin/**'
+      - 'client/src/pages/Admin.tsx'
+      - 'client/src/lib/blogApi.ts'
+      - 'server/**'
+      - 'shared/blog.ts'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - '.github/workflows/blog-cms-e2e.yml'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ADMIN_PASSWORD: e2e-test
+      E2E_ADMIN_PASSWORD: e2e-test
+      E2E_BASE_URL: http://127.0.0.1:3000
+      PORT: 3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm add --save-dev --lockfile=false @playwright/test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build
+      - name: Start local production server
+        run: |
+          pnpm start > /tmp/sasmaz-server.log 2>&1 &
+          echo $! > /tmp/sasmaz-server.pid
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/sasmaz-server.log
+          exit 1
+      - name: Run blog CMS browser tests
+        run: pnpm exec playwright test e2e/blog-cms.spec.ts
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-cms-playwright-report
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+      - name: Print server log on failure
+        if: failure()
+        run: cat /tmp/sasmaz-server.log || true
