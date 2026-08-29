@@ -1,5 +1,6 @@
 name: Blog CMS E2E
 
+# Regression suite for editor persistence, CTA/media serialization, and public publishing.
 on:
   workflow_dispatch:
   pull_request:
