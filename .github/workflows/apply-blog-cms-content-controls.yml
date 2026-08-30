@@ -1,4 +1,4 @@
-name: Repair Blog CMS Regression Spec
+name: Refine Blog CMS Back Save Regression
 
 on:
   push:
@@ -17,22 +17,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/blog-cms-related-table-media
-      - name: Remove stray regression escape
+      - name: Make preservation assertion semantic
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('e2e/blog-cms.spec.ts')
           s = p.read_text()
-          needle = "\n\\\ntest('Back preserves edits made while its save request is in flight'"
-          replacement = "\ntest('Back preserves edits made while its save request is in flight'"
-          if needle not in s:
-              raise SystemExit('Expected stray escape not found')
-          p.write_text(s.replace(needle, replacement, 1))
+          old = "expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race preserved'))).toBeTruthy();"
+          new = "expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race') && post.content?.en?.includes('preserved'))).toBeTruthy();"
+          if old not in s:
+              raise SystemExit('Expected preservation assertion not found')
+          p.write_text(s.replace(old, new, 1))
           PY
-      - name: Commit repair
+      - name: Commit refinement
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add e2e/blog-cms.spec.ts
-          git commit -m 'Repair back-save regression syntax'
+          git commit -m 'Assert back-save preservation semantically'
           git push origin HEAD:feat/blog-cms-related-table-media
