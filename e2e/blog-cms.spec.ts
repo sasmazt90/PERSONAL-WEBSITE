@@ -89,11 +89,13 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   const preservedParagraph = editor.locator('p').filter({ hasText: 'Five models chose' });
   await expect(preservedParagraph).toHaveCount(1);
 
-  const dialogAnswers = [videoUrl, 'Watch the full video'];
-  page.on('dialog', async (dialog) => {
-    await dialog.accept(dialogAnswers.shift() || '');
-  });
+  const ctaDialogAnswers = [videoUrl, 'Watch the full video'];
+  const ctaDialogHandler = async (dialog: import('@playwright/test').Dialog) => {
+    await dialog.accept(ctaDialogAnswers.shift() || '');
+  };
+  page.on('dialog', ctaDialogHandler);
   await page.getByRole('button', { name: 'CTA button' }).click();
+  page.off('dialog', ctaDialogHandler);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveAttribute('href', videoUrl);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
   await expect(preservedParagraph).toHaveCount(1);
