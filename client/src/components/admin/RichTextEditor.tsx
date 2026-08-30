@@ -558,6 +558,7 @@ function ToolbarButton({ label, active, disabled, children, onClick }: { label: 
       aria-label={label}
       title={label}
       disabled={disabled}
+      onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
       className={`inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-35 ${active ? "border-blue-400/60 bg-blue-500 text-white" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/12"}`}
     >
