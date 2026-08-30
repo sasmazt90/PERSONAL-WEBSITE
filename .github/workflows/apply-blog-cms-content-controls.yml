@@ -24,6 +24,6 @@ jobs:
       - run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add shared/blog.ts client/src/components/admin/BlogAdmin.tsx client/src/components/admin/RichTextEditor.tsx client/src/pages/BlogArticle.tsx client/src/index.css e2e/blog-cms.spec.ts
-          git commit -m 'Fix advanced table cell color controls'
+          git add shared/blog.ts client/src/components/admin/BlogAdmin.tsx client/src/components/admin/RichTextEditor.tsx client/src/pages/BlogArticle.tsx client/src/index.css e2e/blog-cms.spec.ts e2e/blog-render-parity.spec.ts
+          git commit -m 'Fix editor insertion and rendering parity'
           git push origin HEAD:feat/blog-cms-related-table-media
