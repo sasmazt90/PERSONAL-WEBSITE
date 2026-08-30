@@ -394,6 +394,26 @@ function BlogEditor({
     }
   };
 
+  const handleBack = async () => {
+    const current = currentDraftRef.current;
+    if (fingerprint(current) === lastSavedFingerprintRef.current) {
+      onBack();
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const saved = await persistSnapshot(current, true);
+      currentDraftRef.current = saved;
+      setDraft(saved);
+      onBack();
+    } catch {
+      // Stay in the editor when persistence fails so unsaved content is not discarded.
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handlePublish = async () => {
     if (!window.confirm(`Publish “${draft.topic}”?`)) return;
     setBusy(true);
@@ -471,7 +491,7 @@ function BlogEditor({
       <header className="sticky top-0 z-40 -mx-2 rounded-2xl border border-white/10 bg-[#0b1020]/95 px-4 py-3 shadow-xl shadow-black/10 backdrop-blur-xl">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div className="min-w-0">
-            <button type="button" onClick={onBack} className="text-xs font-semibold text-slate-400 hover:text-white">← Back to Blog Content</button>
+            <button type="button" onClick={() => void handleBack()} disabled={busy} className="text-xs font-semibold text-slate-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50">← Back to Blog Content</button>
             <div className="mt-1 flex min-w-0 items-center gap-3">
               <h2 className="truncate font-['Space_Grotesk'] text-xl font-bold text-white">{draft.topic || "Untitled Article"}</h2>
               <SaveStateBadge state={saveState} />
