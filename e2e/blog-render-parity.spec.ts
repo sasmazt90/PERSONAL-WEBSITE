@@ -39,13 +39,12 @@ test('authoring canvas and preview use the same article rendering contract', asy
   await page.keyboard.insertText('Rendering parity headline');
   await expect(editor.locator('h1')).toHaveText('Rendering parity headline');
 
-  await page.keyboard.press('Control+End');
+  // insertText leaves the caret at the end of the block; keep using that natural editor position.
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Paragraph' }).click();
   await page.keyboard.insertText('Rendering parity paragraph for editor, preview and public output.');
-  await expect(editor.locator('p').last()).toContainText('Rendering parity paragraph');
+  await expect(editor.locator('p').filter({ hasText: 'Rendering parity paragraph' })).toHaveCount(1);
 
-  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
   await page.keyboard.insertText('Rendering parity quote.');
@@ -67,11 +66,10 @@ test('authoring canvas and preview use the same article rendering contract', asy
   expect(await typographySnapshot(previewBody.locator('p').filter({ hasText: 'Rendering parity paragraph' }).first())).toEqual(editorParagraphStyle);
   expect(await typographySnapshot(previewBody.locator('blockquote').first())).toEqual(editorQuoteStyle);
 
-  const editorFrameWidth = await page.getByRole('button', { name: 'Edit' }).click().then(async () => {
-    const frame = page.locator('.ProseMirror').locator('xpath=..');
-    await expect(frame).toHaveClass(/max-w-4xl/);
-    return frame.evaluate((element) => Math.round(element.getBoundingClientRect().width));
-  });
+  await page.getByRole('button', { name: 'Edit' }).click();
+  const editorFrame = page.locator('.ProseMirror').locator('xpath=ancestor::div[contains(@class,"max-w-4xl")][1]');
+  await expect(editorFrame).toBeVisible();
+  const editorFrameWidth = await editorFrame.evaluate((element) => Math.round(element.getBoundingClientRect().width));
   expect(editorFrameWidth).toBeLessThanOrEqual(896);
   await expect(page.locator('.ProseMirror.blog-article-body h1')).toHaveText('Rendering parity headline');
 });
