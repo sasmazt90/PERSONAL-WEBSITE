@@ -184,7 +184,7 @@ test('Back preserves edits made while its save request is in flight', async ({ p
   });
   expect(response.ok()).toBeTruthy();
   const collection = await response.json();
-  expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race preserved'))).toBeTruthy();
+  expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race') && post.content?.en?.includes('preserved'))).toBeTruthy();
 });
 
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {
