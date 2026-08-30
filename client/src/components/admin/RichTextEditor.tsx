@@ -547,7 +547,7 @@ function CellColorPicker({ label, value, icon, onChange }: { label: string; valu
     <label className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.06] px-2.5 text-xs font-semibold text-slate-200 hover:bg-white/12" title={label}>
       {icon || <Highlighter size={14} />}
       <span>{label}</span>
-      <input type="color" aria-label={label} defaultValue={value} onChange={(event) => onChange(event.target.value)} className="h-4 w-4 border-0 bg-transparent p-0" />
+      <input type="color" aria-label={label} defaultValue={value} onInput={(event) => onChange((event.currentTarget as HTMLInputElement).value)} onChange={(event) => onChange(event.target.value)} className="h-4 w-4 border-0 bg-transparent p-0" />
     </label>
   );
 }
