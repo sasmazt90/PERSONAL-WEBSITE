@@ -98,6 +98,23 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
   await expect(preservedParagraph).toHaveCount(1);
 
+  await page.getByRole('button', { name: 'Table' }).click();
+  await expect(page.getByTestId('table-tools')).toBeVisible();
+  await page.getByLabel('Table rows').fill('4');
+  await page.getByLabel('Table columns').fill('5');
+  await page.getByRole('button', { name: 'Insert table' }).click();
+  await expect(editor.locator('table')).toHaveCount(1);
+  await expect(editor.locator('table tr')).toHaveCount(4);
+  await expect(editor.locator('table tr').first().locator('th')).toHaveCount(5);
+  await editor.locator('table td').first().click();
+  await page.getByRole('button', { name: 'Add row below' }).click();
+  await page.getByRole('button', { name: 'Add column after' }).click();
+  await expect(editor.locator('table tr')).toHaveCount(5);
+  await expect(editor.locator('table tr').first().locator('th')).toHaveCount(6);
+  await page.getByLabel('Cell background').fill('#334155');
+  await page.getByLabel('Cell text color').fill('#ffffff');
+  await expect(editor.locator('table td').first()).toHaveAttribute('style', /background-color/);
+
   await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('Click any uploaded image to insert it at the cursor.')).toBeVisible();
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR42mP8z8AARMAgYKSgAAAj9QH9URhZVwAAAABJRU5ErkJggg==', 'base64');
@@ -112,6 +129,11 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(mediaPicker.locator('img').first()).toBeVisible();
   await mediaPicker.locator('img').first().locator('xpath=ancestor::button[1]').click();
   await expect(editor.locator('img')).toHaveCount(2);
+  const linkedImageTarget = 'https://www.sasmaz.digital';
+  await editor.locator('img').last().click();
+  page.once('dialog', async (dialog) => dialog.accept(linkedImageTarget));
+  await page.getByRole('button', { name: 'Image link' }).click();
+  await expect(editor.locator('a[data-linked-image="true"]').last()).toHaveAttribute('href', linkedImageTarget);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
 
   const toolbar = page.getByRole('button', { name: 'H1' }).locator('xpath=ancestor::div[contains(@class,"sticky")][1]');
@@ -126,6 +148,8 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(page.locator('.ProseMirror h1')).toContainText(articleTitle);
   await expect(page.locator('.ProseMirror [data-cta-wrap] a')).toHaveText('Watch the full video');
   await expect(page.locator('.ProseMirror img')).toHaveCount(2);
+  await expect(page.locator('.ProseMirror table')).toHaveCount(1);
+  await expect(page.locator('.ProseMirror a[data-linked-image="true"]')).toHaveCount(1);
 });
 
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {

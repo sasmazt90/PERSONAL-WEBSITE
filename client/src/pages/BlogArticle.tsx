@@ -234,11 +234,11 @@ export default function BlogArticle() {
           <BlogAd placement="before-read-more" />
           <ReadMoreSection post={post} posts={relatedPosts} language={language} />
 
-          {post.internalLinks.length ? (
+          {(Array.isArray(post.relatedSystems) ? post.relatedSystems : post.internalLinks).length ? (
             <section className="mt-10 rounded-[1.75rem] border border-[#dce7f9] bg-white p-6">
               <h2 className="font-['Space_Grotesk'] text-2xl font-bold">Related Systems</h2>
               <div className="mt-4 grid gap-3">
-                {post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).map((link) => (
+                {(Array.isArray(post.relatedSystems) ? post.relatedSystems : post.internalLinks).filter((link) => !link.language || link.language === "all" || link.language === language).map((link) => (
                   <a
                     key={`${link.label}-${link.url}`}
                     href={link.url}
@@ -308,8 +308,11 @@ export default function BlogArticle() {
 function ReadMoreSection({ post, posts, language }: { post: BlogPost; posts: BlogPost[]; language: BlogLanguage }) {
   const [index, setIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
-  const candidates = posts.filter((item) => item.id !== post.id).slice(0, 9);
-  const fallbackLinks = post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).slice(0, 6);
+  const hasManualArticleSelection = Array.isArray(post.relatedArticleIds);
+  const candidates = hasManualArticleSelection
+    ? (post.relatedArticleIds || []).map((id) => posts.find((item) => item.id === id)).filter((item): item is BlogPost => Boolean(item))
+    : posts.filter((item) => item.id !== post.id).slice(0, 9);
+  const fallbackLinks = hasManualArticleSelection ? [] : post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).slice(0, 6);
   const maxIndex = Math.max(0, candidates.length - visibleCards);
 
   useEffect(() => {

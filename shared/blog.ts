@@ -76,6 +76,8 @@ export interface BlogPost {
   faq: Record<BlogLanguage, BlogFaqItem[]>;
   visuals: BlogVisual[];
   internalLinks: BlogInternalLink[];
+  relatedArticleIds?: string[];
+  relatedSystems?: BlogInternalLink[];
   docReadyContent: string;
   validationWarnings?: string[];
 }
@@ -146,6 +148,8 @@ export function createBlankBlogPost(input: BlogGenerationInput): BlogPost {
     },
     visuals: [],
     internalLinks: defaultInternalLinks(),
+    relatedArticleIds: [],
+    relatedSystems: [],
     docReadyContent: "",
   };
 }
@@ -320,6 +324,8 @@ export function normalizeGeneratedBlogPost(raw: unknown, input: BlogGenerationIn
     faq: mergeFaq(value.faq),
     visuals: Array.isArray(value.visuals) ? value.visuals.map((visual, index) => normalizeVisual(visual, index)) : [],
     internalLinks: Array.isArray(value.internalLinks) ? value.internalLinks : defaultInternalLinks(),
+    relatedArticleIds: Array.isArray(value.relatedArticleIds) ? value.relatedArticleIds.filter((id): id is string => typeof id === "string") : [],
+    relatedSystems: Array.isArray(value.relatedSystems) ? value.relatedSystems : [],
     docReadyContent: value.docReadyContent || "",
     categories: Array.isArray(value.categories) ? value.categories : [],
   };
@@ -374,6 +380,8 @@ export function buildDocReadyContent(post: BlogPost) {
     .map((visual) => `- ${visual.fileName}\n  Visual type: ${visual.visualType}\n  Style preset: ${visual.stylePreset}\n  Alt EN: ${visual.alt.en}\n  Caption EN: ${visual.caption.en}\n  Prompt: ${visual.prompt}\n  Placement: ${visual.placement}`)
     .join("\n");
   const links = post.internalLinks.map((link) => `- ${link.label}: ${link.url} (${link.language || "all"}) ${link.context || ""}`).join("\n");
+  const relatedSystems = (post.relatedSystems || []).map((link) => `- ${link.label}: ${link.url}`).join("\n");
+  const relatedArticles = (post.relatedArticleIds || []).map((id) => `- ${id}`).join("\n");
   return `# ${post.topic}
 
 ## SEO Metadata
@@ -395,6 +403,12 @@ ${post.content.tr}
 
 ## Internal Links
 ${links}
+
+## Related Articles
+${relatedArticles || "- None selected"}
+
+## Related Systems
+${relatedSystems || "- None selected"}
 
 ## Codex Implementation Prompt
 Create or update the blog post page for ${post.topic}. Add EN, DE, and TR versions, place images in /images/blog, use SEO metadata, preserve semantic HTML, add relevant internal links, ensure responsive layout, ensure no broken image paths, and match sasmaz.digital typography, spacing, and visual style.`;
@@ -541,12 +555,17 @@ function sanitizeVisualPrompt(prompt: string, visualType: BlogVisualType) {
   return `${prompt.replace(/\b(write|display|include|add)\s+(the\s+)?(article\s+)?(title|subtitle|headline|tags?)\b/gi, "avoid embedded text").trim()} ${guardrail}${dashboardBan}`.replace(/\s+/g, " ");
 }
 
+export const relatedSystemOptions: BlogInternalLink[] = [
+  { label: "SASMAZ Digital", url: "https://www.sasmaz.digital", language: "all", context: "Main portfolio and case-study context" },
+  { label: "AdaptifAI", url: "https://adaptifai.sasmaz.digital", language: "all", context: "AI adaptation and product workflow context" },
+  { label: "BluffRoom", url: "https://bluffroom.sasmaz.digital", language: "all", context: "Interactive AI product and experimentation context" },
+  { label: "Gamebooks AI", url: "https://gamebooks-ai.sasmaz.digital", language: "all", context: "AI storytelling and product experimentation context" },
+  { label: "Recycle Lens", url: "https://recycle-lens.sasmaz.digital", language: "all", context: "Computer vision and sustainability product context" },
+  { label: "WellPaid", url: "https://wellpaid.sasmaz.digital", language: "all", context: "Growth system and product reference" },
+];
+
 function defaultInternalLinks(): BlogInternalLink[] {
-  return [
-    { label: "SASMAZ Digital", url: "https://www.sasmaz.digital", language: "all", context: "Main portfolio and case-study context" },
-    { label: "AdaptifAI", url: "https://adaptifai.sasmaz.digital", language: "all", context: "AI adaptation and product workflow context" },
-    { label: "Wellpaid", url: "https://wellpaid.sasmaz.digital", language: "all", context: "Growth system/tool reference when relevant" },
-  ];
+  return relatedSystemOptions.filter((item) => ["SASMAZ Digital", "AdaptifAI", "WellPaid"].includes(item.label)).map((item) => ({ ...item }));
 }
 
 function buildFallbackArticle(language: BlogLanguage, title: string) {

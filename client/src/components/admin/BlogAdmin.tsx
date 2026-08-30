@@ -18,9 +18,11 @@ import {
   blogCategories,
   blogLanguages,
   buildDocReadyContent,
+  relatedSystemOptions,
   sanitizeHtml,
   uniqueBaseSlug,
   validateBlogPost,
+  type BlogInternalLink,
   type BlogLanguage,
   type BlogPost,
   type BlogVisual,
@@ -107,6 +109,7 @@ export function BlogAdmin({ password }: { password: string }) {
     return (
       <BlogEditor
         post={selectedPost}
+        availablePosts={posts}
         password={password}
         aiStatus={aiStatus}
         onBack={() => setMode({ type: "list" })}
@@ -211,6 +214,7 @@ export function BlogAdmin({ password }: { password: string }) {
 
 function BlogEditor({
   post,
+  availablePosts,
   password,
   aiStatus,
   onBack,
@@ -220,6 +224,7 @@ function BlogEditor({
   onDeleted,
 }: {
   post: BlogPost;
+  availablePosts: BlogPost[];
   password: string;
   aiStatus: AiStatus | null;
   onBack: () => void;
@@ -508,8 +513,9 @@ function BlogEditor({
             />
           </section>
 
-          <MediaManager post={draft} language={language} password={password} onChange={(next) => { currentDraftRef.current = next; setDraft(next); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); }} />
+          <MediaManager post={draft} language={language} password={password} onChange={(next) => { currentDraftRef.current = next; setDraft(next); setSaveState("unsaved"); }} onPersisted={(next) => { currentDraftRef.current = next; setDraft(next); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); setSaveState("saved"); }} />
           <FaqEditor post={draft} language={language} onChange={updateDraft} />
+          <RelatedContentEditor post={draft} availablePosts={availablePosts} onChange={updateDraft} />
           <InternalLinksEditor post={draft} onChange={updateDraft} />
         </main>
 
@@ -551,7 +557,7 @@ function BlogEditor({
   );
 }
 
-function MediaManager({ post, language, password, onChange }: { post: BlogPost; language: BlogLanguage; password: string; onChange: (post: BlogPost) => void }) {
+function MediaManager({ post, language, password, onChange, onPersisted }: { post: BlogPost; language: BlogLanguage; password: string; onChange: (post: BlogPost) => void; onPersisted: (post: BlogPost) => void }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const thumbnail = post.visuals.find((visual) => visual.visualType === "thumbnail");
   const hero = post.visuals.find((visual) => visual.visualType === "hero");
@@ -639,7 +645,7 @@ function MediaManager({ post, language, password, onChange }: { post: BlogPost; 
                 </label>
                 <button type="button" onClick={() => onChange({ ...post, visuals: post.visuals.filter((item) => item.id !== visual.id) })} className="rounded-lg border border-white/10 px-2.5 text-rose-300 hover:bg-rose-400/10"><Trash2 size={13} /></button>
               </div>
-              {visual.prompt?.trim() ? <Button type="button" variant="outline" size="sm" disabled={busyId === visual.id} onClick={async () => { setBusyId(visual.id); try { onChange(await generateBlogVisual(post.id, visual.id, visual.prompt, password)); } finally { setBusyId(null); } }}>Generate image</Button> : null}
+              {visual.prompt?.trim() ? <Button type="button" variant="outline" size="sm" disabled={busyId === visual.id} onClick={async () => { setBusyId(visual.id); try { onPersisted(await generateBlogVisual(post.id, visual.id, visual.prompt, password)); } finally { setBusyId(null); } }}>Generate image</Button> : null}
             </div>
           </div>
         ))}
@@ -658,24 +664,108 @@ function FaqEditor({ post, language, onChange }: { post: BlogPost; language: Blo
   );
 }
 
+function RelatedContentEditor({ post, availablePosts, onChange }: { post: BlogPost; availablePosts: BlogPost[]; onChange: (patch: Partial<BlogPost>) => void }) {
+  const [articleId, setArticleId] = useState("");
+  const [systemUrl, setSystemUrl] = useState("");
+  const selectedArticleIds = post.relatedArticleIds || [];
+  const selectedSystems = post.relatedSystems || [];
+  const articleOptions = availablePosts.filter((item) => item.id !== post.id && !selectedArticleIds.includes(item.id));
+  const systemCatalog = [...relatedSystemOptions, ...post.internalLinks].filter((item, index, items) => item.url && items.findIndex((candidate) => candidate.url === item.url) === index);
+  const availableSystems = systemCatalog.filter((item) => !selectedSystems.some((selected) => selected.url === item.url));
+
+  const addArticle = () => {
+    if (!articleId) return;
+    onChange({ relatedArticleIds: [...selectedArticleIds, articleId] });
+    setArticleId("");
+  };
+
+  const addSystem = () => {
+    const system = systemCatalog.find((item) => item.url === systemUrl);
+    if (!system) return;
+    onChange({ relatedSystems: [...selectedSystems, { ...system }] });
+    setSystemUrl("");
+  };
+
+  const addCustomSystem = () => {
+    const label = window.prompt("Related system label")?.trim();
+    if (!label) return;
+    const url = window.prompt("Related system URL", "https://")?.trim();
+    if (!url) return;
+    const custom: BlogInternalLink = { label, url, language: "all", context: "Manually selected related system" };
+    onChange({ relatedSystems: [...selectedSystems, custom] });
+  };
+
+  return (
+    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5" data-testid="related-content-editor">
+      <div>
+        <h3 className="font-['Space_Grotesk'] text-lg font-bold">Related Content</h3>
+        <p className="mt-1 text-xs text-slate-500">Manually control the Related Articles and Related Systems blocks shown below the article.</p>
+      </div>
+
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+          <div className="text-sm font-bold text-white">Related Articles</div>
+          <div className="mt-3 flex gap-2">
+            <select aria-label="Related article" value={articleId} onChange={(event) => setArticleId(event.target.value)} className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-slate-200">
+              <option value="">Select an existing article…</option>
+              {articleOptions.map((item) => <option key={item.id} value={item.id}>{item.seo.en.title || item.topic} · {item.status}</option>)}
+            </select>
+            <Button type="button" variant="outline" size="sm" onClick={addArticle} disabled={!articleId}><Plus size={14} />Add</Button>
+          </div>
+          <div className="mt-3 grid gap-2">
+            {selectedArticleIds.map((id) => {
+              const item = availablePosts.find((candidate) => candidate.id === id);
+              return <div key={id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 px-3 py-2 text-xs"><span className="min-w-0 truncate text-slate-200">{item?.seo.en.title || item?.topic || id}</span><button type="button" onClick={() => onChange({ relatedArticleIds: selectedArticleIds.filter((itemId) => itemId !== id) })} className="shrink-0 font-bold text-rose-300">Remove</button></div>;
+            })}
+            {!selectedArticleIds.length ? <p className="text-xs text-slate-500">No related articles selected.</p> : null}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+          <div className="flex items-center justify-between gap-3"><div className="text-sm font-bold text-white">Related Systems</div><button type="button" onClick={addCustomSystem} className="text-xs font-bold text-blue-300 hover:text-blue-200">+ Custom</button></div>
+          <div className="mt-3 flex gap-2">
+            <select aria-label="Related system" value={systemUrl} onChange={(event) => setSystemUrl(event.target.value)} className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-xs text-slate-200">
+              <option value="">Select an existing system…</option>
+              {availableSystems.map((item) => <option key={item.url} value={item.url}>{item.label}</option>)}
+            </select>
+            <Button type="button" variant="outline" size="sm" onClick={addSystem} disabled={!systemUrl}><Plus size={14} />Add</Button>
+          </div>
+          <div className="mt-3 grid gap-2">
+            {selectedSystems.map((item) => <div key={item.url} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 px-3 py-2 text-xs"><span className="min-w-0 truncate"><span className="font-bold text-slate-200">{item.label}</span><span className="ml-2 text-slate-500">{item.url}</span></span><button type="button" onClick={() => onChange({ relatedSystems: selectedSystems.filter((system) => system.url !== item.url) })} className="shrink-0 font-bold text-rose-300">Remove</button></div>)}
+            {!selectedSystems.length ? <p className="text-xs text-slate-500">No related systems selected.</p> : null}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function InternalLinksEditor({ post, onChange }: { post: BlogPost; onChange: (patch: Partial<BlogPost>) => void }) {
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-      <div className="flex items-center justify-between gap-3"><div><h3 className="font-['Space_Grotesk'] text-lg font-bold">Internal Links</h3><p className="mt-1 text-xs text-slate-500">These are available from the editor’s Internal Link action.</p></div><Button type="button" variant="outline" size="sm" onClick={() => onChange({ internalLinks: [...post.internalLinks, { label: "", url: "", language: "all", context: "" }] })}><Plus size={14} />Add Link</Button></div>
+      <div className="flex items-center justify-between gap-3"><div><h3 className="font-['Space_Grotesk'] text-lg font-bold">Inline / Internal Links</h3><p className="mt-1 text-xs text-slate-500">Link library for inserting links inside article copy. Related Systems are managed separately above.</p></div><Button type="button" variant="outline" size="sm" onClick={() => onChange({ internalLinks: [...post.internalLinks, { label: "", url: "", language: "all", context: "" }] })}><Plus size={14} />Add Link</Button></div>
       <div className="mt-4 grid gap-3">{post.internalLinks.map((link, index) => <div key={`${index}-${link.url}`} className="grid gap-2 rounded-xl border border-white/10 bg-slate-950/35 p-3 sm:grid-cols-2"><Input value={link.label} onChange={(event) => onChange({ internalLinks: updateArray(post.internalLinks, index, { label: event.target.value }) })} className="bg-slate-950/70" placeholder="Label" /><Input value={link.url} onChange={(event) => onChange({ internalLinks: updateArray(post.internalLinks, index, { url: event.target.value }) })} className="bg-slate-950/70" placeholder="URL" /><Input value={link.context || ""} onChange={(event) => onChange({ internalLinks: updateArray(post.internalLinks, index, { context: event.target.value }) })} className="bg-slate-950/70 sm:col-span-2" placeholder="Context" /><button type="button" onClick={() => onChange({ internalLinks: post.internalLinks.filter((_, i) => i !== index) })} className="justify-self-end text-xs font-bold text-rose-300 sm:col-span-2">Remove</button></div>)}</div>
     </section>
   );
 }
 
 function PublishReadiness({ post, validation }: { post: BlogPost; validation: ReturnType<typeof validateBlogPost> }) {
+  const blockers = Array.from(new Set(validation.errors));
+  const recommendations = Array.from(new Set(validation.warnings));
+  const languagesReady = blogLanguages.filter((item) => post.content[item]?.trim() && post.seo[item]?.title?.trim() && post.seo[item]?.metaDescription?.trim()).length;
+  const mediaReady = Boolean(post.visuals.find((visual) => visual.visualType === "hero")?.url) && Boolean(getThumbnail(post)?.url);
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-      <h3 className="font-['Space_Grotesk'] text-lg font-bold">Publish Readiness</h3>
-      <div className="mt-4 grid gap-2 text-xs">
-        {readinessItems(post).map((item) => <div key={item.label} className={`flex items-center gap-2 ${item.ok ? "text-emerald-300" : "text-amber-300"}`}>{item.ok ? <Check size={13} /> : <span className="w-[13px] text-center">!</span>}{item.label}</div>)}
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-['Space_Grotesk'] text-lg font-bold">Publish Readiness</h3>
+        <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${blockers.length ? "bg-rose-400/15 text-rose-200" : "bg-emerald-400/15 text-emerald-200"}`}>{blockers.length ? `${blockers.length} required` : "Ready"}</span>
       </div>
-      {validation.errors.length ? <div className="mt-4 rounded-xl border border-rose-400/20 bg-rose-400/10 p-3 text-xs text-rose-200">{validation.errors.join(" ")}</div> : null}
-      {validation.warnings.length ? <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 p-3 text-xs text-amber-100">{validation.warnings.slice(0, 6).map((warning) => <div key={warning}>{warning}</div>)}</div> : null}
+      <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-xl border border-white/10 bg-slate-950/35 p-3"><span className="text-slate-500">Languages</span><div className={`mt-1 font-bold ${languagesReady === 3 ? "text-emerald-300" : "text-amber-300"}`}>{languagesReady}/3 complete</div></div>
+        <div className="rounded-xl border border-white/10 bg-slate-950/35 p-3"><span className="text-slate-500">Media</span><div className={`mt-1 font-bold ${mediaReady ? "text-emerald-300" : "text-amber-300"}`}>{mediaReady ? "Hero + thumbnail" : "Needs review"}</div></div>
+      </div>
+      {blockers.length ? <div className="mt-3 rounded-xl border border-rose-400/20 bg-rose-400/10 p-3"><div className="mb-2 text-[11px] font-bold uppercase tracking-wide text-rose-200">Required before publishing</div><div className="grid gap-1.5 text-xs text-rose-100">{blockers.map((item) => <div key={item}>• {item}</div>)}</div></div> : <div className="mt-3 flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/10 p-3 text-xs font-semibold text-emerald-200"><Check size={14} />No blocking validation errors.</div>}
+      {recommendations.length ? <details className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/[0.08] p-3"><summary className="cursor-pointer text-xs font-bold text-amber-100">{recommendations.length} recommendation{recommendations.length === 1 ? "" : "s"}</summary><div className="mt-2 grid gap-1.5 text-xs text-amber-100/90">{recommendations.map((item) => <div key={item}>• {item}</div>)}</div></details> : null}
     </section>
   );
 }
@@ -759,6 +849,8 @@ function fingerprint(post: BlogPost) {
     faq: post.faq,
     visuals: post.visuals,
     internalLinks: post.internalLinks,
+    relatedArticleIds: post.relatedArticleIds || [],
+    relatedSystems: post.relatedSystems || [],
   });
 }
 
@@ -779,18 +871,6 @@ function createVisual(post: BlogPost, visualType: BlogVisual["visualType"], file
 
 function stripExtension(fileName: string) {
   return fileName.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
-}
-
-function readinessItems(post: BlogPost) {
-  return [
-    ...blogLanguages.map((language) => ({ label: `${languageLabels[language]} content`, ok: Boolean(post.content[language]?.trim()) })),
-    { label: "SEO titles & descriptions", ok: blogLanguages.every((language) => post.seo[language]?.title && post.seo[language]?.metaDescription) },
-    { label: "Language slugs", ok: blogLanguages.every((language) => post.slug[language]) && Boolean(post.slug.canonical) },
-    { label: "H1 structure", ok: blogLanguages.every((language) => !post.content[language]?.trim() || /<h1[\s>]/i.test(post.content[language])) },
-    { label: "Hero image", ok: Boolean(post.visuals.find((visual) => visual.visualType === "hero")?.url) },
-    { label: "Listing thumbnail", ok: Boolean(getThumbnail(post)?.url) },
-    { label: "3+ visuals", ok: post.visuals.length >= 3 },
-  ];
 }
 
 function updateArray<T>(items: T[], index: number, patch: Partial<T>) {
