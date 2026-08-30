@@ -1,6 +1,6 @@
 name: Blog CMS E2E
 
-# Regression suite for editor persistence, CTA/media serialization, and public publishing.
+# Regression suite for editor persistence, CTA/media serialization, rendering parity, and public publishing.
 on:
   workflow_dispatch:
   push:
@@ -9,6 +9,8 @@ on:
     paths:
       - 'client/src/components/admin/**'
       - 'client/src/pages/Admin.tsx'
+      - 'client/src/pages/BlogArticle.tsx'
+      - 'client/src/index.css'
       - 'client/src/lib/blogApi.ts'
       - 'server/**'
       - 'shared/blog.ts'
@@ -21,6 +23,8 @@ on:
     paths:
       - 'client/src/components/admin/**'
       - 'client/src/pages/Admin.tsx'
+      - 'client/src/pages/BlogArticle.tsx'
+      - 'client/src/index.css'
       - 'client/src/lib/blogApi.ts'
       - 'server/**'
       - 'shared/blog.ts'
@@ -60,7 +64,7 @@ jobs:
           cat /tmp/sasmaz-server.log
           exit 1
       - name: Run blog CMS browser tests
-        run: pnpm exec playwright test e2e/blog-cms.spec.ts
+        run: pnpm exec playwright test e2e/blog-cms.spec.ts e2e/blog-render-parity.spec.ts
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
