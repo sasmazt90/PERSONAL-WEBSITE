@@ -1,0 +1,29 @@
+name: Apply Blog CMS Content Controls
+
+on:
+  push:
+    branches:
+      - feat/blog-cms-related-table-media
+    paths:
+      - '.github/trigger-blog-cms-content-controls'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/blog-cms-related-table-media
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-blog-cms-content-controls.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add shared/blog.ts client/src/components/admin/BlogAdmin.tsx client/src/pages/BlogArticle.tsx client/src/index.css e2e/blog-cms.spec.ts
+          git commit -m 'Add related content, image links and advanced tables'
+          git push origin HEAD:feat/blog-cms-related-table-media
