@@ -153,7 +153,6 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(page.locator('.ProseMirror a[data-linked-image="true"]')).toHaveCount(1);
 });
 
-\
 test('Back preserves edits made while its save request is in flight', async ({ page, request }) => {
   await loginAndOpenBlog(page);
   await page.getByRole('button', { name: 'Add New Content' }).click();
