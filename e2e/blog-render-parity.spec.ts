@@ -20,6 +20,8 @@ async function typographySnapshot(root: import('@playwright/test').Locator) {
       lineHeight: style.lineHeight,
       color: style.color,
       fontWeight: style.fontWeight,
+      marginTop: style.marginTop,
+      marginBottom: style.marginBottom,
     };
   });
 }
@@ -33,23 +35,27 @@ test('authoring canvas and preview use the same article rendering contract', asy
   await expect(editor).toHaveClass(/blog-article-body/);
 
   await editor.click();
-  await page.keyboard.insertText('Rendering parity headline');
-  await page.keyboard.press('Shift+Home');
   await page.getByRole('button', { name: 'H1' }).click();
+  await page.keyboard.insertText('Rendering parity headline');
+  await expect(editor.locator('h1')).toHaveText('Rendering parity headline');
 
-  await editor.press('End');
-  await editor.press('Enter');
+  await editor.locator('h1').click();
+  await page.keyboard.press('End');
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'Paragraph' }).click();
   await page.keyboard.insertText('Rendering parity paragraph for editor, preview and public output.');
+  await expect(editor.locator('p').last()).toContainText('Rendering parity paragraph');
 
-  await editor.press('End');
-  await editor.press('Enter');
-  await page.keyboard.insertText('Rendering parity quote.');
-  await page.keyboard.press('Shift+Home');
+  await editor.locator('p').last().click();
+  await page.keyboard.press('End');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
+  await page.keyboard.insertText('Rendering parity quote.');
+  await expect(editor.locator('blockquote')).toContainText('Rendering parity quote.');
 
-  const editorHeadingStyle = await typographySnapshot(editor.locator('h1'));
-  const editorParagraphStyle = await typographySnapshot(editor.locator('p').first());
-  const editorQuoteStyle = await typographySnapshot(editor.locator('blockquote'));
+  const editorHeadingStyle = await typographySnapshot(editor.locator('h1').first());
+  const editorParagraphStyle = await typographySnapshot(editor.locator('p').filter({ hasText: 'Rendering parity paragraph' }).first());
+  const editorQuoteStyle = await typographySnapshot(editor.locator('blockquote').first());
 
   await page.getByRole('button', { name: 'Preview' }).click();
   await expect(page.getByRole('heading', { name: 'Preview', exact: true })).toBeVisible();
@@ -59,15 +65,20 @@ test('authoring canvas and preview use the same article rendering contract', asy
   await expect(previewBody).toContainText('Rendering parity paragraph');
   await expect(previewBody.locator('blockquote')).toContainText('Rendering parity quote');
 
-  expect(await typographySnapshot(previewBody.locator('h1'))).toEqual(editorHeadingStyle);
-  expect(await typographySnapshot(previewBody.locator('p').first())).toEqual(editorParagraphStyle);
-  expect(await typographySnapshot(previewBody.locator('blockquote'))).toEqual(editorQuoteStyle);
+  expect(await typographySnapshot(previewBody.locator('h1').first())).toEqual(editorHeadingStyle);
+  expect(await typographySnapshot(previewBody.locator('p').filter({ hasText: 'Rendering parity paragraph' }).first())).toEqual(editorParagraphStyle);
+  expect(await typographySnapshot(previewBody.locator('blockquote').first())).toEqual(editorQuoteStyle);
 
-  await page.getByRole('button', { name: 'Edit' }).click();
+  const editorFrameWidth = await page.getByRole('button', { name: 'Edit' }).click().then(async () => {
+    const frame = page.locator('.ProseMirror').locator('xpath=..');
+    await expect(frame).toHaveClass(/max-w-4xl/);
+    return frame.evaluate((element) => Math.round(element.getBoundingClientRect().width));
+  });
+  expect(editorFrameWidth).toBeLessThanOrEqual(896);
   await expect(page.locator('.ProseMirror.blog-article-body h1')).toHaveText('Rendering parity headline');
 });
 
-test('published article body uses the same rendering class as editor and preview', async ({ page, request }) => {
+test('published article uses the shared rendering surface and preserves semantic content', async ({ page, request }) => {
   const headers = { 'x-admin-password': ADMIN_PASSWORD, 'Content-Type': 'application/json' };
   const manual = await request.post(`${BASE_URL}/api/admin/blog-posts/manual`, {
     headers,
@@ -76,7 +87,7 @@ test('published article body uses the same rendering class as editor and preview
   expect(manual.ok()).toBeTruthy();
   const post = await manual.json();
   const slug = `rendering-contract-${Date.now()}`;
-  const content = '<h1>Rendering Contract Fixture</h1><p>Shared rendering contract body.</p><blockquote><p>Shared quote treatment.</p></blockquote>';
+  const content = '<h1>Rendering Contract Fixture</h1><p>Shared rendering contract body.</p><blockquote><p>Shared quote treatment.</p></blockquote><table><tbody><tr><td style="background-color:#eef4ff;color:#0f172a">Shared table cell</td></tr></tbody></table>';
   post.slug = { canonical: slug, en: slug, de: `${slug}-de`, tr: `${slug}-tr` };
   post.content = { en: content, de: content, tr: content };
   post.seo = {
@@ -94,5 +105,8 @@ test('published article body uses the same rendering class as editor and preview
   const publicBody = page.locator('.blog-article-body');
   await expect(publicBody).toBeVisible();
   await expect(publicBody.locator('h1')).toHaveText('Rendering Contract Fixture');
+  await expect(publicBody.locator('p').first()).toHaveText('Shared rendering contract body.');
   await expect(publicBody.locator('blockquote')).toContainText('Shared quote treatment.');
+  await expect(publicBody.locator('table td')).toHaveText('Shared table cell');
+  await expect(publicBody.locator('table td')).toHaveAttribute('style', /background-color/);
 });
