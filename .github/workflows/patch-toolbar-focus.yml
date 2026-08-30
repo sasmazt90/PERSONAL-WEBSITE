@@ -23,16 +23,11 @@ jobs:
           from pathlib import Path
           p = Path('client/src/components/admin/RichTextEditor.tsx')
           s = p.read_text()
-          old = '''      disabled={disabled}
-      onClick={onClick}
-      className={`inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-35 ${active ? "border-blue-400/60 bg-blue-500 text-white" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/12"}`}'''
-          new = '''      disabled={disabled}
-      onMouseDown={(event) => event.preventDefault()}
-      onClick={onClick}
-      className={`inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-35 ${active ? "border-blue-400/60 bg-blue-500 text-white" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/12"}`}'''
-          if old not in s:
+          needle = '      disabled={disabled}\n      onClick={onClick}\n'
+          replacement = '      disabled={disabled}\n      onMouseDown={(event) => event.preventDefault()}\n      onClick={onClick}\n'
+          if needle not in s:
               raise SystemExit('Toolbar button anchor not found')
-          p.write_text(s.replace(old, new, 1))
+          p.write_text(s.replace(needle, replacement, 1))
           PY
       - name: Commit toolbar focus fix
         run: |
