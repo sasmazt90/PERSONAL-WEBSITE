@@ -376,6 +376,20 @@ export function RichTextEditor({
     setTableOpen(true);
   };
 
+  const setCurrentCellAttribute = (attribute: "backgroundColor" | "textColor", value: string) => {
+    const { state, view } = editor;
+    const { $from } = state.selection;
+    for (let depth = $from.depth; depth > 0; depth -= 1) {
+      const node = $from.node(depth);
+      if (node.type.name === "tableCell" || node.type.name === "tableHeader") {
+        const position = $from.before(depth);
+        view.dispatch(state.tr.setNodeMarkup(position, undefined, { ...node.attrs, [attribute]: value }));
+        view.focus();
+        return;
+      }
+    }
+  };
+
   return (
     <div className="relative overflow-visible rounded-3xl border border-white/10 bg-slate-950/55 shadow-2xl shadow-black/10">
       <input
@@ -463,8 +477,8 @@ export function RichTextEditor({
                   <ToolbarButton label="Delete column" onClick={() => editor.chain().focus().deleteColumn().run()}><Trash2 size={14} /> Column</ToolbarButton>
                   <ToolbarDivider />
                   <ToolbarButton label="Toggle header row" onClick={() => editor.chain().focus().toggleHeaderRow().run()}>Header</ToolbarButton>
-                  <CellColorPicker label="Cell background" value="#172033" onChange={(value) => editor.chain().focus().setCellAttribute("backgroundColor", value).run()} />
-                  <CellColorPicker label="Cell text color" value="#f8fafc" onChange={(value) => editor.chain().focus().setCellAttribute("textColor", value).run()} icon={<Type size={14} />} />
+                  <CellColorPicker label="Cell background" value="#172033" onChange={(value) => setCurrentCellAttribute("backgroundColor", value)} />
+                  <CellColorPicker label="Cell text color" value="#f8fafc" onChange={(value) => setCurrentCellAttribute("textColor", value)} icon={<Type size={14} />} />
                   <ToolbarButton label="Delete table" onClick={() => { editor.chain().focus().deleteTable().run(); setTableOpen(false); }}><Trash2 size={14} /> Table</ToolbarButton>
                 </div>
               </div>
