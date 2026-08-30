@@ -21,98 +21,86 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+          import textwrap
 
-          admin = Path('client/src/components/admin/BlogAdmin.tsx')
+          admin = Path("client/src/components/admin/BlogAdmin.tsx")
           source = admin.read_text()
-          old = '''  const handleBack = async () => {
-    const current = currentDraftRef.current;
-    if (fingerprint(current) === lastSavedFingerprintRef.current) {
-      onBack();
-      return;
-    }
-    setBusy(true);
-    setError(null);
-    try {
-      const saved = await persistSnapshot(current, true);
-      currentDraftRef.current = saved;
-      setDraft(saved);
-      onBack();
-    } catch {
-      // Stay in the editor when persistence fails so unsaved content is not discarded.
-    } finally {
-      setBusy(false);
-    }
-  };'''
-          new = '''  const handleBack = async () => {
-    setBusy(true);
-    setError(null);
-    try {
-      for (let attempt = 0; attempt < 3; attempt += 1) {
-        const snapshot = currentDraftRef.current;
-        if (fingerprint(snapshot) === lastSavedFingerprintRef.current) {
-          onBack();
-          return;
-        }
-        await persistSnapshot(snapshot, true);
-        if (fingerprint(currentDraftRef.current) === fingerprint(snapshot)) {
-          onBack();
-          return;
-        }
-      }
-      setMessage("New edits were detected while saving. Save again before leaving.");
-    } catch {
-      // Stay in the editor when persistence fails so unsaved content is not discarded.
-    } finally {
-      setBusy(false);
-    }
-  };'''
-          if old not in source:
-              raise SystemExit('Expected handleBack block not found')
-          admin.write_text(source.replace(old, new))
+          pattern = re.compile(r"  const handleBack = async \(\) => \{\n.*?\n  \};\n\n  const handlePublish", re.S)
+          replacement = textwrap.dedent("""\
+            const handleBack = async () => {
+              setBusy(true);
+              setError(null);
+              try {
+                for (let attempt = 0; attempt < 3; attempt += 1) {
+                  const snapshot = currentDraftRef.current;
+                  if (fingerprint(snapshot) === lastSavedFingerprintRef.current) {
+                    onBack();
+                    return;
+                  }
+                  await persistSnapshot(snapshot, true);
+                  if (fingerprint(currentDraftRef.current) === fingerprint(snapshot)) {
+                    onBack();
+                    return;
+                  }
+                }
+                setMessage("New edits were detected while saving. Save again before leaving.");
+              } catch {
+                // Stay in the editor when persistence fails so unsaved content is not discarded.
+              } finally {
+                setBusy(false);
+              }
+            };
 
-          spec = Path('e2e/blog-cms.spec.ts')
+            const handlePublish""")
+          next_source, count = pattern.subn(replacement, source, count=1)
+          if count != 1:
+              raise SystemExit(f"Expected one handleBack block, replaced {count}")
+          admin.write_text(next_source)
+
+          spec = Path("e2e/blog-cms.spec.ts")
           tests = spec.read_text()
           marker = "test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {"
-          regression = r'''test('Back preserves edits made while its save request is in flight', async ({ page, request }) => {
-  await loginAndOpenBlog(page);
-  await page.getByRole('button', { name: 'Add New Content' }).click();
+          regression = textwrap.dedent(r"""\
+          test('Back preserves edits made while its save request is in flight', async ({ page, request }) => {
+            await loginAndOpenBlog(page);
+            await page.getByRole('button', { name: 'Add New Content' }).click();
 
-  const editor = page.locator('.ProseMirror');
-  await editor.click();
-  await page.getByRole('button', { name: 'H1' }).click();
-  await page.keyboard.insertText('Back save race');
+            const editor = page.locator('.ProseMirror');
+            await editor.click();
+            await page.getByRole('button', { name: 'H1' }).click();
+            await page.keyboard.insertText('Back save race');
 
-  let delayed = false;
-  await page.route('**/api/admin/blog-posts/**', async (route) => {
-    if (!delayed && route.request().method() === 'PUT') {
-      delayed = true;
-      await new Promise((resolve) => setTimeout(resolve, 700));
-    }
-    await route.continue();
-  });
+            let delayed = false;
+            await page.route('**/api/admin/blog-posts/**', async (route) => {
+              if (!delayed && route.request().method() === 'PUT') {
+                delayed = true;
+                await new Promise((resolve) => setTimeout(resolve, 700));
+              }
+              await route.continue();
+            });
 
-  await page.getByRole('button', { name: /Back to Blog Content/i }).click();
-  await page.waitForTimeout(100);
-  await editor.click();
-  await page.keyboard.press('End');
-  await page.keyboard.insertText(' preserved');
+            await page.getByRole('button', { name: /Back to Blog Content/i }).click();
+            await page.waitForTimeout(100);
+            await editor.click();
+            await page.keyboard.press('End');
+            await page.keyboard.insertText(' preserved');
 
-  await expect(page.getByRole('button', { name: 'Add New Content' })).toBeVisible({ timeout: 10000 });
+            await expect(page.getByRole('button', { name: 'Add New Content' })).toBeVisible({ timeout: 10000 });
 
-  const response = await request.get(`${BASE_URL}/api/admin/blog-posts`, {
-    headers: { 'x-admin-password': ADMIN_PASSWORD },
-  });
-  expect(response.ok()).toBeTruthy();
-  const collection = await response.json();
-  expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race preserved'))).toBeTruthy();
-});
+            const response = await request.get(`${BASE_URL}/api/admin/blog-posts`, {
+              headers: { 'x-admin-password': ADMIN_PASSWORD },
+            });
+            expect(response.ok()).toBeTruthy();
+            const collection = await response.json();
+            expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race preserved'))).toBeTruthy();
+          });
 
-'''
+          """)
           if regression.strip() not in tests:
               if marker not in tests:
-                  raise SystemExit('Expected E2E insertion marker not found')
-              tests = tests.replace(marker, regression + marker)
-              spec.write_text(tests)
+                  raise SystemExit("Expected E2E insertion marker not found")
+              spec.write_text(tests.replace(marker, regression + marker))
           PY
       - name: Commit fix
         run: |
