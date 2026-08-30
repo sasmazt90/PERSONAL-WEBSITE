@@ -64,25 +64,24 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   const editor = page.locator('.ProseMirror');
   await expect(editor).toBeVisible();
   await editor.click();
-  await page.keyboard.insertText(articleTitle);
-  await page.keyboard.press('Shift+Home');
   await page.getByRole('button', { name: 'H1' }).click();
-  await expect(editor.locator('h1')).toContainText(articleTitle);
+  await page.keyboard.insertText(articleTitle);
+  await expect(editor.locator('h1')).toHaveText(articleTitle);
 
-  await editor.press('End');
-  await editor.press('Enter');
-  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');
-  await page.keyboard.press('Shift+Home');
+  await editor.locator('h1').click();
+  await page.keyboard.press('End');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'H2' }).click();
+  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');
   await expect(editor.locator('h2')).toContainText('The Grok Votes');
   await expect(page.getByRole('button', { name: 'H2' })).toHaveClass(/bg-blue-500/);
   await expect(page.getByRole('button', { name: 'H1' })).not.toHaveClass(/bg-blue-500/);
 
-  await editor.press('End');
-  await editor.press('Enter');
-  await page.keyboard.insertText('Five models chose the answer that kept them safe.');
-  await page.keyboard.press('Shift+Home');
+  await editor.locator('h2').click();
+  await page.keyboard.press('End');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
+  await page.keyboard.insertText('Five models chose the answer that kept them safe.');
   await expect(editor.locator('blockquote')).toContainText('Five models chose');
 
   await page.getByRole('button', { name: 'Paragraph' }).click();
