@@ -387,7 +387,11 @@ export function RichTextEditor({
   const insertTable = () => {
     const rows = Math.max(1, Math.min(50, Math.round(tableRows || 1)));
     const cols = Math.max(1, Math.min(20, Math.round(tableColumns || 1)));
-    editor.chain().focus().insertTable({ rows, cols, withHeaderRow }).run();
+    // Toolbar clicks can leave a NodeSelection on an atom such as CTA or image.
+    // Collapse to the end of that selection so table insertion never replaces
+    // the selected CTA/image node.
+    const insertionPoint = Math.min(editor.state.selection.to, editor.state.doc.content.size);
+    editor.chain().focus().setTextSelection(insertionPoint).insertTable({ rows, cols, withHeaderRow }).run();
     setTableOpen(true);
   };
 
