@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 
+// This script is intentionally idempotent so CI can safely re-apply the product patch.
 {
   const path = 'client/src/components/admin/RichTextEditor.tsx';
   let source = fs.readFileSync(path, 'utf8');
