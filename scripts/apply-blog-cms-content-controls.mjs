@@ -8,7 +8,10 @@ function replaceOnce(source, before, after, label) {
 function patch(path, transform) {
   const source = fs.readFileSync(path, 'utf8');
   const next = transform(source);
-  if (next === source) throw new Error(`No changes made to ${path}`);
+  if (next === source) {
+    console.log(`No change needed for ${path}`);
+    return;
+  }
   fs.writeFileSync(path, next);
 }
 
@@ -44,7 +47,7 @@ patch('shared/blog.ts', (input) => {
 
   s = replaceOnce(s,
 `  const links = post.internalLinks.map((link) => \`- \${link.label}: \${link.url} (\${link.language || "all"}) \${link.context || ""}\`).join("\\n");
-  return \`# \${post.topic}`, 
+  return \`# \${post.topic}`,
 `  const links = post.internalLinks.map((link) => \`- \${link.label}: \${link.url} (\${link.language || "all"}) \${link.context || ""}\`).join("\\n");
   const relatedSystems = (post.relatedSystems || []).map((link) => \`- \${link.label}: \${link.url}\`).join("\\n");
   const relatedArticles = (post.relatedArticleIds || []).map((id) => \`- \${id}\`).join("\\n");
@@ -107,7 +110,7 @@ patch('client/src/components/admin/BlogAdmin.tsx', (input) => {
   type BlogVisual,`, 'import link type');
   s = replaceOnce(s,
 `        post={selectedPost}
-        password={password}`, 
+        password={password}`,
 `        post={selectedPost}
         availablePosts={posts}
         password={password}`, 'pass available posts');
