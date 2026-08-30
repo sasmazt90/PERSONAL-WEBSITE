@@ -95,19 +95,35 @@ function BlogVisualMedia({
 
   if (!visual.videoUrl) return image;
 
-  return (
-    <button
-      type="button"
-      onClick={() => onVideo?.(visual.videoUrl || "", visual)}
-      className="group relative block w-full text-left"
-      aria-label={`Play video: ${visual.caption[language] || visual.fileName}`}
-    >
+  const overlay = (
+    <>
       {image}
       <span className="absolute inset-0 flex items-center justify-center bg-slate-950/20 transition group-hover:bg-slate-950/35">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white/95 text-[#2563eb] shadow-[0_18px_48px_rgba(15,23,42,0.22)]">
           <PlayCircle size={42} />
         </span>
       </span>
+    </>
+  );
+
+  // Admin preview intentionally renders the same visual surface without a dead control
+  // when no video handler is supplied. Published pages can pass onVideo to make it interactive.
+  if (!onVideo) {
+    return (
+      <div className="group relative block w-full text-left" aria-label={`Video preview: ${visual.caption[language] || visual.fileName}`}>
+        {overlay}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onVideo(visual.videoUrl || "", visual)}
+      className="group relative block w-full text-left"
+      aria-label={`Play video: ${visual.caption[language] || visual.fileName}`}
+    >
+      {overlay}
     </button>
   );
 }
