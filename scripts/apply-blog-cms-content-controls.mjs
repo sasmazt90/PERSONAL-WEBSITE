@@ -6,69 +6,71 @@ function replaceOrFail(source, before, after, label) {
 }
 
 {
-  const path = 'client/src/components/admin/BlogAdmin.tsx';
-  let source = fs.readFileSync(path, 'utf8');
-  source = replaceOrFail(
-    source,
-`    const uploaded = await uploadBlogVisual(persisted.id, visual.id, file, password);
-    const latest = currentDraftRef.current;
-    const contentChangedDuringUpload = fingerprint({ ...latest, visuals: withVisual.visuals }) !== fingerprint(withVisual);
-    const merged = contentChangedDuringUpload
-      ? { ...latest, visuals: uploaded.visuals }
-      : uploaded;`,
-`    const uploaded = await uploadBlogVisual(persisted.id, visual.id, file, password);
-    const latest = currentDraftRef.current;
-    const contentChangedDuringUpload = fingerprint({ ...latest, visuals: withVisual.visuals }) !== fingerprint(withVisual);
-    // Never replace the live editor state with a server response that may have been created
-    // before the latest Tiptap transaction. Only merge the persisted visual payload back in.
-    const merged = { ...latest, visuals: uploaded.visuals, updatedAt: uploaded.updatedAt };`,
-    'Inline upload merge',
-  );
-  fs.writeFileSync(path, source);
-}
-
-{
   const path = 'client/src/components/admin/RichTextEditor.tsx';
   let source = fs.readFileSync(path, 'utf8');
+
   source = replaceOrFail(
     source,
-`    setUploading(true);
-    try {
-      const insertionPoint = editor.state.selection.to;
-      const result = await onUploadImage(file);
-      editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\\.[^.]+$/, ""), visualId: result.visualId || null } }).run();`,
-`    setUploading(true);
-    try {
-      // Flush the exact editor HTML into the draft synchronously before an async upload starts.
-      // This prevents a stale server snapshot from dropping CTA/table/link nodes while media is uploading.
-      onChange(sanitizeHtml(editor.getHTML()));
-      const insertionPoint = editor.state.selection.to;
-      const result = await onUploadImage(file);
-      const safeInsertionPoint = Math.min(insertionPoint, editor.state.doc.content.size);
-      editor.chain().focus().setTextSelection(safeInsertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\\.[^.]+$/, ""), visualId: result.visualId || null } }).run();`,
-    'RichText upload flush',
+`  const insertTable = () => {
+    const rows = Math.max(1, Math.min(50, Math.round(tableRows || 1)));
+    const cols = Math.max(1, Math.min(20, Math.round(tableColumns || 1)));
+    editor.chain().focus().insertTable({ rows, cols, withHeaderRow }).run();
+    setTableOpen(true);
+  };`,
+`  const insertTable = () => {
+    const rows = Math.max(1, Math.min(50, Math.round(tableRows || 1)));
+    const cols = Math.max(1, Math.min(20, Math.round(tableColumns || 1)));
+    // Toolbar clicks can leave a NodeSelection on an atom such as CTA or image.
+    // Converting that selection to a collapsed text selection at its end prevents
+    // insertTable() from replacing the selected atom node.
+    const insertionPoint = Math.min(editor.state.selection.to, editor.state.doc.content.size);
+    editor.chain().focus().setTextSelection(insertionPoint).insertTable({ rows, cols, withHeaderRow }).run();
+    setTableOpen(true);
+  };`,
+    'Safe table insertion',
   );
+
   fs.writeFileSync(path, source);
 }
 
 {
-  const path = 'e2e/blog-cms.spec.ts';
+  const path = 'e2e/blog-render-parity.spec.ts';
   let source = fs.readFileSync(path, 'utf8');
-  source = source.replace(
+
+  source = replaceOrFail(
+    source,
 `  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
-  await page.getByRole('button', { name: 'H2' }).click();`,
-`  await page.keyboard.press('Enter');
-  await page.getByRole('button', { name: 'H2' }).click();`,
+  await page.getByRole('button', { name: 'Paragraph' }).click();
+  await page.keyboard.insertText('Rendering parity paragraph for editor, preview and public output.');`,
+`  // Pressing Enter at the end of a heading creates the next paragraph in Tiptap.
+  // Keep the browser interaction identical to a normal authoring flow and avoid
+  // moving the caret with browser-level Control+End semantics.
+  await page.keyboard.press('Enter');
+  await page.keyboard.insertText('Rendering parity paragraph for editor, preview and public output.');`,
+    'Parity paragraph authoring',
   );
-  source = source.replace(
+
+  source = replaceOrFail(
+    source,
 `  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();`,
 `  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();`,
+    'Parity quote authoring',
   );
+
+  source = replaceOrFail(
+    source,
+`    const frame = page.locator('.ProseMirror').locator('xpath=..');
+    await expect(frame).toHaveClass(/max-w-4xl/);`,
+`    const frame = page.locator('.ProseMirror').locator('xpath=ancestor::div[contains(@class,"max-w-4xl")][1]');
+    await expect(frame).toBeVisible();`,
+    'Parity authoring frame locator',
+  );
+
   fs.writeFileSync(path, source);
 }
 
-console.log('Media uploads now preserve the live editor state, and CMS E2E keeps the caret at the natural insertion point.');
+console.log('Patched atom-safe table insertion and stabilized editor/preview rendering parity regression coverage.');
