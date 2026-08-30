@@ -103,18 +103,21 @@ const StyledTableCell = TableCell.extend({
       ...this.parent?.(),
       backgroundColor: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.style.backgroundColor || null,
-        renderHTML: () => ({}),
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || element.getAttribute("data-cell-background") || null,
+        renderHTML: (attributes: { backgroundColor?: string | null }) => attributes.backgroundColor ? { "data-cell-background": attributes.backgroundColor } : {},
       },
       textColor: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.style.color || null,
-        renderHTML: () => ({}),
+        parseHTML: (element: HTMLElement) => element.style.color || element.getAttribute("data-cell-text-color") || null,
+        renderHTML: (attributes: { textColor?: string | null }) => attributes.textColor ? { "data-cell-text-color": attributes.textColor } : {},
       },
     };
   },
   renderHTML({ HTMLAttributes }) {
-    const { backgroundColor, textColor, style, ...attributes } = HTMLAttributes as Record<string, string | null>;
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
     return ["td", mergeAttributes(attributes, { style: `${style ? `${style};` : ""}${cellStyle({ backgroundColor, textColor })}` }), 0];
   },
 });
@@ -125,18 +128,21 @@ const StyledTableHeader = TableHeader.extend({
       ...this.parent?.(),
       backgroundColor: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.style.backgroundColor || null,
-        renderHTML: () => ({}),
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || element.getAttribute("data-cell-background") || null,
+        renderHTML: (attributes: { backgroundColor?: string | null }) => attributes.backgroundColor ? { "data-cell-background": attributes.backgroundColor } : {},
       },
       textColor: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.style.color || null,
-        renderHTML: () => ({}),
+        parseHTML: (element: HTMLElement) => element.style.color || element.getAttribute("data-cell-text-color") || null,
+        renderHTML: (attributes: { textColor?: string | null }) => attributes.textColor ? { "data-cell-text-color": attributes.textColor } : {},
       },
     };
   },
   renderHTML({ HTMLAttributes }) {
-    const { backgroundColor, textColor, style, ...attributes } = HTMLAttributes as Record<string, string | null>;
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
     return ["th", mergeAttributes(attributes, { style: `${style ? `${style};` : ""}${cellStyle({ backgroundColor, textColor })};font-weight:700` }), 0];
   },
 });
