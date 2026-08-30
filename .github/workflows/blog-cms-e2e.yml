@@ -1,6 +1,6 @@
 name: Blog CMS E2E
 
-# Regression suite for editor persistence, back-save safety, CTA/media serialization, rendering parity, and public publishing. Back-save regression enabled.
+# Regression suite for editor persistence, back-save safety, CTA/media serialization, rendering parity, and public publishing. Back-save regression enabled and semantic preservation asserted.
 on:
   workflow_dispatch:
   push:
