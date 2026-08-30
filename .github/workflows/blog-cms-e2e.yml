@@ -1,6 +1,6 @@
 name: Blog CMS E2E
 
-# Regression suite for editor persistence, back-save safety, CTA/media serialization, rendering parity, and public publishing. Clean-branch validation.
+# Regression suite for editor persistence, back-save safety, CTA/media serialization, rendering parity, and public publishing. Toolbar-focus validation.
 on:
   workflow_dispatch:
   push:
