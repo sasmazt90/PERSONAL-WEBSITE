@@ -1,19 +1,14 @@
 import fs from 'node:fs';
 
-const path = 'client/src/components/admin/BlogAdmin.tsx';
+const path = 'e2e/blog-cms.spec.ts';
 let source = fs.readFileSync(path, 'utf8');
 
-const previewAnchor = `  const handlePreview = async () => {\n    setBusy(true);\n    setError(null);\n    try {\n      const saved = await persistSnapshot(currentDraftRef.current, true);\n      currentDraftRef.current = saved;\n      setDraft(saved);\n      onPreview(saved);\n    } catch {\n      // error already shown\n    } finally {\n      setBusy(false);\n    }\n  };`;
+const before = `  const dialogAnswers = [videoUrl, 'Watch the full video'];\n  page.on('dialog', async (dialog) => {\n    await dialog.accept(dialogAnswers.shift() || '');\n  });\n  await page.getByRole('button', { name: 'CTA button' }).click();`;
 
-const replacement = `${previewAnchor}\n\n  const handleBack = async () => {\n    const current = currentDraftRef.current;\n    if (fingerprint(current) === lastSavedFingerprintRef.current) {\n      onBack();\n      return;\n    }\n    setBusy(true);\n    setError(null);\n    try {\n      const saved = await persistSnapshot(current, true);\n      currentDraftRef.current = saved;\n      setDraft(saved);\n      onBack();\n    } catch {\n      // Stay in the editor when persistence fails so unsaved content is not discarded.\n    } finally {\n      setBusy(false);\n    }\n  };`;
+const after = `  page.once('dialog', async (dialog) => dialog.accept(videoUrl));\n  const ctaClick = page.getByRole('button', { name: 'CTA button' }).click();\n  await ctaClick;\n  page.once('dialog', async (dialog) => dialog.accept('Watch the full video'));`;
 
-if (!source.includes(previewAnchor)) throw new Error('Preview anchor not found');
-source = source.replace(previewAnchor, replacement);
-
-const buttonBefore = `<button type="button" onClick={onBack} className="text-xs font-semibold text-slate-400 hover:text-white">← Back to Blog Content</button>`;
-const buttonAfter = `<button type="button" onClick={() => void handleBack()} disabled={busy} className="text-xs font-semibold text-slate-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-50">← Back to Blog Content</button>`;
-if (!source.includes(buttonBefore)) throw new Error('Back button anchor not found');
-source = source.replace(buttonBefore, buttonAfter);
+if (!source.includes(before)) throw new Error('CTA dialog test anchor not found');
+source = source.replace(before, after);
 
 fs.writeFileSync(path, source);
-console.log('Back navigation now persists unsaved draft content before leaving the editor.');
+console.log('CMS E2E now uses one-shot dialog handlers so image-link prompts are not double-handled.');
