@@ -8,6 +8,7 @@ on:
       - test/blog-cms-e2e-v2
     paths:
       - 'client/src/components/admin/**'
+      - 'client/src/components/blog/**'
       - 'client/src/pages/Admin.tsx'
       - 'client/src/pages/BlogArticle.tsx'
       - 'client/src/index.css'
@@ -22,6 +23,7 @@ on:
       - main
     paths:
       - 'client/src/components/admin/**'
+      - 'client/src/components/blog/**'
       - 'client/src/pages/Admin.tsx'
       - 'client/src/pages/BlogArticle.tsx'
       - 'client/src/index.css'
