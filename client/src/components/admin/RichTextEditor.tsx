@@ -19,6 +19,7 @@ import {
   AlignRight,
   Bold,
   Code2,
+  Columns3,
   Eraser,
   Highlighter,
   ImagePlus,
@@ -27,10 +28,13 @@ import {
   List,
   ListOrdered,
   Minus,
+  Plus,
   Quote,
   Redo2,
+  Rows3,
   Strikethrough,
   Table2,
+  Trash2,
   Type,
   Underline as UnderlineIcon,
   Undo2,
@@ -58,6 +62,93 @@ const FontSize = Extension.create({
       setFontSize: (fontSize: string) => ({ chain }) => chain().setMark("textStyle", { fontSize }).run(),
       unsetFontSize: () => ({ chain }) => chain().setMark("textStyle", { fontSize: null }).removeEmptyTextStyle().run(),
     };
+  },
+});
+
+const LinkedImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      href: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.closest("a")?.getAttribute("href") || element.getAttribute("data-href") || null,
+      },
+      visualId: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute("data-visual-id") || null,
+        renderHTML: (attributes: { visualId?: string | null }) => attributes.visualId ? { "data-visual-id": attributes.visualId } : {},
+      },
+    };
+  },
+  renderHTML({ HTMLAttributes }) {
+    const { href, ...imageAttributes } = HTMLAttributes as Record<string, string | null>;
+    const imageSpec = ["img", mergeAttributes({ loading: "lazy", decoding: "async" }, imageAttributes)] as const;
+    if (!href) return imageSpec;
+    return [
+      "a",
+      { href, target: "_blank", rel: "noopener noreferrer", "data-linked-image": "true" },
+      imageSpec,
+    ];
+  },
+});
+
+function cellStyle(attributes: { backgroundColor?: string | null; textColor?: string | null }) {
+  return [
+    "border:1px solid rgba(148,163,184,.42)",
+    "padding:10px 12px",
+    "vertical-align:top",
+    attributes.backgroundColor ? `background-color:${attributes.backgroundColor}` : "",
+    attributes.textColor ? `color:${attributes.textColor}` : "",
+  ].filter(Boolean).join(";");
+}
+
+const StyledTableCell = TableCell.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      backgroundColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || element.getAttribute("data-cell-background") || null,
+        renderHTML: (attributes: { backgroundColor?: string | null }) => attributes.backgroundColor ? { "data-cell-background": attributes.backgroundColor } : {},
+      },
+      textColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.color || element.getAttribute("data-cell-text-color") || null,
+        renderHTML: (attributes: { textColor?: string | null }) => attributes.textColor ? { "data-cell-text-color": attributes.textColor } : {},
+      },
+    };
+  },
+  renderHTML({ HTMLAttributes }) {
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
+    return ["td", mergeAttributes(attributes, { style: `${style ? `${style};` : ""}${cellStyle({ backgroundColor, textColor })}` }), 0];
+  },
+});
+
+const StyledTableHeader = TableHeader.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      backgroundColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || element.getAttribute("data-cell-background") || null,
+        renderHTML: (attributes: { backgroundColor?: string | null }) => attributes.backgroundColor ? { "data-cell-background": attributes.backgroundColor } : {},
+      },
+      textColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.color || element.getAttribute("data-cell-text-color") || null,
+        renderHTML: (attributes: { textColor?: string | null }) => attributes.textColor ? { "data-cell-text-color": attributes.textColor } : {},
+      },
+    };
+  },
+  renderHTML({ HTMLAttributes }) {
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
+    return ["th", mergeAttributes(attributes, { style: `${style ? `${style};` : ""}${cellStyle({ backgroundColor, textColor })};font-weight:700` }), 0];
   },
 });
 
@@ -89,10 +180,7 @@ const CtaButton = Node.create({
     const href = String(HTMLAttributes.href || "https://www.sasmaz.digital");
     return [
       "div",
-      mergeAttributes({
-        "data-cta-wrap": "true",
-        style: "margin:28px 0;display:flex;justify-content:flex-start;",
-      }),
+      mergeAttributes({ "data-cta-wrap": "true", style: "margin:28px 0;display:flex;justify-content:flex-start;" }),
       [
         "a",
         {
@@ -128,11 +216,15 @@ export function RichTextEditor({
   language: BlogLanguage;
   visuals: BlogVisual[];
   internalLinks?: BlogInternalLink[];
-  onUploadImage?: (file: File) => Promise<{ url: string; alt?: string }>;
+  onUploadImage?: (file: File) => Promise<{ url: string; alt?: string; visualId?: string }>;
   onChange: (html: string) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mediaOpen, setMediaOpen] = useState(false);
+  const [tableOpen, setTableOpen] = useState(false);
+  const [tableRows, setTableRows] = useState(3);
+  const [tableColumns, setTableColumns] = useState(3);
+  const [withHeaderRow, setWithHeaderRow] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [, setToolbarVersion] = useState(0);
 
@@ -150,11 +242,17 @@ export function RichTextEditor({
         defaultProtocol: "https",
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
-      Image.configure({ allowBase64: false, HTMLAttributes: { loading: "lazy", decoding: "async" } }),
-      Table.configure({ resizable: true }),
+      LinkedImage.configure({ allowBase64: false }),
+      Table.configure({
+        resizable: true,
+        HTMLAttributes: {
+          class: "editor-table",
+          style: "width:100%;border-collapse:collapse;table-layout:auto;margin:20px 0;border:1px solid rgba(148,163,184,.42)",
+        },
+      }),
       TableRow,
-      TableHeader,
-      TableCell,
+      StyledTableHeader,
+      StyledTableCell,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       CtaButton,
     ],
@@ -162,7 +260,7 @@ export function RichTextEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "prose prose-invert max-w-none min-h-[68vh] px-7 py-8 text-[17px] leading-8 text-slate-100 outline-none prose-headings:font-['Space_Grotesk'] prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-a:text-blue-300 prose-img:rounded-2xl prose-img:border prose-img:border-white/10 prose-blockquote:border-l-blue-400 prose-blockquote:text-slate-300 prose-table:border prose-table:border-white/10 prose-th:border prose-th:border-white/10 prose-td:border prose-td:border-white/10 prose-th:p-2 prose-td:p-2",
+        class: "blog-article-body min-h-[68vh] outline-none",
       },
     },
     onUpdate: ({ editor: currentEditor }) => onChange(sanitizeHtml(currentEditor.getHTML())),
@@ -184,6 +282,9 @@ export function RichTextEditor({
   }
 
   const uploadedVisuals = visuals.filter((visual) => visual.url);
+  const inTable = editor.isActive("table");
+  const imageSelected = editor.isActive("image");
+  const currentImageHref = (editor.getAttributes("image").href as string | undefined) || "";
 
   const setLink = () => {
     const previousUrl = editor.getAttributes("link").href as string | undefined;
@@ -196,10 +297,17 @@ export function RichTextEditor({
     editor.chain().focus().extendMarkRange("link").setLink({ href: url.trim() }).run();
   };
 
+  const setImageLink = () => {
+    if (!imageSelected) return;
+    const url = window.prompt("Image destination URL — leave empty to remove the link", currentImageHref || "https://");
+    if (url === null) return;
+    editor.chain().focus().updateAttributes("image", { href: url.trim() || null }).run();
+  };
+
   const insertVisual = (visual: BlogVisual) => {
     if (!visual.url) return;
     const insertionPoint = editor.state.selection.to;
-    editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();
+    editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "image", attrs: { src: visual.url, alt: visual.alt[language] || visual.fileName, visualId: visual.id } }).run();
     setMediaOpen(false);
   };
 
@@ -210,9 +318,13 @@ export function RichTextEditor({
     }
     setUploading(true);
     try {
+      // Flush the exact editor HTML into the draft synchronously before an async upload starts.
+      // This prevents a stale server snapshot from dropping CTA/table/link nodes while media is uploading.
+      onChange(sanitizeHtml(editor.getHTML()));
       const insertionPoint = editor.state.selection.to;
       const result = await onUploadImage(file);
-      editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, "") }).run();
+      const safeInsertionPoint = Math.min(insertionPoint, editor.state.doc.content.size);
+      editor.chain().focus().setTextSelection(safeInsertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, ""), visualId: result.visualId || null } }).run();
       setMediaOpen(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Image upload failed.");
@@ -272,6 +384,31 @@ export function RichTextEditor({
     }
   };
 
+  const insertTable = () => {
+    const rows = Math.max(1, Math.min(50, Math.round(tableRows || 1)));
+    const cols = Math.max(1, Math.min(20, Math.round(tableColumns || 1)));
+    // Toolbar clicks can leave a NodeSelection on an atom such as CTA or image.
+    // Collapse to the end of that selection so table insertion never replaces
+    // the selected CTA/image node.
+    const insertionPoint = Math.min(editor.state.selection.to, editor.state.doc.content.size);
+    editor.chain().focus().setTextSelection(insertionPoint).insertTable({ rows, cols, withHeaderRow }).run();
+    setTableOpen(true);
+  };
+
+  const setCurrentCellAttribute = (attribute: "backgroundColor" | "textColor", value: string) => {
+    const { state, view } = editor;
+    const { $from } = state.selection;
+    for (let depth = $from.depth; depth > 0; depth -= 1) {
+      const node = $from.node(depth);
+      if (node.type.name === "tableCell" || node.type.name === "tableHeader") {
+        const position = $from.before(depth);
+        view.dispatch(state.tr.setNodeMarkup(position, undefined, { ...node.attrs, [attribute]: value }));
+        view.focus();
+        return;
+      }
+    }
+  };
+
   return (
     <div className="relative overflow-visible rounded-3xl border border-white/10 bg-slate-950/55 shadow-2xl shadow-black/10">
       <input
@@ -318,7 +455,8 @@ export function RichTextEditor({
           <ToolbarButton label="Larger text" onClick={() => editor.chain().focus().setFontSize("1.2em").run()}>A+</ToolbarButton>
           <ToolbarDivider />
           <ToolbarButton active={mediaOpen} label="Media library" onClick={() => setMediaOpen((value) => !value)}><ImagePlus size={15} /></ToolbarButton>
-          <ToolbarButton label="Table" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}><Table2 size={15} /></ToolbarButton>
+          <ToolbarButton active={Boolean(currentImageHref)} disabled={!imageSelected} label="Image link" onClick={setImageLink}><LinkIcon size={15} /> Image link</ToolbarButton>
+          <ToolbarButton active={tableOpen || inTable} label="Table" onClick={() => setTableOpen((value) => !value)}><Table2 size={15} /></ToolbarButton>
           <ToolbarButton active={editor.isActive("codeBlock")} label="Code block" onClick={() => editor.chain().focus().toggleCodeBlock().run()}><Code2 size={15} /></ToolbarButton>
           <ToolbarButton label="Caption" onClick={insertCaption}>Caption</ToolbarButton>
           <ToolbarButton label="CTA button" onClick={insertCta}>CTA</ToolbarButton>
@@ -328,12 +466,53 @@ export function RichTextEditor({
           <ToolbarButton label="Internal link" onClick={insertInternalLink}>Internal Link</ToolbarButton>
         </div>
 
+        {tableOpen ? (
+          <div data-testid="table-tools" className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="grid gap-1 text-[11px] font-semibold text-slate-400">
+                Rows
+                <input aria-label="Table rows" type="number" min={1} max={50} value={tableRows} onChange={(event) => setTableRows(Number(event.target.value) || 1)} className="w-20 rounded-lg border border-white/10 bg-slate-950/70 px-2 py-2 text-sm text-white outline-none" />
+              </label>
+              <label className="grid gap-1 text-[11px] font-semibold text-slate-400">
+                Columns
+                <input aria-label="Table columns" type="number" min={1} max={20} value={tableColumns} onChange={(event) => setTableColumns(Number(event.target.value) || 1)} className="w-20 rounded-lg border border-white/10 bg-slate-950/70 px-2 py-2 text-sm text-white outline-none" />
+              </label>
+              <label className="flex min-h-10 items-center gap-2 rounded-lg border border-white/10 bg-slate-950/50 px-3 text-xs font-semibold text-slate-300">
+                <input type="checkbox" checked={withHeaderRow} onChange={(event) => setWithHeaderRow(event.target.checked)} /> Header row
+              </label>
+              <button type="button" onClick={insertTable} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white hover:bg-blue-500"><Plus size={14} /> Insert table</button>
+            </div>
+
+            {inTable ? (
+              <div className="mt-3 border-t border-white/10 pt-3">
+                <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">Edit selected table / cell</div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <ToolbarButton label="Add row above" onClick={() => editor.chain().focus().addRowBefore().run()}><Rows3 size={14} /> Row above</ToolbarButton>
+                  <ToolbarButton label="Add row below" onClick={() => editor.chain().focus().addRowAfter().run()}><Rows3 size={14} /> Row below</ToolbarButton>
+                  <ToolbarButton label="Delete row" onClick={() => editor.chain().focus().deleteRow().run()}><Trash2 size={14} /> Row</ToolbarButton>
+                  <ToolbarDivider />
+                  <ToolbarButton label="Add column before" onClick={() => editor.chain().focus().addColumnBefore().run()}><Columns3 size={14} /> Column before</ToolbarButton>
+                  <ToolbarButton label="Add column after" onClick={() => editor.chain().focus().addColumnAfter().run()}><Columns3 size={14} /> Column after</ToolbarButton>
+                  <ToolbarButton label="Delete column" onClick={() => editor.chain().focus().deleteColumn().run()}><Trash2 size={14} /> Column</ToolbarButton>
+                  <ToolbarDivider />
+                  <ToolbarButton label="Toggle header row" onClick={() => editor.chain().focus().toggleHeaderRow().run()}>Header</ToolbarButton>
+                  <CellColorPicker label="Cell background" value="#172033" onChange={(value) => setCurrentCellAttribute("backgroundColor", value)} />
+                  <CellColorPicker label="Cell text color" value="#f8fafc" onChange={(value) => setCurrentCellAttribute("textColor", value)} icon={<Type size={14} />} />
+                  <ToolbarButton label="Delete table" onClick={() => { editor.chain().focus().deleteTable().run(); setTableOpen(false); }}><Trash2 size={14} /> Table</ToolbarButton>
+                </div>
+              </div>
+            ) : (
+              <p className="mt-3 text-xs text-slate-500">Place the cursor inside a table to add or remove rows/columns and style selected cells.</p>
+            )}
+          </div>
+        ) : null}
+
         {mediaOpen ? (
           <div data-testid="media-picker" className="mt-2 rounded-2xl border border-white/10 bg-[#111827] p-3 shadow-2xl">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-bold text-white">Media library</div>
-                <div className="text-xs text-slate-400">Click any uploaded image to insert it at the cursor.</div>
+                <div className="text-xs text-slate-400">Click any uploaded image to insert it at the cursor. Select an inserted image and use “Image link” to make it clickable.</div>
               </div>
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-bold text-white hover:bg-blue-500 disabled:opacity-50">
@@ -363,19 +542,25 @@ export function RichTextEditor({
         ) : null}
       </div>
 
-      <EditorContent editor={editor} />
+      <div className="overflow-hidden bg-[#f8fbff] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl bg-white">
+          <EditorContent editor={editor} />
+        </div>
+      </div>
     </div>
   );
 }
 
-function ToolbarButton({ label, active, children, onClick }: { label: string; active?: boolean; children: ReactNode; onClick: () => void }) {
+function ToolbarButton({ label, active, disabled, children, onClick }: { label: string; active?: boolean; disabled?: boolean; children: ReactNode; onClick: () => void }) {
   return (
     <button
       type="button"
       aria-label={label}
       title={label}
+      disabled={disabled}
+      onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
-      className={`inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition ${active ? "border-blue-400/60 bg-blue-500 text-white" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/12"}`}
+      className={`inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-35 ${active ? "border-blue-400/60 bg-blue-500 text-white" : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/12"}`}
     >
       {children}
     </button>
@@ -391,6 +576,16 @@ function ColorPicker({ label, value, icon, onChange }: { label: string; value: s
     <label className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.06] px-2.5 text-xs font-semibold text-slate-200 hover:bg-white/12" title={label}>
       {icon || <Type size={15} />}
       <input type="color" aria-label={label} defaultValue={value} onChange={(event) => onChange(event.target.value)} className="h-4 w-4 border-0 bg-transparent p-0" />
+    </label>
+  );
+}
+
+function CellColorPicker({ label, value, icon, onChange }: { label: string; value: string; icon?: ReactNode; onChange: (value: string) => void }) {
+  return (
+    <label className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.06] px-2.5 text-xs font-semibold text-slate-200 hover:bg-white/12" title={label}>
+      {icon || <Highlighter size={14} />}
+      <span>{label}</span>
+      <input type="color" aria-label={label} defaultValue={value} onInput={(event) => onChange((event.currentTarget as HTMLInputElement).value)} onChange={(event) => onChange(event.target.value)} className="h-4 w-4 border-0 bg-transparent p-0" />
     </label>
   );
 }

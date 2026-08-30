@@ -64,39 +64,57 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   const editor = page.locator('.ProseMirror');
   await expect(editor).toBeVisible();
   await editor.click();
-  await page.keyboard.insertText(articleTitle);
-  await page.keyboard.press('Shift+Home');
   await page.getByRole('button', { name: 'H1' }).click();
-  await expect(editor.locator('h1')).toContainText(articleTitle);
+  await page.keyboard.insertText(articleTitle);
+  await expect(editor.locator('h1')).toHaveText(articleTitle);
 
-  await editor.press('End');
-  await editor.press('Enter');
-  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');
-  await page.keyboard.press('Shift+Home');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'H2' }).click();
+  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');
   await expect(editor.locator('h2')).toContainText('The Grok Votes');
   await expect(page.getByRole('button', { name: 'H2' })).toHaveClass(/bg-blue-500/);
   await expect(page.getByRole('button', { name: 'H1' })).not.toHaveClass(/bg-blue-500/);
 
-  await editor.press('End');
-  await editor.press('Enter');
-  await page.keyboard.insertText('Five models chose the answer that kept them safe.');
-  await page.keyboard.press('Shift+Home');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
+  await page.keyboard.insertText('Five models chose the answer that kept them safe.');
   await expect(editor.locator('blockquote')).toContainText('Five models chose');
 
   await page.getByRole('button', { name: 'Paragraph' }).click();
   const preservedParagraph = editor.locator('p').filter({ hasText: 'Five models chose' });
   await expect(preservedParagraph).toHaveCount(1);
 
-  const dialogAnswers = [videoUrl, 'Watch the full video'];
-  page.on('dialog', async (dialog) => {
-    await dialog.accept(dialogAnswers.shift() || '');
-  });
+  const ctaDialogAnswers = [videoUrl, 'Watch the full video'];
+  const ctaDialogHandler = async (dialog: import('@playwright/test').Dialog) => {
+    await dialog.accept(ctaDialogAnswers.shift() || '');
+  };
+  page.on('dialog', ctaDialogHandler);
   await page.getByRole('button', { name: 'CTA button' }).click();
+  page.off('dialog', ctaDialogHandler);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveAttribute('href', videoUrl);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
   await expect(preservedParagraph).toHaveCount(1);
+
+  await page.getByRole('button', { name: 'Table' }).click();
+  await expect(page.getByTestId('table-tools')).toBeVisible();
+  await page.getByLabel('Table rows').fill('4');
+  await page.getByLabel('Table columns').fill('5');
+  await page.getByRole('button', { name: 'Insert table' }).click();
+  await expect(editor.locator('table')).toHaveCount(1);
+  await expect(editor.locator('table tr')).toHaveCount(4);
+  await expect(editor.locator('table tr').first().locator('th')).toHaveCount(5);
+  await editor.locator('table td').first().click();
+  await page.getByRole('button', { name: 'Add row below' }).click();
+  await page.getByRole('button', { name: 'Add column after' }).click();
+  await expect(editor.locator('table tr')).toHaveCount(5);
+  await expect(editor.locator('table tr').first().locator('th')).toHaveCount(6);
+  const styledCell = editor.locator('table td').first();
+  await styledCell.click();
+  await page.getByLabel('Cell background').fill('#334155');
+  await styledCell.click();
+  await page.getByLabel('Cell text color').fill('#ffffff');
+  await expect(styledCell).toHaveAttribute('style', /background-color/);
+  await expect(styledCell).toHaveAttribute('style', /color/);
 
   await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('Click any uploaded image to insert it at the cursor.')).toBeVisible();
@@ -112,6 +130,11 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(mediaPicker.locator('img').first()).toBeVisible();
   await mediaPicker.locator('img').first().locator('xpath=ancestor::button[1]').click();
   await expect(editor.locator('img')).toHaveCount(2);
+  const linkedImageTarget = 'https://www.sasmaz.digital';
+  await editor.locator('img').last().click();
+  page.once('dialog', async (dialog) => dialog.accept(linkedImageTarget));
+  await page.getByRole('button', { name: 'Image link' }).click();
+  await expect(editor.locator('a[data-linked-image="true"]').last()).toHaveAttribute('href', linkedImageTarget);
   await expect(editor.locator('[data-cta-wrap] a')).toHaveText('Watch the full video');
 
   const toolbar = page.getByRole('button', { name: 'H1' }).locator('xpath=ancestor::div[contains(@class,"sticky")][1]');
@@ -126,6 +149,42 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(page.locator('.ProseMirror h1')).toContainText(articleTitle);
   await expect(page.locator('.ProseMirror [data-cta-wrap] a')).toHaveText('Watch the full video');
   await expect(page.locator('.ProseMirror img')).toHaveCount(2);
+  await expect(page.locator('.ProseMirror table')).toHaveCount(1);
+  await expect(page.locator('.ProseMirror a[data-linked-image="true"]')).toHaveCount(1);
+});
+
+test('Back preserves edits made while its save request is in flight', async ({ page, request }) => {
+  await loginAndOpenBlog(page);
+  await page.getByRole('button', { name: 'Add New Content' }).click();
+
+  const editor = page.locator('.ProseMirror');
+  await editor.click();
+  await page.getByRole('button', { name: 'H1' }).click();
+  await page.keyboard.insertText('Back save race');
+
+  let delayed = false;
+  await page.route('**/api/admin/blog-posts/**', async (route) => {
+    if (!delayed && route.request().method() === 'PUT') {
+      delayed = true;
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+    await route.continue();
+  });
+
+  await page.getByRole('button', { name: /Back to Blog Content/i }).click();
+  await page.waitForTimeout(100);
+  await editor.click();
+  await page.keyboard.press('End');
+  await page.keyboard.insertText(' preserved');
+
+  await expect(page.getByRole('button', { name: 'Add New Content' })).toBeVisible({ timeout: 10000 });
+
+  const response = await request.get(`${BASE_URL}/api/admin/blog-posts`, {
+    headers: { 'x-admin-password': ADMIN_PASSWORD },
+  });
+  expect(response.ok()).toBeTruthy();
+  const collection = await response.json();
+  expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race') && post.content?.en?.includes('preserved'))).toBeTruthy();
 });
 
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {

@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Keep the CMS authoring regression suite deterministic while validating editor controls, serialized cell styling, and related-content authoring.
 export default defineConfig({
   testDir: './e2e',
   timeout: 60_000,

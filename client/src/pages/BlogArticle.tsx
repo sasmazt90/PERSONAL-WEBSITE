@@ -12,6 +12,7 @@ import {
   trackEvent,
 } from "@/lib/analytics";
 import { fetchPublicBlogPost, fetchPublicBlogPosts } from "@/lib/blogApi";
+import { BlogContentSurface } from "@/components/blog/BlogContentSurface";
 
 const languageLabels: Record<BlogLanguage, string> = { en: "EN", de: "DE", tr: "TR" };
 const adsenseClient = "ca-pub-4185131193797685";
@@ -197,48 +198,28 @@ export default function BlogArticle() {
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
           <BlogAd placement="after-article-header" />
 
-          {hero ? (
-            <figure className="mb-10 overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
-              {hero.url ? <img src={hero.url} alt={hero.alt[language]} decoding="async" className="max-h-[34rem] w-full bg-white object-contain" /> : <div className="flex min-h-72 items-center justify-center bg-[#eef4ff] px-8 text-center text-[#5b667b]">{hero.prompt}</div>}
-              {hero.caption[language] ? <figcaption className="px-5 py-4 text-sm text-[#5b667b]">{hero.caption[language]}</figcaption> : null}
-            </figure>
-          ) : null}
-
-          <div className="blog-article-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content[language]) }} />
-
-          {bodyVisuals.length ? (
-            <section className="mt-10 grid gap-6">
-              {bodyVisuals.map((visual) => (
-                <figure key={visual.id} className="overflow-hidden rounded-[1.5rem] border border-[#dce7f9] bg-white">
-                  <VisualMedia visual={visual} language={language} onVideo={setActiveVideo} />
-                  {visual.caption[language] ? <figcaption className="px-5 py-4 text-sm text-[#5b667b]">{visual.caption[language]}</figcaption> : null}
-                </figure>
-              ))}
-            </section>
-          ) : null}
-
-          {post.faq[language]?.length ? (
-            <section className="mt-12 rounded-[1.75rem] border border-[#dce7f9] bg-white p-6">
-              <h2 className="font-['Space_Grotesk'] text-3xl font-bold">FAQ</h2>
-              <div className="mt-5 grid gap-5">
-                {post.faq[language].map((item) => (
-                  <div key={item.question}>
-                    <h3 className="font-['Space_Grotesk'] text-xl font-bold">{item.question}</h3>
-                    <p className="mt-2 leading-7 text-[#5b667b]">{item.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ) : null}
+          <BlogContentSurface
+            post={post}
+            language={language}
+            onVideo={(videoUrl, visual) => {
+              trackEvent("cta_click", {
+                cta_text: visual.caption[language] || "Play video",
+                cta_type: "video",
+                destination_url: videoUrl,
+                section_name: "blog_visuals",
+              });
+              setActiveVideo(videoUrl);
+            }}
+          />
 
           <BlogAd placement="before-read-more" />
           <ReadMoreSection post={post} posts={relatedPosts} language={language} />
 
-          {post.internalLinks.length ? (
+          {(Array.isArray(post.relatedSystems) ? post.relatedSystems : post.internalLinks).length ? (
             <section className="mt-10 rounded-[1.75rem] border border-[#dce7f9] bg-white p-6">
               <h2 className="font-['Space_Grotesk'] text-2xl font-bold">Related Systems</h2>
               <div className="mt-4 grid gap-3">
-                {post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).map((link) => (
+                {(Array.isArray(post.relatedSystems) ? post.relatedSystems : post.internalLinks).filter((link) => !link.language || link.language === "all" || link.language === language).map((link) => (
                   <a
                     key={`${link.label}-${link.url}`}
                     href={link.url}
@@ -308,8 +289,11 @@ export default function BlogArticle() {
 function ReadMoreSection({ post, posts, language }: { post: BlogPost; posts: BlogPost[]; language: BlogLanguage }) {
   const [index, setIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
-  const candidates = posts.filter((item) => item.id !== post.id).slice(0, 9);
-  const fallbackLinks = post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).slice(0, 6);
+  const hasManualArticleSelection = Array.isArray(post.relatedArticleIds);
+  const candidates = hasManualArticleSelection
+    ? (post.relatedArticleIds || []).map((id) => posts.find((item) => item.id === id)).filter((item): item is BlogPost => Boolean(item))
+    : posts.filter((item) => item.id !== post.id).slice(0, 9);
+  const fallbackLinks = hasManualArticleSelection ? [] : post.internalLinks.filter((link) => !link.language || link.language === "all" || link.language === language).slice(0, 6);
   const maxIndex = Math.max(0, candidates.length - visibleCards);
 
   useEffect(() => {
