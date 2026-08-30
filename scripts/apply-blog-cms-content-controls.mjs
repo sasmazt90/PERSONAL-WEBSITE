@@ -3,17 +3,54 @@ import fs from 'node:fs';
 const path = 'client/src/components/admin/RichTextEditor.tsx';
 let source = fs.readFileSync(path, 'utf8');
 
-const insertTableBlock = `  const insertTable = () => {\n    const rows = Math.max(1, Math.min(50, Math.round(tableRows || 1)));\n    const cols = Math.max(1, Math.min(20, Math.round(tableColumns || 1)));\n    editor.chain().focus().insertTable({ rows, cols, withHeaderRow }).run();\n    setTableOpen(true);\n  };`;
-const insertTableReplacement = `${insertTableBlock}\n\n  const setCurrentCellAttribute = (attribute: \"backgroundColor\" | \"textColor\", value: string) => {\n    const { state, view } = editor;\n    const { $from } = state.selection;\n    for (let depth = $from.depth; depth > 0; depth -= 1) {\n      const node = $from.node(depth);\n      if (node.type.name === \"tableCell\" || node.type.name === \"tableHeader\") {\n        const position = $from.before(depth);\n        view.dispatch(state.tr.setNodeMarkup(position, undefined, { ...node.attrs, [attribute]: value }));\n        view.focus();\n        return;\n      }\n    }\n  };`;
-if (!source.includes(insertTableBlock)) throw new Error('Insert-table anchor not found');
-source = source.replace(insertTableBlock, insertTableReplacement);
+const attrBefore = `      backgroundColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || null,
+        renderHTML: () => ({}),
+      },
+      textColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.color || null,
+        renderHTML: () => ({}),
+      },`;
+const attrAfter = `      backgroundColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.backgroundColor || element.getAttribute("data-cell-background") || null,
+        renderHTML: (attributes: { backgroundColor?: string | null }) => attributes.backgroundColor ? { "data-cell-background": attributes.backgroundColor } : {},
+      },
+      textColor: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.style.color || element.getAttribute("data-cell-text-color") || null,
+        renderHTML: (attributes: { textColor?: string | null }) => attributes.textColor ? { "data-cell-text-color": attributes.textColor } : {},
+      },`;
 
-const bgBefore = `<CellColorPicker label="Cell background" value="#172033" onChange={(value) => editor.chain().focus().setCellAttribute("backgroundColor", value).run()} />`;
-const bgAfter = `<CellColorPicker label="Cell background" value="#172033" onChange={(value) => setCurrentCellAttribute("backgroundColor", value)} />`;
-const textBefore = `<CellColorPicker label="Cell text color" value="#f8fafc" onChange={(value) => editor.chain().focus().setCellAttribute("textColor", value).run()} icon={<Type size={14} />} />`;
-const textAfter = `<CellColorPicker label="Cell text color" value="#f8fafc" onChange={(value) => setCurrentCellAttribute("textColor", value)} icon={<Type size={14} />} />`;
-if (!source.includes(bgBefore) || !source.includes(textBefore)) throw new Error('Cell color control anchors not found');
-source = source.replace(bgBefore, bgAfter).replace(textBefore, textAfter);
+const cellRenderBefore = `  renderHTML({ HTMLAttributes }) {
+    const { backgroundColor, textColor, style, ...attributes } = HTMLAttributes as Record<string, string | null>;
+    return ["td", mergeAttributes(attributes, { style: \`${style ? \`${style};\` : ""}\${cellStyle({ backgroundColor, textColor })}\` }), 0];
+  },`;
+const cellRenderAfter = `  renderHTML({ HTMLAttributes }) {
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
+    return ["td", mergeAttributes(attributes, { style: \`${style ? \`${style};\` : ""}\${cellStyle({ backgroundColor, textColor })}\` }), 0];
+  },`;
+const headerRenderBefore = `  renderHTML({ HTMLAttributes }) {
+    const { backgroundColor, textColor, style, ...attributes } = HTMLAttributes as Record<string, string | null>;
+    return ["th", mergeAttributes(attributes, { style: \`${style ? \`${style};\` : ""}\${cellStyle({ backgroundColor, textColor })};font-weight:700\` }), 0];
+  },`;
+const headerRenderAfter = `  renderHTML({ HTMLAttributes }) {
+    const values = HTMLAttributes as Record<string, string | null>;
+    const backgroundColor = values["data-cell-background"] || null;
+    const textColor = values["data-cell-text-color"] || null;
+    const { style, ...attributes } = values;
+    return ["th", mergeAttributes(attributes, { style: \`${style ? \`${style};\` : ""}\${cellStyle({ backgroundColor, textColor })};font-weight:700\` }), 0];
+  },`;
+
+if ((source.match(new RegExp(attrBefore.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length !== 2) throw new Error('Expected two table attribute blocks');
+source = source.replace(attrBefore, attrAfter).replace(attrBefore, attrAfter);
+if (!source.includes(cellRenderBefore) || !source.includes(headerRenderBefore)) throw new Error('Table render anchors not found');
+source = source.replace(cellRenderBefore, cellRenderAfter).replace(headerRenderBefore, headerRenderAfter);
 
 fs.writeFileSync(path, source);
-console.log('Cell colors now update the current table cell with a direct ProseMirror transaction.');
+console.log('Table cell color attributes now serialize into editor and published HTML.');
