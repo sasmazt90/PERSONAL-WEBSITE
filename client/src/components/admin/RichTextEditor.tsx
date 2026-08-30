@@ -318,9 +318,13 @@ export function RichTextEditor({
     }
     setUploading(true);
     try {
+      // Flush the exact editor HTML into the draft synchronously before an async upload starts.
+      // This prevents a stale server snapshot from dropping CTA/table/link nodes while media is uploading.
+      onChange(sanitizeHtml(editor.getHTML()));
       const insertionPoint = editor.state.selection.to;
       const result = await onUploadImage(file);
-      editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, ""), visualId: result.visualId || null } }).run();
+      const safeInsertionPoint = Math.min(insertionPoint, editor.state.doc.content.size);
+      editor.chain().focus().setTextSelection(safeInsertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, ""), visualId: result.visualId || null } }).run();
       setMediaOpen(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Image upload failed.");

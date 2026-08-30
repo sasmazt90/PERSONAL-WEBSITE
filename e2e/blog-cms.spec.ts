@@ -68,7 +68,6 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await page.keyboard.insertText(articleTitle);
   await expect(editor.locator('h1')).toHaveText(articleTitle);
 
-  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'H2' }).click();
   await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');
@@ -76,7 +75,6 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(page.getByRole('button', { name: 'H2' })).toHaveClass(/bg-blue-500/);
   await expect(page.getByRole('button', { name: 'H1' })).not.toHaveClass(/bg-blue-500/);
 
-  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
   await page.keyboard.insertText('Five models chose the answer that kept them safe.');

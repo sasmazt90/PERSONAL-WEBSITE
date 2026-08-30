@@ -470,9 +470,9 @@ function BlogEditor({
     const uploaded = await uploadBlogVisual(persisted.id, visual.id, file, password);
     const latest = currentDraftRef.current;
     const contentChangedDuringUpload = fingerprint({ ...latest, visuals: withVisual.visuals }) !== fingerprint(withVisual);
-    const merged = contentChangedDuringUpload
-      ? { ...latest, visuals: uploaded.visuals }
-      : uploaded;
+    // Never replace the live editor state with a server response that may have been created
+    // before the latest Tiptap transaction. Only merge the persisted visual payload back in.
+    const merged = { ...latest, visuals: uploaded.visuals, updatedAt: uploaded.updatedAt };
     currentDraftRef.current = merged;
     setDraft(merged);
     onSaved(merged);
