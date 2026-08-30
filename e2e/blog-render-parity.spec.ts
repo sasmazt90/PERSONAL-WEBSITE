@@ -39,15 +39,13 @@ test('authoring canvas and preview use the same article rendering contract', asy
   await page.keyboard.insertText('Rendering parity headline');
   await expect(editor.locator('h1')).toHaveText('Rendering parity headline');
 
-  await editor.locator('h1').click();
-  await page.keyboard.press('End');
+  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Paragraph' }).click();
   await page.keyboard.insertText('Rendering parity paragraph for editor, preview and public output.');
   await expect(editor.locator('p').last()).toContainText('Rendering parity paragraph');
 
-  await editor.locator('p').last().click();
-  await page.keyboard.press('End');
+  await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Blockquote' }).click();
   await page.keyboard.insertText('Rendering parity quote.');
