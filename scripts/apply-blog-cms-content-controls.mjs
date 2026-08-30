@@ -3,11 +3,14 @@ import fs from 'node:fs';
 const path = 'e2e/blog-cms.spec.ts';
 let source = fs.readFileSync(path, 'utf8');
 
-const before = `  await editor.click();\n  await page.keyboard.insertText(articleTitle);\n  await page.keyboard.press('Shift+Home');\n  await page.getByRole('button', { name: 'H1' }).click();\n  await expect(editor.locator('h1')).toContainText(articleTitle);\n\n  await editor.press('End');\n  await editor.press('Enter');\n  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');\n  await page.keyboard.press('Shift+Home');\n  await page.getByRole('button', { name: 'H2' }).click();\n  await expect(editor.locator('h2')).toContainText('The Grok Votes');\n  await expect(page.getByRole('button', { name: 'H2' })).toHaveClass(/bg-blue-500/);\n  await expect(page.getByRole('button', { name: 'H1' })).not.toHaveClass(/bg-blue-500/);\n\n  await editor.press('End');\n  await editor.press('Enter');\n  await page.keyboard.insertText('Five models chose the answer that kept them safe.');\n  await page.keyboard.press('Shift+Home');\n  await page.getByRole('button', { name: 'Blockquote' }).click();\n  await expect(editor.locator('blockquote')).toContainText('Five models chose');`;
+source = source.replace(
+`  await editor.locator('h1').click();\n  await page.keyboard.press('End');\n  await page.keyboard.press('Enter');`,
+`  await page.keyboard.press('Control+End');\n  await page.keyboard.press('Enter');`,
+);
+source = source.replace(
+`  await editor.locator('h2').click();\n  await page.keyboard.press('End');\n  await page.keyboard.press('Enter');`,
+`  await page.keyboard.press('Control+End');\n  await page.keyboard.press('Enter');`,
+);
 
-const after = `  await editor.click();\n  await page.getByRole('button', { name: 'H1' }).click();\n  await page.keyboard.insertText(articleTitle);\n  await expect(editor.locator('h1')).toHaveText(articleTitle);\n\n  await editor.locator('h1').click();\n  await page.keyboard.press('End');\n  await page.keyboard.press('Enter');\n  await page.getByRole('button', { name: 'H2' }).click();\n  await page.keyboard.insertText('The Grok Votes: Five Models, Similar Logic, Different Emphasis');\n  await expect(editor.locator('h2')).toContainText('The Grok Votes');\n  await expect(page.getByRole('button', { name: 'H2' })).toHaveClass(/bg-blue-500/);\n  await expect(page.getByRole('button', { name: 'H1' })).not.toHaveClass(/bg-blue-500/);\n\n  await editor.locator('h2').click();\n  await page.keyboard.press('End');\n  await page.keyboard.press('Enter');\n  await page.getByRole('button', { name: 'Blockquote' }).click();\n  await page.keyboard.insertText('Five models chose the answer that kept them safe.');\n  await expect(editor.locator('blockquote')).toContainText('Five models chose');`;
-
-if (!source.includes(before)) throw new Error('Semantic editor test anchor not found');
-source = source.replace(before, after);
 fs.writeFileSync(path, source);
-console.log('CMS browser test now applies block semantics before typing instead of relying on visual-line Home selection.');
+console.log('CMS E2E now uses Control+End so wrapped headings are never split by visual-line cursor movement.');
