@@ -260,7 +260,7 @@ export function RichTextEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "blog-article-body max-w-none min-h-[68vh] px-7 py-8 outline-none",
+        class: "blog-article-body min-h-[68vh] outline-none",
       },
     },
     onUpdate: ({ editor: currentEditor }) => onChange(sanitizeHtml(currentEditor.getHTML())),
@@ -534,8 +534,10 @@ export function RichTextEditor({
         ) : null}
       </div>
 
-      <div className="overflow-hidden bg-white">
-        <EditorContent editor={editor} />
+      <div className="overflow-hidden bg-[#f8fbff] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl bg-white">
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </div>
   );
