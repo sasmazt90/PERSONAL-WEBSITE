@@ -73,6 +73,11 @@ const LinkedImage = Image.extend({
         default: null,
         parseHTML: (element: HTMLElement) => element.closest("a")?.getAttribute("href") || element.getAttribute("data-href") || null,
       },
+      visualId: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute("data-visual-id") || null,
+        renderHTML: (attributes: { visualId?: string | null }) => attributes.visualId ? { "data-visual-id": attributes.visualId } : {},
+      },
     };
   },
   renderHTML({ HTMLAttributes }) {
@@ -211,7 +216,7 @@ export function RichTextEditor({
   language: BlogLanguage;
   visuals: BlogVisual[];
   internalLinks?: BlogInternalLink[];
-  onUploadImage?: (file: File) => Promise<{ url: string; alt?: string }>;
+  onUploadImage?: (file: File) => Promise<{ url: string; alt?: string; visualId?: string }>;
   onChange: (html: string) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -255,7 +260,7 @@ export function RichTextEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "prose prose-invert max-w-none min-h-[68vh] px-7 py-8 text-[17px] leading-8 text-slate-100 outline-none prose-headings:font-['Space_Grotesk'] prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-a:text-blue-300 prose-img:rounded-2xl prose-img:border prose-img:border-white/10 prose-blockquote:border-l-blue-400 prose-blockquote:text-slate-300",
+        class: "blog-article-body max-w-none min-h-[68vh] px-7 py-8 outline-none",
       },
     },
     onUpdate: ({ editor: currentEditor }) => onChange(sanitizeHtml(currentEditor.getHTML())),
@@ -302,7 +307,7 @@ export function RichTextEditor({
   const insertVisual = (visual: BlogVisual) => {
     if (!visual.url) return;
     const insertionPoint = editor.state.selection.to;
-    editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: visual.url, alt: visual.alt[language] || visual.fileName }).run();
+    editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "image", attrs: { src: visual.url, alt: visual.alt[language] || visual.fileName, visualId: visual.id } }).run();
     setMediaOpen(false);
   };
 
@@ -315,7 +320,7 @@ export function RichTextEditor({
     try {
       const insertionPoint = editor.state.selection.to;
       const result = await onUploadImage(file);
-      editor.chain().focus().setTextSelection(insertionPoint).setImage({ src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, "") }).run();
+      editor.chain().focus().setTextSelection(insertionPoint).insertContent({ type: "image", attrs: { src: result.url, alt: result.alt || file.name.replace(/\.[^.]+$/, ""), visualId: result.visualId || null } }).run();
       setMediaOpen(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Image upload failed.");
@@ -529,7 +534,9 @@ export function RichTextEditor({
         ) : null}
       </div>
 
-      <EditorContent editor={editor} />
+      <div className="overflow-hidden bg-white">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 }

@@ -463,7 +463,7 @@ function BlogEditor({
     }
     const result = uploaded.visuals.find((item) => item.id === visual.id);
     if (!result?.url) throw new Error("Image upload completed but no URL was returned.");
-    return { url: result.url, alt: result.alt[language] || stripExtension(file.name) };
+    return { url: result.url, alt: result.alt[language] || stripExtension(file.name), visualId: result.id };
   };
 
   return (
@@ -774,6 +774,8 @@ function BlogPreview({ post, onBack, onEdit }: { post: BlogPost; onBack: () => v
   const [language, setLanguage] = useState<BlogLanguage>(() => firstPopulatedLanguage(post));
   const hero = post.visuals.find((visual) => visual.visualType === "hero");
   const thumbnail = getThumbnail(post);
+  const previewInlineVisualIds = getInlineVisualIds(post.content[language] || "");
+  const previewBodyVisuals = post.visuals.filter((visual) => visual.visualType !== "hero" && visual.visualType !== "thumbnail" && !previewInlineVisualIds.has(visual.id));
   return (
     <div className="space-y-5">
       <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
@@ -784,8 +786,9 @@ function BlogPreview({ post, onBack, onEdit }: { post: BlogPost; onBack: () => v
         <article className="mx-auto max-w-4xl overflow-hidden rounded-[2rem] bg-white text-[#0f172a] shadow-2xl shadow-black/20">
           <header className="border-b border-[#e5eaf2] px-6 py-7 sm:px-10"><div className="text-xs font-bold uppercase tracking-[0.14em] text-[#64748b]">SEO title</div><h1 className="mt-2 text-4xl font-bold leading-tight">{post.seo[language].title || post.topic}</h1><p className="mt-4 text-lg leading-8 text-[#64748b]">{post.seo[language].metaDescription}</p></header>
           <div className="px-6 py-8 sm:px-10">
-            {hero?.url ? <img src={hero.url} alt={hero.alt[language]} className="mb-8 max-h-[32rem] w-full rounded-2xl object-contain" /> : null}
-            <div className="prose max-w-none prose-headings:font-['Space_Grotesk']" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content[language]) }} />
+            {hero?.url ? <figure className="mb-10 overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]"><img src={hero.url} alt={hero.alt[language]} className="max-h-[34rem] w-full bg-white object-contain" />{hero.caption[language] ? <figcaption className="px-5 py-4 text-sm text-[#5b667b]">{hero.caption[language]}</figcaption> : null}</figure> : null}
+            <div className="blog-article-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content[language]) }} />
+            {previewBodyVisuals.length ? <section className="mt-10 grid gap-6">{previewBodyVisuals.map((visual) => <figure key={visual.id} className="overflow-hidden rounded-[1.5rem] border border-[#dce7f9] bg-white">{visual.url ? <img src={visual.url} alt={visual.alt[language] || visual.fileName} className="max-h-[34rem] w-full bg-white object-contain" /> : <div className="flex min-h-56 items-center justify-center bg-[#eef4ff] px-6 text-center text-sm text-[#5b667b]">{visual.prompt}</div>}{visual.caption[language] ? <figcaption className="px-5 py-4 text-sm text-[#5b667b]">{visual.caption[language]}</figcaption> : null}</figure>)}</section> : null}
             {post.faq[language]?.length ? <section className="mt-10"><h2 className="text-2xl font-bold">FAQ</h2>{post.faq[language].map((item) => <div key={item.question} className="mt-5"><h3 className="font-bold">{item.question}</h3><p className="mt-1 text-[#64748b]">{item.answer}</p></div>)}</section> : null}
           </div>
         </article>
@@ -821,6 +824,17 @@ function StatusBadge({ post }: { post: BlogPost }) {
 
 function getThumbnail(post: BlogPost) {
   return post.visuals.find((visual) => visual.visualType === "thumbnail") || post.visuals.find((visual) => visual.visualType === "hero") || post.visuals[0];
+}
+
+function getInlineVisualIds(content: string) {
+  const ids = new Set<string>();
+  const pattern = /data-visual-id=["']([^"']+)["']/g;
+  let match = pattern.exec(content);
+  while (match) {
+    ids.add(match[1]);
+    match = pattern.exec(content);
+  }
+  return ids;
 }
 
 function firstPopulatedLanguage(post: BlogPost): BlogLanguage {
