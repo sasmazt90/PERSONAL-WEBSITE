@@ -153,6 +153,41 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await expect(page.locator('.ProseMirror a[data-linked-image="true"]')).toHaveCount(1);
 });
 
+\
+test('Back preserves edits made while its save request is in flight', async ({ page, request }) => {
+  await loginAndOpenBlog(page);
+  await page.getByRole('button', { name: 'Add New Content' }).click();
+
+  const editor = page.locator('.ProseMirror');
+  await editor.click();
+  await page.getByRole('button', { name: 'H1' }).click();
+  await page.keyboard.insertText('Back save race');
+
+  let delayed = false;
+  await page.route('**/api/admin/blog-posts/**', async (route) => {
+    if (!delayed && route.request().method() === 'PUT') {
+      delayed = true;
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+    await route.continue();
+  });
+
+  await page.getByRole('button', { name: /Back to Blog Content/i }).click();
+  await page.waitForTimeout(100);
+  await editor.click();
+  await page.keyboard.press('End');
+  await page.keyboard.insertText(' preserved');
+
+  await expect(page.getByRole('button', { name: 'Add New Content' })).toBeVisible({ timeout: 10000 });
+
+  const response = await request.get(`${BASE_URL}/api/admin/blog-posts`, {
+    headers: { 'x-admin-password': ADMIN_PASSWORD },
+  });
+  expect(response.ok()).toBeTruthy();
+  const collection = await response.json();
+  expect(collection.posts.some((post: any) => post.content?.en?.includes('Back save race preserved'))).toBeTruthy();
+});
+
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {
   const headers = { 'x-admin-password': ADMIN_PASSWORD, 'Content-Type': 'application/json' };
   const manual = await request.post(`${BASE_URL}/api/admin/blog-posts/manual`, {

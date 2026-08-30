@@ -395,27 +395,31 @@ function BlogEditor({
     }
   };
 
-  const handleBack = async () => {
-    const current = currentDraftRef.current;
-    if (fingerprint(current) === lastSavedFingerprintRef.current) {
-      onBack();
-      return;
+const handleBack = async () => {
+  setBusy(true);
+  setError(null);
+  try {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const snapshot = currentDraftRef.current;
+      if (fingerprint(snapshot) === lastSavedFingerprintRef.current) {
+        onBack();
+        return;
+      }
+      await persistSnapshot(snapshot, true);
+      if (fingerprint(currentDraftRef.current) === fingerprint(snapshot)) {
+        onBack();
+        return;
+      }
     }
-    setBusy(true);
-    setError(null);
-    try {
-      const saved = await persistSnapshot(current, true);
-      currentDraftRef.current = saved;
-      setDraft(saved);
-      onBack();
-    } catch {
-      // Stay in the editor when persistence fails so unsaved content is not discarded.
-    } finally {
-      setBusy(false);
-    }
-  };
+    setMessage("New edits were detected while saving. Save again before leaving.");
+  } catch {
+    // Stay in the editor when persistence fails so unsaved content is not discarded.
+  } finally {
+    setBusy(false);
+  }
+};
 
-  const handlePublish = async () => {
+const handlePublish = async () => {
     if (!window.confirm(`Publish “${draft.topic}”?`)) return;
     setBusy(true);
     setError(null);
