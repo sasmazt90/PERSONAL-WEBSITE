@@ -111,9 +111,13 @@ test('editor interactions, autosave, media picker and Preview → Edit persisten
   await page.getByRole('button', { name: 'Add column after' }).click();
   await expect(editor.locator('table tr')).toHaveCount(5);
   await expect(editor.locator('table tr').first().locator('th')).toHaveCount(6);
+  const styledCell = editor.locator('table td').first();
+  await styledCell.click();
   await page.getByLabel('Cell background').fill('#334155');
+  await styledCell.click();
   await page.getByLabel('Cell text color').fill('#ffffff');
-  await expect(editor.locator('table td').first()).toHaveAttribute('style', /background-color/);
+  await expect(styledCell).toHaveAttribute('style', /background-color/);
+  await expect(styledCell).toHaveAttribute('style', /color/);
 
   await page.getByRole('button', { name: 'Media library' }).click();
   await expect(page.getByText('Click any uploaded image to insert it at the cursor.')).toBeVisible();
