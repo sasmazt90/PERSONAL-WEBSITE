@@ -126,15 +126,6 @@ const isDetailSectionHeading = (value: string) =>
 const secondaryCtaClass =
   "inline-flex items-center gap-2 rounded-full border border-[#f4d68a] bg-[#fffbeb] px-4 py-2.5 text-sm font-bold text-[#bb4d00] shadow-[0_8px_18px_rgba(187,77,0,0.10)] transition hover:border-[#e7b84f] hover:bg-[#fff4d6] hover:text-[#963d00] dark:border-[#f4d68a]/45 dark:bg-[#fffbeb] dark:text-[#bb4d00]";
 
-const heroPhotos = [
-  "/assets/photos/tolgar-photo-1.webp",
-  "/assets/photos/tolgar-photo-5.webp",
-  "/assets/profile/profile-picture.webp",
-  "/assets/photos/naos-annual-meeting-2023.webp",
-  "/assets/photos/naos-annual-meeting-2022.webp",
-  "/assets/photos/naos-annual-meeting-2021.webp",
-];
-
 const atsTags = [
   "Digital Transformation",
   "Growth Strategy",
@@ -426,7 +417,6 @@ const translations = {
     footer: "Digital growth, AI systems and transformation leadership.",
     themeToggleDark: "Toggle dark mode",
     themeToggleLight: "Toggle light mode",
-    heroPhotoLabel: "Hero photo",
     privateProject:
       "Private enterprise project. Public visuals intentionally withheld.",
     toolsCountSuffix: "tools",
@@ -534,7 +524,6 @@ const translations = {
     footer: "Digitales Wachstum, KI-Systeme und Transformationsführung.",
     themeToggleDark: "Dunkelmodus aktivieren",
     themeToggleLight: "Hellmodus aktivieren",
-    heroPhotoLabel: "Hero-Foto",
     privateProject:
       "Vertrauliches Unternehmensprojekt. Öffentliche Visuals werden bewusst nicht gezeigt.",
     toolsCountSuffix: "Tools",
@@ -641,7 +630,6 @@ const translations = {
     footer: "Dijital büyüme, yapay zeka sistemleri ve dönüşüm liderliği.",
     themeToggleDark: "Karanlık modu aç",
     themeToggleLight: "Aydınlık modu aç",
-    heroPhotoLabel: "Hero fotoğrafı",
     privateProject:
       "Gizli kurumsal proje. Kamuya açık görseller bilinçli olarak paylaşılmıyor.",
     toolsCountSuffix: "araç",
@@ -782,7 +770,6 @@ export default function Home() {
   const [theme, setTheme] = useState<ThemeMode>("light");
   const [mediaModal, setMediaModal] = useState<MediaModal>(null);
   const [experienceModal, setExperienceModal] = useState<ExperienceModal>(null);
-  const [heroPhotoIndex, setHeroPhotoIndex] = useState(0);
   const [journeyProgress, setJourneyProgress] = useState(0);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const journeyRef = useRef<HTMLElement | null>(null);
@@ -962,13 +949,6 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setHeroPhotoIndex(current => (current + 1) % heroPhotos.length);
-    }, 3800);
-    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -1454,27 +1434,15 @@ export default function Home() {
 
             <div className="relative flex flex-col items-center gap-0 pt-4 lg:items-end lg:pt-0">
               <div className="w-full max-w-[430px] rounded-[2rem] border border-[#dce7f9] bg-white p-2 shadow-[0_28px_80px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none">
-                <div className="relative overflow-hidden rounded-[1.6rem]">
-                  {heroPhotos.map((photo, index) => (
-                    <img
-                      key={photo}
-                      src={photo}
-                      alt={personalInfo.name}
-                      className={`absolute inset-0 aspect-[4/4.8] w-full object-cover object-top transition-opacity duration-700 ${index === heroPhotoIndex ? "opacity-100" : "opacity-0"}`}
-                    />
-                  ))}
-                  <div className="relative aspect-[4/4.8] w-full" />
-                  <div className="absolute bottom-4 left-4 flex gap-2">
-                    {heroPhotos.map((photo, index) => (
-                      <button
-                        key={photo}
-                        type="button"
-                        onClick={() => setHeroPhotoIndex(index)}
-                        className={`h-2.5 rounded-full transition ${index === heroPhotoIndex ? "w-8 bg-white" : "w-2.5 bg-white/55"}`}
-                        aria-label={`${t.heroPhotoLabel} ${index + 1}`}
-                      />
-                    ))}
-                  </div>
+                <div className="overflow-hidden rounded-[1.6rem]">
+                  <img
+                    src="/assets/profile/tolgar-sasmaz-application-photo.jpeg"
+                    alt={personalInfo.name}
+                    width={1254}
+                    height={1254}
+                    fetchPriority="high"
+                    className="aspect-[4/4.8] w-full object-cover object-center"
+                  />
                 </div>
               </div>
 
