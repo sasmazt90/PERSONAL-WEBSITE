@@ -241,8 +241,27 @@ export default function Admin() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setIsUnlocked(window.sessionStorage.getItem(ADMIN_SESSION_KEY) === "true");
-    setPassword(window.sessionStorage.getItem(ADMIN_PASSWORD_SESSION_KEY) || "");
+    const savedPassword = window.sessionStorage.getItem(ADMIN_PASSWORD_SESSION_KEY);
+    if (window.sessionStorage.getItem(ADMIN_SESSION_KEY) !== "true" || !savedPassword) return;
+    const controller = new AbortController();
+    fetch("/api/admin/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: savedPassword }),
+      signal: controller.signal,
+    }).then((response) => {
+      if (!response.ok) {
+        window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        window.sessionStorage.removeItem(ADMIN_PASSWORD_SESSION_KEY);
+        setSaveError("Admin session expired. Please sign in again.");
+        return;
+      }
+      setPassword(savedPassword);
+      setIsUnlocked(true);
+    }).catch(() => {
+      if (!controller.signal.aborted) setSaveError("Could not verify the admin session. Please sign in again.");
+    });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import express from "express";
 import { SITE_ORIGIN, articlePath, articleSeoPage, availableArticleLanguages, renderSeoHtml, renderSitemap, type SeoPage } from "./seo";
 import fs from "fs";
+import { timingSafeEqual } from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
@@ -160,11 +161,12 @@ export function createApp() {
   const blogContentPath = path.resolve(writableDataPath, "blog-posts.json");
   const blogImagePath = path.resolve(writableDataPath, "blog-images");
   const dataSeedPath = path.resolve(__dirname, "..", "data-seed");
-  const fallbackAdminPassword = "7@yEwapu";
-  const adminPassword = process.env.ADMIN_PASSWORD?.trim() || fallbackAdminPassword;
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
   const isValidAdminPassword = (value: string | undefined) => {
-    const normalizedValue = value?.trim();
-    return normalizedValue === adminPassword || normalizedValue === fallbackAdminPassword;
+    if (!adminPassword || !value) return false;
+    const provided = Buffer.from(value.trim());
+    const expected = Buffer.from(adminPassword);
+    return provided.length === expected.length && timingSafeEqual(provided, expected);
   };
 
   const productionStaticPath = path.resolve(__dirname, "public");
@@ -301,7 +303,7 @@ export function createApp() {
 
   const requireAdmin = (req: any, res: any, next: any) => {
     if (!adminPassword) {
-      next();
+      res.status(503).json({ error: "Admin authentication is not configured." });
       return;
     }
 
@@ -320,6 +322,10 @@ export function createApp() {
   });
 
   app.post("/api/admin/auth", (req: any, res: any) => {
+    if (!adminPassword) {
+      res.status(503).json({ error: "Admin authentication is not configured." });
+      return;
+    }
     const providedPassword =
       typeof req.body?.password === "string"
         ? req.body.password.trim()
