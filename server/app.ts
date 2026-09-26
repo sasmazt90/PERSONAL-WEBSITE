@@ -1,7 +1,7 @@
 import express from "express";
 import { SITE_ORIGIN, articlePath, articleSeoPage, availableArticleLanguages, renderSeoHtml, renderSitemap, type SeoPage } from "./seo";
 import fs from "fs";
-import { timingSafeEqual } from "crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
@@ -168,6 +168,30 @@ export function createApp() {
     const expected = Buffer.from(adminPassword);
     return provided.length === expected.length && timingSafeEqual(provided, expected);
   };
+  const adminCookieName = "portfolio_admin_session";
+  const adminSessionLifetimeSeconds = 12 * 60 * 60;
+  const sessionSignature = (payload: string) =>
+    createHmac("sha256", adminPassword || "").update(payload).digest("base64url");
+  const createAdminSession = () => {
+    const payload = `${Date.now() + adminSessionLifetimeSeconds * 1000}.${randomBytes(16).toString("base64url")}`;
+    return `${payload}.${sessionSignature(payload)}`;
+  };
+  const isValidAdminSession = (cookieHeader: string | undefined) => {
+    if (!adminPassword || !cookieHeader) return false;
+    const cookie = cookieHeader.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${adminCookieName}=`));
+    const token = cookie?.slice(adminCookieName.length + 1);
+    if (!token) return false;
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const expiry = Number(parts[0]);
+    if (!Number.isSafeInteger(expiry) || expiry <= Date.now() || expiry > Date.now() + adminSessionLifetimeSeconds * 1000) return false;
+    const payload = `${parts[0]}.${parts[1]}`;
+    const provided = Buffer.from(parts[2]);
+    const expected = Buffer.from(sessionSignature(payload));
+    return provided.length === expected.length && timingSafeEqual(provided, expected);
+  };
+  const adminCookieOptions = (req: any, maxAge: number) =>
+    `${adminCookieName}=${maxAge ? createAdminSession() : ""}; HttpOnly; SameSite=Strict; Path=/api; Max-Age=${maxAge}${process.env.NODE_ENV === "production" || req.header("x-forwarded-proto") === "https" ? "; Secure" : ""}`;
 
   const productionStaticPath = path.resolve(__dirname, "public");
   const developmentStaticPath = path.resolve(__dirname, "..", "dist", "public");
@@ -307,11 +331,21 @@ export function createApp() {
       return;
     }
 
-    if (!isValidAdminPassword(req.header("x-admin-password"))) {
-      res.status(401).json({ error: "Unauthorized. Provide a valid admin password." });
+    if (!isValidAdminSession(req.header("cookie"))) {
+      res.status(401).json({ error: "Unauthorized. Please sign in again." });
       return;
     }
 
+    const requestProtocol = req.header("x-forwarded-proto")?.split(",")[0]?.trim() || req.protocol;
+    const expectedOrigin = req.get("host") === new URL(SITE_ORIGIN).host
+      ? SITE_ORIGIN
+      : `${requestProtocol}://${req.get("host")}`;
+    if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && req.header("origin") !== expectedOrigin) {
+      res.status(403).json({ error: "Invalid request origin." });
+      return;
+    }
+
+    res.setHeader("Cache-Control", "no-store");
     next();
   };
 
@@ -329,13 +363,26 @@ export function createApp() {
     const providedPassword =
       typeof req.body?.password === "string"
         ? req.body.password.trim()
-        : req.header("x-admin-password")?.trim();
+        : undefined;
 
     if (!isValidAdminPassword(providedPassword)) {
       res.status(401).json({ error: "Unauthorized. Provide a valid admin password." });
       return;
     }
 
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Set-Cookie", adminCookieOptions(req, adminSessionLifetimeSeconds));
+    res.json({ ok: true });
+  });
+
+  app.get("/api/admin/session", requireAdmin, (_req: any, res: any) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/logout", (req: any, res: any) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Set-Cookie", adminCookieOptions(req, 0));
     res.json({ ok: true });
   });
 

@@ -53,7 +53,7 @@ type EditorSection = "write" | "media" | "seo" | "more";
 const languageLabels: Record<BlogLanguage, string> = { en: "EN", de: "DE", tr: "TR" };
 const languageNames: Record<BlogLanguage, string> = { en: "English", de: "German (DACH)", tr: "Turkish" };
 
-export function BlogAdmin({ password }: { password: string }) {
+export function BlogAdmin() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [mode, setMode] = useState<BlogAdminMode>({ type: "list" });
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -63,10 +63,9 @@ export function BlogAdmin({ password }: { password: string }) {
   const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
 
   const loadPosts = async () => {
-    if (!password) return;
     setError(null);
     try {
-      const [collection, status] = await Promise.all([fetchAdminBlogPosts(password), fetchAiStatus(password)]);
+      const [collection, status] = await Promise.all([fetchAdminBlogPosts(), fetchAiStatus()]);
       setPosts(collection.posts);
       setAiStatus(status);
     } catch (loadError) {
@@ -76,7 +75,7 @@ export function BlogAdmin({ password }: { password: string }) {
 
   useEffect(() => {
     void loadPosts();
-  }, [password]);
+  }, []);
 
   const filteredPosts = useMemo(() => {
     const normalizedQuery = query.toLowerCase().trim();
@@ -97,7 +96,7 @@ export function BlogAdmin({ password }: { password: string }) {
     setBusy(true);
     setError(null);
     try {
-      const post = await createManualBlogPost({ topic: "Untitled Article", angle: "", targetKeyword: "", notes: "" }, password);
+      const post = await createManualBlogPost({ topic: "Untitled Article", angle: "", targetKeyword: "", notes: "" });
       setPosts((current) => [post, ...current]);
       setMode({ type: "edit", postId: post.id });
     } catch (createError) {
@@ -112,7 +111,6 @@ export function BlogAdmin({ password }: { password: string }) {
       <BlogEditor
         post={selectedPost}
         availablePosts={posts}
-        password={password}
         aiStatus={aiStatus}
         onBack={() => setMode({ type: "list" })}
         onPreview={(post) => {
@@ -217,7 +215,6 @@ export function BlogAdmin({ password }: { password: string }) {
 function BlogEditor({
   post,
   availablePosts,
-  password,
   aiStatus,
   onBack,
   onPreview,
@@ -227,7 +224,6 @@ function BlogEditor({
 }: {
   post: BlogPost;
   availablePosts: BlogPost[];
-  password: string;
   aiStatus: AiStatus | null;
   onBack: () => void;
   onPreview: (post: BlogPost) => void;
@@ -272,7 +268,7 @@ function BlogEditor({
     const requestId = ++saveRequestRef.current;
     setSaveState("saving");
     try {
-      const saved = await saveBlogPost({ ...snapshot, docReadyContent: buildDocReadyContent(snapshot) }, password);
+      const saved = await saveBlogPost({ ...snapshot, docReadyContent: buildDocReadyContent(snapshot) });
       const isLatestRequest = requestId === saveRequestRef.current;
       const currentMatchesSnapshot = fingerprint(currentDraftRef.current) === fingerprint(snapshot);
       if (isLatestRequest) {
@@ -316,7 +312,7 @@ function BlogEditor({
       targetKeyword: sourcePost.seo[sourceLanguage].focusKeyword || sourcePost.targetKeyword,
       angle: `LOCALIZATION ONLY. Use the supplied ${languageNames[sourceLanguage]} article as source of truth. Preserve facts, KPI values, semantic HTML, links and depth. German must be localized for DACH search intent, not translated literally.`,
       notes: `SOURCE LANGUAGE: ${sourceLanguage.toUpperCase()}\nSOURCE SEO TITLE: ${sourcePost.seo[sourceLanguage].title}\nSOURCE META DESCRIPTION: ${sourcePost.seo[sourceLanguage].metaDescription}\nSOURCE FAQ: ${JSON.stringify(sourcePost.faq[sourceLanguage] || [])}\nSOURCE ARTICLE HTML:\n${sourceHtml}`,
-    }, password);
+    });
 
     const next = structuredClone(sourcePost);
     for (const target of targets) {
@@ -334,7 +330,7 @@ function BlogEditor({
         };
       });
     }
-    try { await deleteBlogPost(generated.id, password); } catch { /* generated localization draft cleanup is best effort */ }
+    try { await deleteBlogPost(generated.id); } catch { /* generated localization draft cleanup is best effort */ }
     return next;
   };
 
@@ -431,7 +427,7 @@ const handlePublish = async () => {
       const sourceLanguage = bestSourceLanguage(next, language);
       if (blogLanguages.some((item) => needsLocalization(next, item))) next = await localize(next, sourceLanguage, false);
       const saved = await persistSnapshot(next, true);
-      const published = await publishBlogPost(saved.id, password);
+      const published = await publishBlogPost(saved.id);
       currentDraftRef.current = published;
       setDraft(published);
       onPublished(published);
@@ -446,7 +442,7 @@ const handlePublish = async () => {
     if (!window.confirm(`Permanently delete “${draft.topic}”?`)) return;
     setBusy(true);
     try {
-      await deleteBlogPost(draft.id, password);
+      await deleteBlogPost(draft.id);
       onDeleted(draft.id);
     } catch (deleteError) {
       setError(deleteError instanceof Error ? deleteError.message : "Failed to delete.");
@@ -472,8 +468,8 @@ const handlePublish = async () => {
     currentDraftRef.current = withVisual;
     setDraft(withVisual);
     setSaveState("saving");
-    const persisted = await saveBlogPost(withVisual, password);
-    const uploaded = await uploadBlogVisual(persisted.id, visual.id, file, password);
+    const persisted = await saveBlogPost(withVisual);
+    const uploaded = await uploadBlogVisual(persisted.id, visual.id, file);
     const latest = currentDraftRef.current;
     const contentChangedDuringUpload = fingerprint({ ...latest, visuals: withVisual.visuals }) !== fingerprint(withVisual);
     // Never replace the live editor state with a server response that may have been created
@@ -557,7 +553,7 @@ const handlePublish = async () => {
       ) : null}
 
       {activeSection === "media" ? (
-        <MediaManager post={draft} language={language} password={password} onChange={(next) => { currentDraftRef.current = next; setDraft(next); setSaveState("unsaved"); }} onPersisted={(next) => { const current = currentDraftRef.current; const merged = { ...current, visuals: next.visuals, updatedAt: next.updatedAt }; const hasNewerEdits = fingerprint({ ...current, visuals: next.visuals }) !== fingerprint(next); currentDraftRef.current = merged; setDraft(merged); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); setSaveState(hasNewerEdits ? "unsaved" : "saved"); }} />
+        <MediaManager post={draft} language={language} onChange={(next) => { currentDraftRef.current = next; setDraft(next); setSaveState("unsaved"); }} onPersisted={(next) => { const current = currentDraftRef.current; const merged = { ...current, visuals: next.visuals, updatedAt: next.updatedAt }; const hasNewerEdits = fingerprint({ ...current, visuals: next.visuals }) !== fingerprint(next); currentDraftRef.current = merged; setDraft(merged); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); setSaveState(hasNewerEdits ? "unsaved" : "saved"); }} />
       ) : null}
 
       {activeSection === "seo" ? (
@@ -618,7 +614,7 @@ const handlePublish = async () => {
   );
 }
 
-function MediaManager({ post, language, password, onChange, onPersisted }: { post: BlogPost; language: BlogLanguage; password: string; onChange: (post: BlogPost) => void; onPersisted: (post: BlogPost) => void }) {
+function MediaManager({ post, language, onChange, onPersisted }: { post: BlogPost; language: BlogLanguage; onChange: (post: BlogPost) => void; onPersisted: (post: BlogPost) => void }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const thumbnail = post.visuals.find((visual) => visual.visualType === "thumbnail");
@@ -630,8 +626,8 @@ function MediaManager({ post, language, password, onChange, onPersisted }: { pos
     try {
       const exists = post.visuals.some((item) => item.id === visual.id);
       const base = exists ? post : { ...post, visuals: [...post.visuals, visual] };
-      const saved = await saveBlogPost(base, password);
-      const uploaded = await uploadBlogVisual(saved.id, visual.id, file, password);
+      const saved = await saveBlogPost(base);
+      const uploaded = await uploadBlogVisual(saved.id, visual.id, file);
       onPersisted(uploaded);
       return uploaded;
     } catch (error) {
@@ -651,7 +647,7 @@ function MediaManager({ post, language, password, onChange, onPersisted }: { pos
     if (!hero?.url) return;
     const nextVisuals = post.visuals.filter((visual) => visual.visualType !== "thumbnail").map((visual) => visual.id === hero.id ? visual : visual);
     const clone: BlogVisual = { ...hero, id: `thumbnail_${Date.now()}`, visualType: "thumbnail", fileName: hero.fileName, placement: "Blog listing thumbnail" };
-    const saved = await saveBlogPost({ ...post, visuals: [...nextVisuals, clone] }, password);
+    const saved = await saveBlogPost({ ...post, visuals: [...nextVisuals, clone] });
     onPersisted(saved);
   };
 
@@ -713,7 +709,7 @@ function MediaManager({ post, language, password, onChange, onPersisted }: { pos
                 </label>
                 <button type="button" onClick={() => onChange({ ...post, visuals: post.visuals.filter((item) => item.id !== visual.id) })} className="rounded-lg border border-white/10 px-2.5 text-rose-300 hover:bg-rose-400/10"><Trash2 size={13} /></button>
               </div>
-              {visual.prompt?.trim() ? <Button type="button" variant="outline" size="sm" disabled={busyId === visual.id} onClick={async () => { setBusyId(visual.id); try { onPersisted(await generateBlogVisual(post.id, visual.id, visual.prompt, password)); } finally { setBusyId(null); } }}>Generate image</Button> : null}
+              {visual.prompt?.trim() ? <Button type="button" variant="outline" size="sm" disabled={busyId === visual.id} onClick={async () => { setBusyId(visual.id); try { onPersisted(await generateBlogVisual(post.id, visual.id, visual.prompt)); } finally { setBusyId(null); } }}>Generate image</Button> : null}
             </div>
           </div>
         ))}

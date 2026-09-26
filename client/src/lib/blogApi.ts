@@ -1,8 +1,7 @@
 import type { BlogCollection, BlogGenerationInput, BlogPost } from "@shared/blog";
 
-const jsonHeaders = (password?: string) => ({
+const jsonHeaders = () => ({
   "Content-Type": "application/json",
-  ...(password ? { "x-admin-password": password } : {}),
 });
 
 async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 2500) {
@@ -34,13 +33,13 @@ async function fetchStaticBlogPosts(): Promise<BlogCollection> {
   };
 }
 
-export async function fetchAdminBlogPosts(password: string) {
-  const response = await fetch("/api/admin/blog-posts", { headers: jsonHeaders(password) });
+export async function fetchAdminBlogPosts() {
+  const response = await fetch("/api/admin/blog-posts", { headers: jsonHeaders() });
   return parseResponse<BlogCollection>(response);
 }
 
-export async function fetchAiStatus(password: string) {
-  const response = await fetch("/api/admin/ai-status", { headers: jsonHeaders(password) });
+export async function fetchAiStatus() {
+  const response = await fetch("/api/admin/ai-status", { headers: jsonHeaders() });
   return parseResponse<{
     textGeneration: { configured: boolean; model: string; requiredEnv: string[] };
     imageGeneration: { configured: boolean; model: string; requiredEnv: string[] };
@@ -71,50 +70,50 @@ export async function fetchPublicBlogPost(slug: string) {
   }
 }
 
-export async function createManualBlogPost(input: BlogGenerationInput, password: string) {
+export async function createManualBlogPost(input: BlogGenerationInput) {
   const response = await fetch("/api/admin/blog-posts/manual", {
     method: "POST",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
     body: JSON.stringify(input),
   });
   return parseResponse<BlogPost>(response);
 }
 
-export async function generateBlogPost(input: BlogGenerationInput, password: string) {
+export async function generateBlogPost(input: BlogGenerationInput) {
   const response = await fetch("/api/admin/blog-posts/generate", {
     method: "POST",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
     body: JSON.stringify(input),
   });
   return parseResponse<BlogPost>(response);
 }
 
-export async function saveBlogPost(post: BlogPost, password: string) {
+export async function saveBlogPost(post: BlogPost) {
   const response = await fetch(`/api/admin/blog-posts/${post.id}`, {
     method: "PUT",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
     body: JSON.stringify(post),
   });
   return parseResponse<BlogPost>(response);
 }
 
-export async function publishBlogPost(postId: string, password: string) {
+export async function publishBlogPost(postId: string) {
   const response = await fetch(`/api/admin/blog-posts/${postId}/publish`, {
     method: "POST",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
   });
   return parseResponse<BlogPost>(response);
 }
 
-export async function deleteBlogPost(postId: string, password: string) {
+export async function deleteBlogPost(postId: string) {
   const response = await fetch(`/api/admin/blog-posts/${postId}`, {
     method: "DELETE",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
   });
   return parseResponse<{ ok: true }>(response);
 }
 
-export async function uploadBlogVisual(postId: string, visualId: string, file: File, password: string) {
+export async function uploadBlogVisual(postId: string, visualId: string, file: File) {
   const dataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
@@ -123,7 +122,7 @@ export async function uploadBlogVisual(postId: string, visualId: string, file: F
   });
   const response = await fetch(`/api/admin/blog-posts/${postId}/visuals/${visualId}/upload`, {
     method: "POST",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
     body: JSON.stringify({ fileName: file.name, dataUrl }),
   });
   const uploaded = await parseResponse<BlogPost>(response);
@@ -136,10 +135,10 @@ export async function uploadBlogVisual(postId: string, visualId: string, file: F
   return uploaded;
 }
 
-export async function generateBlogVisual(postId: string, visualId: string, prompt: string, password: string) {
+export async function generateBlogVisual(postId: string, visualId: string, prompt: string) {
   const response = await fetch(`/api/admin/blog-posts/${postId}/visuals/${visualId}/generate`, {
     method: "POST",
-    headers: jsonHeaders(password),
+    headers: jsonHeaders(),
     body: JSON.stringify({ prompt }),
   });
   return parseResponse<BlogPost>(response);

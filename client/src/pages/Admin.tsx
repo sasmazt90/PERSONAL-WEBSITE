@@ -14,8 +14,8 @@ type PortfolioKey = keyof PortfolioData;
 type SiteKey = keyof SiteContent;
 type DraftKey = `${SourceKind}:${string}`;
 type ViewMode = "form" | "json";
-const ADMIN_SESSION_KEY = "portfolio-admin-authenticated";
-const ADMIN_PASSWORD_SESSION_KEY = "portfolio-admin-password";
+const LEGACY_ADMIN_SESSION_KEY = "portfolio-admin-authenticated";
+const LEGACY_ADMIN_PASSWORD_KEY = "portfolio-admin-password";
 
 interface SectionDescriptor {
   draftKey: DraftKey;
@@ -213,6 +213,7 @@ export default function Admin() {
   });
   const [password, setPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [savingKey, setSavingKey] = useState<DraftKey | "all" | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -241,25 +242,15 @@ export default function Admin() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const savedPassword = window.sessionStorage.getItem(ADMIN_PASSWORD_SESSION_KEY);
-    if (window.sessionStorage.getItem(ADMIN_SESSION_KEY) !== "true" || !savedPassword) return;
+    window.sessionStorage.removeItem(LEGACY_ADMIN_SESSION_KEY);
+    window.sessionStorage.removeItem(LEGACY_ADMIN_PASSWORD_KEY);
     const controller = new AbortController();
-    fetch("/api/admin/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: savedPassword }),
+    fetch("/api/admin/session", {
       signal: controller.signal,
     }).then((response) => {
-      if (!response.ok) {
-        window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
-        window.sessionStorage.removeItem(ADMIN_PASSWORD_SESSION_KEY);
-        setSaveError("Admin session expired. Please sign in again.");
-        return;
-      }
-      setPassword(savedPassword);
-      setIsUnlocked(true);
-    }).catch(() => {
-      if (!controller.signal.aborted) setSaveError("Could not verify the admin session. Please sign in again.");
+      if (response.ok) setIsUnlocked(true);
+    }).catch(() => undefined).finally(() => {
+      if (!controller.signal.aborted) setIsCheckingSession(false);
     });
     return () => controller.abort();
   }, []);
@@ -293,7 +284,6 @@ export default function Admin() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...(password ? { "x-admin-password": password } : {}),
       },
       body: JSON.stringify(payload),
     });
@@ -323,11 +313,7 @@ export default function Admin() {
         throw new Error(body?.error || `Authentication failed (${response.status})`);
       }
 
-      if (typeof window !== "undefined") {
-        window.sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
-        window.sessionStorage.setItem(ADMIN_PASSWORD_SESSION_KEY, password);
-      }
-
+      setPassword("");
       setIsUnlocked(true);
       setStatus("Admin access granted.");
     } catch (error) {
@@ -336,6 +322,22 @@ export default function Admin() {
       setIsAuthenticating(false);
     }
   };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/admin/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Could not sign out. Please try again.");
+      setIsUnlocked(false);
+      setPassword("");
+      setStatus(null);
+    } catch {
+      setSaveError("Could not sign out. Please try again.");
+    }
+  };
+
+  if (isCheckingSession) {
+    return <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">Admin oturumu kontrol ediliyor...</div>;
+  }
 
   if (!isUnlocked) {
     return (
@@ -473,16 +475,14 @@ export default function Admin() {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <label className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm">
-                <Shield size={16} className="text-slate-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Admin password"
-                  className="w-44 bg-transparent outline-none placeholder:text-slate-500"
-                />
-              </label>
+              <button
+                type="button"
+                onClick={() => void handleLogout()}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold transition hover:bg-white/15"
+              >
+                <Shield size={16} />
+                Çıkış yap
+              </button>
               <button
                 type="button"
                 onClick={() => void Promise.all([portfolio.refresh(), site.refresh()])}
@@ -625,7 +625,7 @@ export default function Admin() {
               </div> : null}
             </section>
           ))}
-        </div> : <div className="mt-8"><BlogAdmin password={password} /></div>}
+        </div> : <div className="mt-8"><BlogAdmin /></div>}
       </div>
     </div>
   );
