@@ -48,7 +48,9 @@ import {
   isDownloadUrl,
   isExternalUrl,
   trackEvent,
+  trackPageView,
 } from "@/lib/analytics";
+import { setPageSeo } from "@/lib/seo";
 import { fetchPublicBlogPosts } from "@/lib/blogApi";
 
 type Language = "en" | "de" | "tr";
@@ -932,6 +934,22 @@ export default function Home() {
       section_name: sectionName,
     });
   };
+
+  useEffect(() => {
+    const title = "Ibrahim Tolgar Sasmaz | Digital Growth, AI & Transformation";
+    setPageSeo({
+      title,
+      description: "Personal portfolio of Ibrahim Tolgar Sasmaz, a Munich-based digital growth and AI transformation leader with 12+ years across FMCG, SaaS and retail.",
+      canonicalPath: "/",
+      imagePath: "/assets/profile/tolgar-sasmaz-application-photo.jpeg",
+      structuredData: {
+        "@context": "https://schema.org", "@type": "Person",
+        name: "Ibrahim Tolgar Sasmaz", url: "https://www.sasmaz.digital",
+        image: "https://www.sasmaz.digital/assets/profile/tolgar-sasmaz-application-photo.jpeg",
+      },
+    });
+    trackPageView(title);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");

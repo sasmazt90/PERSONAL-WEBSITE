@@ -126,7 +126,14 @@ export async function uploadBlogVisual(postId: string, visualId: string, file: F
     headers: jsonHeaders(password),
     body: JSON.stringify({ fileName: file.name, dataUrl }),
   });
-  return parseResponse<BlogPost>(response);
+  const uploaded = await parseResponse<BlogPost>(response);
+  const visual = uploaded.visuals.find((item) => item.id === visualId);
+  if (!visual?.url) throw new Error("Image upload completed without a public URL.");
+  const imageResponse = await fetch(visual.url, { cache: "no-store" });
+  if (!imageResponse.ok || !imageResponse.headers.get("content-type")?.startsWith("image/")) {
+    throw new Error("Image was saved, but its public URL is not serving an image. Please try again or contact support.");
+  }
+  return uploaded;
 }
 
 export async function generateBlogVisual(postId: string, visualId: string, prompt: string, password: string) {

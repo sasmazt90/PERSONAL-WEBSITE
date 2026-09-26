@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useRoute } from "wouter";
+import { Link, useLocation, useRoute } from "wouter";
 import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
 import { sanitizeHtml, type BlogLanguage, type BlogPost } from "@shared/blog";
 import { blogLanguages } from "@shared/blog";
@@ -10,7 +10,9 @@ import {
   isDownloadUrl,
   isExternalUrl,
   trackEvent,
+  trackPageView,
 } from "@/lib/analytics";
+import { setPageSeo } from "@/lib/seo";
 import { fetchPublicBlogPost, fetchPublicBlogPosts } from "@/lib/blogApi";
 import { BlogContentSurface } from "@/components/blog/BlogContentSurface";
 import PortfolioHeader, {
@@ -25,7 +27,6 @@ const languageLabels: Record<BlogLanguage, string> = {
 };
 const adsenseClient = "ca-pub-4185131193797685";
 const adsenseBlogSlot = import.meta.env.VITE_ADSENSE_BLOG_SLOT || "";
-const siteUrl = "https://www.sasmaz.digital";
 
 declare global {
   interface Window {
@@ -45,18 +46,6 @@ function getThumbnailVisual(post: BlogPost) {
     post.visuals.find(visual => visual.visualType === "hero") ||
     post.visuals[0]
   );
-}
-
-function upsertHeadLink(id: string, attrs: Record<string, string>) {
-  const existing = document.head.querySelector<HTMLLinkElement>(
-    `link[data-blog-head="${id}"]`
-  );
-  const link = existing || document.createElement("link");
-  link.dataset.blogHead = id;
-  Object.entries(attrs).forEach(([key, value]) =>
-    link.setAttribute(key, value)
-  );
-  if (!existing) document.head.appendChild(link);
 }
 
 function trackBlogLinkClick(
@@ -85,6 +74,7 @@ function trackBlogLinkClick(
 
 export default function BlogArticle() {
   const { theme, toggleTheme } = useTheme();
+  const [, navigate] = useLocation();
   const [, paramsWithLanguage] = useRoute("/blog/:slug/:lang");
   const [, paramsWithoutLanguage] = useRoute("/blog/:slug");
   const params = paramsWithLanguage || paramsWithoutLanguage;
@@ -98,9 +88,19 @@ export default function BlogArticle() {
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [language, setLanguage] = useState<BlogLanguage>(routeLanguage);
   const [error, setError] = useState<string | null>(null);
+  const changeLanguage = (nextLanguage: BlogLanguage) => {
+    setLanguage(nextLanguage);
+    if (slug) navigate(`/blog/${post?.slug.canonical || slug}/${nextLanguage}`);
+  };
+
+  useEffect(() => {
+    setLanguage(routeLanguage);
+  }, [routeLanguage]);
 
   useEffect(() => {
     if (!slug) return;
+    setPost(null);
+    setError(null);
     fetchPublicBlogPost(slug)
       .then(nextPost => setPost(nextPost))
       .catch(loadError =>
@@ -119,34 +119,43 @@ export default function BlogArticle() {
   }, []);
 
   useEffect(() => {
-    if (!post) return;
-    document.title = post.seo[language].title || post.topic;
-    const description =
-      document.querySelector('meta[name="description"]') ||
-      document.createElement("meta");
-    description.setAttribute("name", "description");
-    description.setAttribute(
-      "content",
-      post.seo[language].metaDescription || ""
-    );
-    document.head.appendChild(description);
-    upsertHeadLink("canonical", {
-      rel: "canonical",
-      href: `${siteUrl}/blog/${post.slug.canonical}/${language}`,
+    if (!post || ![post.slug.canonical, post.slug.en, post.slug.de, post.slug.tr].includes(slug) || language !== routeLanguage) return;
+    const title = post.seo[language].title || post.topic;
+    const description = post.seo[language].metaDescription || post.topic;
+    const canonicalPath = `/blog/${post.slug.canonical}/${language}`;
+    const imagePath = getHeroVisual(post)?.url;
+    const languages = blogLanguages.filter((item) => post.content[item]?.trim() && post.seo[item]?.title?.trim());
+    const alternates: { language: string; path: string }[] = languages.map((item) => ({ language: item, path: `/blog/${post.slug.canonical}/${item}` }));
+    if (languages.includes("en")) alternates.push({ language: "x-default", path: `/blog/${post.slug.canonical}/en` });
+    setPageSeo({
+      title,
+      description,
+      canonicalPath,
+      language,
+      imagePath,
+      type: "article",
+      alternates,
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        url: `https://www.sasmaz.digital${canonicalPath}`,
+        mainEntityOfPage: `https://www.sasmaz.digital${canonicalPath}`,
+        datePublished: post.publishedAt,
+        dateModified: post.updatedAt,
+        ...(imagePath ? { image: new URL(imagePath, "https://www.sasmaz.digital").href } : {}),
+        author: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz", url: "https://www.sasmaz.digital" },
+        publisher: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz", url: "https://www.sasmaz.digital" },
+      },
     });
-    blogLanguages.forEach(item => {
-      upsertHeadLink(`alternate-${item}`, {
-        rel: "alternate",
-        hreflang: item,
-        href: `${siteUrl}/blog/${post.slug.canonical}/${item}`,
-      });
-    });
-    upsertHeadLink("alternate-x-default", {
-      rel: "alternate",
-      hreflang: "x-default",
-      href: `${siteUrl}/blog/${post.slug.canonical}/en`,
-    });
-  }, [post, language]);
+    trackPageView(title);
+  }, [post, language, slug, routeLanguage]);
+
+  useEffect(() => {
+    if (!error) return;
+    setPageSeo({ title: "Article unavailable | Ibrahim Tolgar Sasmaz", description: error, robots: "noindex, nofollow" });
+  }, [error]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -209,7 +218,7 @@ export default function BlogArticle() {
       <main className="min-h-screen bg-[#f8fbff] text-[#0f172a]">
         <PortfolioHeader
           language={language}
-          onLanguageChange={setLanguage}
+          onLanguageChange={changeLanguage}
           theme={theme}
           onThemeToggle={() => toggleTheme?.()}
           navLabels={portfolioNavLabels[language]}
@@ -237,7 +246,7 @@ export default function BlogArticle() {
       <main className="min-h-screen bg-[#f8fbff] text-[#0f172a]">
         <PortfolioHeader
           language={language}
-          onLanguageChange={setLanguage}
+          onLanguageChange={changeLanguage}
           theme={theme}
           onThemeToggle={() => toggleTheme?.()}
           navLabels={portfolioNavLabels[language]}
@@ -255,7 +264,7 @@ export default function BlogArticle() {
     <main className="min-h-screen bg-[#f8fbff] text-[#0f172a]">
       <PortfolioHeader
         language={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={changeLanguage}
         theme={theme}
         onThemeToggle={() => toggleTheme?.()}
         navLabels={portfolioNavLabels[language]}
@@ -396,40 +405,6 @@ export default function BlogArticle() {
             />
           </div>
         </div>
-      ) : null}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: post.seo[language].title || post.topic,
-            description: post.seo[language].metaDescription,
-            datePublished: post.publishedAt,
-            dateModified: post.updatedAt,
-            mainEntityOfPage: `${siteUrl}/blog/${post.slug.canonical}/${language}`,
-            author: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz" },
-          }),
-        }}
-      />
-      {post.faq[language]?.length ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: post.faq[language].map(item => ({
-                "@type": "Question",
-                name: item.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: item.answer,
-                },
-              })),
-            }),
-          }}
-        />
       ) : null}
     </main>
   );

@@ -3,7 +3,8 @@ import { Link } from "wouter";
 import { Search } from "lucide-react";
 import type { BlogLanguage, BlogPost } from "@shared/blog";
 import { blogLanguages } from "@shared/blog";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackPageView } from "@/lib/analytics";
+import { setPageSeo } from "@/lib/seo";
 import { fetchPublicBlogPosts } from "@/lib/blogApi";
 import PortfolioHeader, {
   portfolioNavLabels,
@@ -38,6 +39,20 @@ export default function BlogList() {
   const [language, setLanguage] = useState<BlogLanguage>("en");
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const title = "Blog | Ibrahim Tolgar Sasmaz";
+    setPageSeo({
+      title,
+      description: "Articles on AI marketing, digital growth, performance marketing, e-commerce and transformation by Ibrahim Tolgar Sasmaz.",
+      canonicalPath: "/blog",
+      structuredData: {
+        "@context": "https://schema.org", "@type": "CollectionPage",
+        name: "Ibrahim Tolgar Sasmaz Blog", url: "https://www.sasmaz.digital/blog",
+      },
+    });
+    trackPageView(title);
+  }, []);
 
   useEffect(() => {
     fetchPublicBlogPosts()

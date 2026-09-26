@@ -48,6 +48,7 @@ type BlogAdminMode = { type: "list" } | { type: "edit"; postId: string } | { typ
 type StatusFilter = "all" | "draft" | "published";
 type AiStatus = Awaited<ReturnType<typeof fetchAiStatus>>;
 type SaveState = "saved" | "saving" | "unsaved" | "error";
+type EditorSection = "write" | "media" | "seo" | "more";
 
 const languageLabels: Record<BlogLanguage, string> = { en: "EN", de: "DE", tr: "TR" };
 const languageNames: Record<BlogLanguage, string> = { en: "English", de: "German (DACH)", tr: "Turkish" };
@@ -240,6 +241,7 @@ function BlogEditor({
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<EditorSection>("write");
   const [settingsOpen, setSettingsOpen] = useState(true);
   const currentDraftRef = useRef(draft);
   const lastSavedFingerprintRef = useRef(fingerprint(post));
@@ -510,41 +512,56 @@ const handlePublish = async () => {
             <Button type="button" variant="destructive" size="sm" onClick={() => void handleDelete()} disabled={busy}><Trash2 size={15} /></Button>
           </div>
         </div>
+        <nav aria-label="Blog editor sections" className="mt-4 flex gap-2 overflow-x-auto border-t border-white/10 pt-3">
+          {([
+            ["write", "Write"],
+            ["media", `Media (${draft.visuals.length})`],
+            ["seo", "SEO & Publish"],
+            ["more", "More"],
+          ] as [EditorSection, string][]).map(([section, label]) => (
+            <button
+              key={section}
+              type="button"
+              aria-pressed={activeSection === section}
+              onClick={() => setActiveSection(section)}
+              className={`shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition ${activeSection === section ? "bg-blue-600 text-white" : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"}`}
+            >
+              {label}
+            </button>
+          ))}
+          <div className="ml-auto flex shrink-0 rounded-xl border border-white/10 bg-slate-950/50 p-1" aria-label="Editing language">
+            {blogLanguages.map((item) => (
+              <button key={item} type="button" onClick={() => setLanguage(item)} aria-pressed={language === item} className={`rounded-lg px-2.5 py-1 text-xs font-bold ${language === item ? "bg-blue-500 text-white" : "text-slate-400 hover:text-white"}`}>
+                {languageLabels[item]}
+              </button>
+            ))}
+          </div>
+        </nav>
         {message ? <p className="mt-2 text-xs text-emerald-300">{message}</p> : null}
         {error ? <p className="mt-2 rounded-xl border border-rose-400/20 bg-rose-400/10 p-2.5 text-xs text-rose-200">{error}</p> : null}
       </header>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <main className="min-w-0 space-y-5">
-          <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex rounded-xl border border-white/10 bg-slate-950/50 p-1">
-                {blogLanguages.map((item) => (
-                  <button key={item} type="button" onClick={() => setLanguage(item)} className={`rounded-lg px-4 py-2 text-xs font-bold ${language === item ? "bg-blue-500 text-white" : "text-slate-400 hover:bg-white/10 hover:text-white"}`}>
-                    {languageLabels[item]}
-                  </button>
-                ))}
-              </div>
-              <span className="text-xs text-slate-500">Autosaves while you write</span>
-            </div>
-            <RichTextEditor
-              key={language}
-              content={draft.content[language]}
-              language={language}
-              visuals={draft.visuals}
-              internalLinks={draft.internalLinks}
-              onUploadImage={uploadInlineImage}
-              onChange={updateLanguageContent}
-            />
-          </section>
+      {activeSection === "write" ? (
+        <section className="rounded-3xl border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+          <p className="mb-4 text-xs text-slate-500">{languageNames[language]} · Autosaves while you write</p>
+          <RichTextEditor
+            key={language}
+            content={draft.content[language]}
+            language={language}
+            visuals={draft.visuals}
+            internalLinks={draft.internalLinks}
+            onUploadImage={uploadInlineImage}
+            onChange={updateLanguageContent}
+          />
+        </section>
+      ) : null}
 
-          <MediaManager post={draft} language={language} password={password} onChange={(next) => { currentDraftRef.current = next; setDraft(next); setSaveState("unsaved"); }} onPersisted={(next) => { currentDraftRef.current = next; setDraft(next); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); setSaveState("saved"); }} />
-          <FaqEditor post={draft} language={language} onChange={updateDraft} />
-          <RelatedContentEditor post={draft} availablePosts={availablePosts} onChange={updateDraft} />
-          <InternalLinksEditor post={draft} onChange={updateDraft} />
-        </main>
+      {activeSection === "media" ? (
+        <MediaManager post={draft} language={language} password={password} onChange={(next) => { currentDraftRef.current = next; setDraft(next); setSaveState("unsaved"); }} onPersisted={(next) => { const current = currentDraftRef.current; const merged = { ...current, visuals: next.visuals, updatedAt: next.updatedAt }; const hasNewerEdits = fingerprint({ ...current, visuals: next.visuals }) !== fingerprint(next); currentDraftRef.current = merged; setDraft(merged); onSaved(next); lastSavedFingerprintRef.current = fingerprint(next); setSaveState(hasNewerEdits ? "unsaved" : "saved"); }} />
+      ) : null}
 
-        <aside className="space-y-4 xl:sticky xl:top-[92px] xl:self-start">
+      {activeSection === "seo" ? (
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
           <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
             <button type="button" onClick={() => setSettingsOpen((value) => !value)} className="flex w-full items-center justify-between gap-3 text-left">
               <div><h3 className="font-['Space_Grotesk'] text-lg font-bold">SEO & Publishing</h3><p className="mt-0.5 text-xs text-slate-500">{languageNames[language]}</p></div>
@@ -575,27 +592,51 @@ const handlePublish = async () => {
             ) : null}
           </section>
 
-          <PublishReadiness post={draft} validation={validation} />
-        </aside>
-      </div>
+          <aside className="xl:sticky xl:top-40 xl:self-start">
+            <PublishReadiness post={draft} validation={validation} />
+          </aside>
+        </div>
+      ) : null}
+
+      {activeSection === "more" ? (
+        <div className="space-y-4">
+          <details className="rounded-2xl border border-white/10 bg-white/[0.035] p-3" open>
+            <summary className="cursor-pointer px-2 py-2 text-sm font-bold">FAQ ({draft.faq[language]?.length || 0})</summary>
+            <div className="mt-3"><FaqEditor post={draft} language={language} onChange={updateDraft} /></div>
+          </details>
+          <details className="rounded-2xl border border-white/10 bg-white/[0.035] p-3">
+            <summary className="cursor-pointer px-2 py-2 text-sm font-bold">Related content</summary>
+            <div className="mt-3"><RelatedContentEditor post={draft} availablePosts={availablePosts} onChange={updateDraft} /></div>
+          </details>
+          <details className="rounded-2xl border border-white/10 bg-white/[0.035] p-3">
+            <summary className="cursor-pointer px-2 py-2 text-sm font-bold">Internal links</summary>
+            <div className="mt-3"><InternalLinksEditor post={draft} onChange={updateDraft} /></div>
+          </details>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 function MediaManager({ post, language, password, onChange, onPersisted }: { post: BlogPost; language: BlogLanguage; password: string; onChange: (post: BlogPost) => void; onPersisted: (post: BlogPost) => void }) {
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const thumbnail = post.visuals.find((visual) => visual.visualType === "thumbnail");
   const hero = post.visuals.find((visual) => visual.visualType === "hero");
 
   const persistAndUpload = async (visual: BlogVisual, file: File) => {
     setBusyId(visual.id);
+    setUploadError(null);
     try {
       const exists = post.visuals.some((item) => item.id === visual.id);
       const base = exists ? post : { ...post, visuals: [...post.visuals, visual] };
       const saved = await saveBlogPost(base, password);
       const uploaded = await uploadBlogVisual(saved.id, visual.id, file, password);
-      onChange(uploaded);
+      onPersisted(uploaded);
       return uploaded;
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Image upload failed.");
+      return undefined;
     } finally {
       setBusyId(null);
     }
@@ -611,7 +652,7 @@ function MediaManager({ post, language, password, onChange, onPersisted }: { pos
     const nextVisuals = post.visuals.filter((visual) => visual.visualType !== "thumbnail").map((visual) => visual.id === hero.id ? visual : visual);
     const clone: BlogVisual = { ...hero, id: `thumbnail_${Date.now()}`, visualType: "thumbnail", fileName: hero.fileName, placement: "Blog listing thumbnail" };
     const saved = await saveBlogPost({ ...post, visuals: [...nextVisuals, clone] }, password);
-    onChange(saved);
+    onPersisted(saved);
   };
 
   const updateVisual = (id: string, patch: Partial<BlogVisual>) => onChange({ ...post, visuals: post.visuals.map((item) => item.id === id ? { ...item, ...patch } : item) });
@@ -631,6 +672,8 @@ function MediaManager({ post, language, password, onChange, onPersisted }: { pos
           }} />
         </label>
       </div>
+
+      {uploadError ? <p role="alert" className="mt-4 rounded-xl border border-rose-400/20 bg-rose-400/10 p-3 text-sm text-rose-200">{uploadError}</p> : null}
 
       <div className="mt-5 rounded-2xl border border-blue-400/20 bg-blue-400/[0.05] p-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-center">

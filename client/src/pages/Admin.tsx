@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "wouter";
-import { BriefcaseBusiness, FileText, Globe, Plus, RefreshCcw, Save, Shield, Trash2 } from "lucide-react";
+import { BriefcaseBusiness, ChevronDown, FileText, Globe, Plus, RefreshCcw, Save, Shield, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { BlogAdmin } from "@/components/admin/BlogAdmin";
+import { setPageSeo } from "@/lib/seo";
 import { usePortfolioData, type PortfolioData } from "@/contexts/PortfolioDataContext";
 import { useSiteContent, type SiteContent } from "@/contexts/SiteContentContext";
 
@@ -218,6 +219,25 @@ export default function Admin() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [viewModes, setViewModes] = useState<Record<DraftKey, ViewMode>>({} as Record<DraftKey, ViewMode>);
   const [activeTab, setActiveTab] = useState<"career" | "blog">("career");
+  const [careerQuery, setCareerQuery] = useState("");
+  const [expandedSections, setExpandedSections] = useState<Set<DraftKey>>(() => new Set());
+  const visibleSections = sections.filter((section) =>
+    `${section.title} ${section.description} ${section.group || ""}`.toLowerCase().includes(careerQuery.toLowerCase().trim())
+  );
+  const toggleSection = (draftKey: DraftKey) => setExpandedSections((current) => {
+    const next = new Set(current);
+    if (next.has(draftKey)) next.delete(draftKey);
+    else next.add(draftKey);
+    return next;
+  });
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Admin | Ibrahim Tolgar Sasmaz",
+      description: "Private content administration.",
+      robots: "noindex, nofollow",
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -499,11 +519,24 @@ export default function Admin() {
           </div>
         </div>
 
-        {activeTab === "career" ? <div className="mt-8 grid gap-6">
-          {sections.map((section) => (
+        {activeTab === "career" ? <div className="mt-8 space-y-4">
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+            <Input
+              aria-label="Search career sections"
+              value={careerQuery}
+              onChange={(event) => setCareerQuery(event.target.value)}
+              placeholder="Search sections..."
+              className="min-w-52 flex-1 border-white/10 bg-slate-950/60"
+            />
+            <span className="text-xs text-slate-400">{visibleSections.length} sections</span>
+            <Button type="button" variant="outline" onClick={() => setExpandedSections(new Set(visibleSections.map((section) => section.draftKey)))}>Expand visible</Button>
+            <Button type="button" variant="outline" onClick={() => setExpandedSections(new Set())}>Collapse all</Button>
+          </div>
+          {visibleSections.map((section) => (
             <section key={section.draftKey} className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-lg shadow-black/10">
-              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <button type="button" aria-expanded={expandedSections.has(section.draftKey)} aria-controls={`career-section-${section.draftKey.replace(':', '-')}`} onClick={() => toggleSection(section.draftKey)} className="flex min-w-0 flex-1 items-center justify-between gap-4 text-left">
+                  <div>
                   <div className="mb-2 flex flex-wrap gap-2">
                     <div className="inline-flex rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-slate-300">
                       {section.source}
@@ -516,8 +549,10 @@ export default function Admin() {
                   </div>
                   <h2 className="font-['Space_Grotesk'] text-xl font-bold">{section.title}</h2>
                   <p className="mt-1 text-sm text-slate-400">{section.description}</p>
-                </div>
-                <button
+                  </div>
+                  <ChevronDown size={20} className={`shrink-0 text-slate-400 transition-transform ${expandedSections.has(section.draftKey) ? "rotate-180" : ""}`} />
+                </button>
+                {expandedSections.has(section.draftKey) ? <button
                   type="button"
                   onClick={() => void handleSaveSection(section)}
                   disabled={savingKey !== null}
@@ -525,9 +560,10 @@ export default function Admin() {
                 >
                   <Save size={15} />
                   {savingKey === section.draftKey ? "Kaydediliyor..." : "Bu bolumu kaydet"}
-                </button>
+                </button> : null}
               </div>
 
+              {expandedSections.has(section.draftKey) ? <div id={`career-section-${section.draftKey.replace(':', '-')}`} className="mt-5">
               <div className="mb-4 flex flex-wrap gap-2">
                 <Button
                   type="button"
@@ -567,6 +603,7 @@ export default function Admin() {
                 }
                 onValueChange={(value) => updateDraftValue(section.draftKey, value)}
               />
+              </div> : null}
             </section>
           ))}
         </div> : <div className="mt-8"><BlogAdmin password={password} /></div>}

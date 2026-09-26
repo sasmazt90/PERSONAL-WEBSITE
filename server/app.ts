@@ -1,4 +1,5 @@
 import express from "express";
+import { SITE_ORIGIN, articlePath, articleSeoPage, availableArticleLanguages, renderSeoHtml, renderSitemap, type SeoPage } from "./seo";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -153,10 +154,11 @@ async function generateImageWithOpenAI(prompt: string) {
 
 export function createApp() {
   const app = express();
-  const dataPath = path.resolve(__dirname, "..", "data", "portfolio.json");
-  const siteContentPath = path.resolve(__dirname, "..", "data", "site-content.json");
-  const blogContentPath = path.resolve(__dirname, "..", "data", "blog-posts.json");
-  const blogImagePath = path.resolve(__dirname, "..", "data", "blog-images");
+  const writableDataPath = process.env.PORTFOLIO_DATA_DIR?.trim() || path.resolve(__dirname, "..", "data");
+  const dataPath = path.resolve(writableDataPath, "portfolio.json");
+  const siteContentPath = path.resolve(writableDataPath, "site-content.json");
+  const blogContentPath = path.resolve(writableDataPath, "blog-posts.json");
+  const blogImagePath = path.resolve(writableDataPath, "blog-images");
   const dataSeedPath = path.resolve(__dirname, "..", "data-seed");
   const fallbackAdminPassword = "7@yEwapu";
   const adminPassword = process.env.ADMIN_PASSWORD?.trim() || fallbackAdminPassword;
@@ -566,8 +568,22 @@ export function createApp() {
       }
       const base64 = dataUrl.replace(/^data:[^;]+;base64,/, "");
       const buffer = Buffer.from(base64, "base64");
+      if (!buffer.length) {
+        res.status(400).json({ error: "Image upload is empty." });
+        return;
+      }
       if (buffer.length > 5 * 1024 * 1024) {
         res.status(400).json({ error: "Image upload exceeds 5MB." });
+        return;
+      }
+      const collection = readBlogCollection();
+      const existing = collection.posts.find((post) => post.id === req.params.id);
+      if (!existing) {
+        res.status(404).json({ error: "Blog post not found." });
+        return;
+      }
+      if (!existing.visuals.some((visual) => visual.id === req.params.visualId)) {
+        res.status(404).json({ error: "Visual not found." });
         return;
       }
       fs.mkdirSync(blogImagePath, { recursive: true });
@@ -578,12 +594,6 @@ export function createApp() {
         return;
       }
       fs.writeFileSync(target, buffer);
-      const collection = readBlogCollection();
-      const existing = collection.posts.find((post) => post.id === req.params.id);
-      if (!existing) {
-        res.status(404).json({ error: "Blog post not found." });
-        return;
-      }
       const visuals = existing.visuals.map((visual) =>
         visual.id === req.params.visualId
           ? { ...visual, fileName: safeName, url: `/images/blog/${safeName}`, status: "uploaded" as const }
@@ -639,14 +649,105 @@ export function createApp() {
     maxAge: "30d",
   };
 
+  app.get("/index.html", (_req: any, res: any) => res.redirect(301, "/"));
   app.use("/images/blog", express.static(blogImagePath, longLivedStaticOptions));
   app.use("/assets", express.static(path.join(staticPath, "assets"), longLivedStaticOptions));
   app.use("/images", express.static(path.join(staticPath, "images"), longLivedStaticOptions));
   app.use("/data", express.static(path.join(staticPath, "data"), { maxAge: "5m" }));
   app.use(express.static(staticPath, { index: false }));
 
+  const sendSeoPage = (res: any, page: SeoPage, status = 200) => {
+    const template = fs.readFileSync(path.join(staticPath, "index.html"), "utf8");
+    if (status >= 400 || page.robots?.includes("noindex")) {
+      res.set("X-Robots-Tag", "noindex, nofollow");
+    }
+    res.status(status).type("html").send(renderSeoHtml(template, page));
+  };
+  const unavailablePage: SeoPage = {
+    title: "Page not found | Ibrahim Tolgar Sasmaz",
+    description: "The requested page is unavailable.",
+    robots: "noindex, nofollow",
+  };
+
+  app.get("/robots.txt", (_req: any, res: any) => {
+    res.type("text/plain").send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`);
+  });
+  app.get("/sitemap.xml", (_req: any, res: any) => {
+    try {
+      const posts = readBlogCollection().posts.filter((post) => post.status === "published");
+      res.type("application/xml").send(renderSitemap(posts));
+    } catch (error) {
+      res.status(500).type("text/plain").send("Sitemap unavailable.");
+    }
+  });
+  app.get("/", (_req: any, res: any) => {
+    sendSeoPage(res, {
+      title: "Ibrahim Tolgar Sasmaz | Digital Growth, AI & Transformation",
+      description: "Personal portfolio of Ibrahim Tolgar Sasmaz, a Munich-based digital growth and AI transformation leader with 12+ years across FMCG, SaaS and retail.",
+      canonicalPath: "/",
+      imagePath: "/assets/profile/tolgar-sasmaz-application-photo.jpeg",
+      structuredData: {
+        "@context": "https://schema.org", "@type": "Person",
+        name: "Ibrahim Tolgar Sasmaz", url: SITE_ORIGIN,
+        image: `${SITE_ORIGIN}/assets/profile/tolgar-sasmaz-application-photo.jpeg`,
+      },
+    });
+  });
+  app.get("/blog", (_req: any, res: any) => {
+    sendSeoPage(res, {
+      title: "Blog | Ibrahim Tolgar Sasmaz",
+      description: "Articles on AI marketing, digital growth, performance marketing, e-commerce and transformation by Ibrahim Tolgar Sasmaz.",
+      canonicalPath: "/blog",
+      structuredData: {
+        "@context": "https://schema.org", "@type": "CollectionPage",
+        name: "Ibrahim Tolgar Sasmaz Blog", url: `${SITE_ORIGIN}/blog`,
+      },
+    });
+  });
+  app.get("/blog/:slug/:lang", (req: any, res: any) => {
+    const language = req.params.lang;
+    if (!["en", "de", "tr"].includes(language)) {
+      sendSeoPage(res, unavailablePage, 404);
+      return;
+    }
+    const post = readBlogCollection().posts.find((item) =>
+      item.status === "published" &&
+      [item.slug.canonical, item.slug.en, item.slug.de, item.slug.tr].includes(req.params.slug)
+    );
+    if (!post || !availableArticleLanguages(post).includes(language)) {
+      sendSeoPage(res, unavailablePage, 404);
+      return;
+    }
+    const canonicalPath = articlePath(post, language);
+    if (req.path !== canonicalPath) {
+      res.redirect(301, canonicalPath);
+      return;
+    }
+    sendSeoPage(res, articleSeoPage(post, language));
+  });
+  app.get("/blog/:slug", (req: any, res: any) => {
+    const post = readBlogCollection().posts.find((item) =>
+      item.status === "published" &&
+      [item.slug.canonical, item.slug.en, item.slug.de, item.slug.tr].includes(req.params.slug)
+    );
+    if (!post) {
+      sendSeoPage(res, unavailablePage, 404);
+      return;
+    }
+    res.redirect(301, articlePath(post, availableArticleLanguages(post)[0] || "en"));
+  });
+  app.get("/admin", (_req: any, res: any) => {
+    sendSeoPage(res, {
+      title: "Admin | Ibrahim Tolgar Sasmaz",
+      description: "Private content administration.",
+      robots: "noindex, nofollow",
+    });
+  });
+  app.get(/^\/(?:assets|images|data)\//, (_req: any, res: any) => {
+    res.status(404).set("X-Robots-Tag", "noindex, nofollow").end();
+  });
   app.get("*", (_req: any, res: any) => {
-    res.sendFile(path.join(staticPath, "index.html"));
+    sendSeoPage(res, unavailablePage, 404);
   });
 
   return app;
