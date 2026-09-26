@@ -156,7 +156,7 @@ export function createApp() {
   const dataPath = path.resolve(__dirname, "..", "data", "portfolio.json");
   const siteContentPath = path.resolve(__dirname, "..", "data", "site-content.json");
   const blogContentPath = path.resolve(__dirname, "..", "data", "blog-posts.json");
-  const blogImagePath = path.resolve(__dirname, "..", "client", "public", "images", "blog");
+  const blogImagePath = path.resolve(__dirname, "..", "data", "blog-images");
   const dataSeedPath = path.resolve(__dirname, "..", "data-seed");
   const fallbackAdminPassword = "7@yEwapu";
   const adminPassword = process.env.ADMIN_PASSWORD?.trim() || fallbackAdminPassword;
