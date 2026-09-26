@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link } from "wouter";
-import { BriefcaseBusiness, ChevronDown, FileText, Globe, Plus, RefreshCcw, Save, Shield, Trash2 } from "lucide-react";
+import { BriefcaseBusiness, ChevronDown, FileText, Globe, Plus, RefreshCcw, Save, Shield, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { BlogAdmin } from "@/components/admin/BlogAdmin";
 import { setPageSeo } from "@/lib/seo";
+import { uploadSiteImage } from "@/lib/siteImages";
 import { usePortfolioData, type PortfolioData } from "@/contexts/PortfolioDataContext";
 import { useSiteContent, type SiteContent } from "@/contexts/SiteContentContext";
 
@@ -722,6 +723,10 @@ function ValueEditor({
   depth: number;
 }) {
   if (typeof value === "string") {
+    if (/\b(?:image|images|logo|photo|photos|portrait|thumbnail|avatar)\b/i.test(label)
+      && !/\b(?:alt|caption|description|title|prompt|position|class|fit|size|text)\b/i.test(label)) {
+      return <SiteImageField label={label} value={value} onChange={onChange} />;
+    }
     const multiline = value.includes("\n") || value.length > 100;
     return (
       <FieldShell label={label}>
@@ -870,6 +875,7 @@ type TimelineItem = {
   role: string;
   location: string;
   logo?: string;
+  logoAlt?: string;
   focus: string;
   meta: string[];
   bullets: string[];
@@ -879,6 +885,7 @@ type AiProductItem = {
   title: string;
   category: string;
   image?: string;
+  imageAlt?: string;
   video?: string;
   url?: string;
   summary: string;
@@ -906,6 +913,8 @@ type MetricItem = {
 type ToolClusterItem = {
   title: string;
   tools: string[];
+  image?: string;
+  imageAlt?: string;
 };
 
 type SpeakingItem = {
@@ -913,6 +922,7 @@ type SpeakingItem = {
   org: string;
   detail: string;
   logo?: string;
+  logoAlt?: string;
   url: string;
 };
 
@@ -921,11 +931,13 @@ type CertificationItem = {
   issuer: string;
   date: string;
   image?: string;
+  imageAlt?: string;
 };
 
 type PhotoMomentItem = {
   title: string;
   image?: string;
+  imageAlt?: string;
 };
 
 type EducationItem = {
@@ -934,6 +946,7 @@ type EducationItem = {
   period: string;
   location: string;
   logo?: string;
+  logoAlt?: string;
 };
 
 function CareerTimelineEditor({
@@ -956,6 +969,7 @@ function CareerTimelineEditor({
             role: "",
             location: "",
             logo: "",
+            logoAlt: "",
             focus: "",
             meta: [""],
             bullets: [""],
@@ -965,7 +979,7 @@ function CareerTimelineEditor({
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.company}-${index}`}
+          key={index}
           title={item.role || `Experience ${index + 1}`}
           subtitle={`${item.company || "Company"} | ${item.year || "Year"}`}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -976,7 +990,7 @@ function CareerTimelineEditor({
             <LabeledInput label="Company" value={item.company} onChange={(value) => onChange(updateItem(items, index, { company: value }))} />
             <LabeledInput label="Brand" value={item.brand} onChange={(value) => onChange(updateItem(items, index, { brand: value }))} />
             <LabeledInput label="Location" value={item.location} onChange={(value) => onChange(updateItem(items, index, { location: value }))} />
-            <LabeledInput label="Logo path" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} />
+            <SiteImageField label="Şirket logosu" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} altValue={item.logoAlt} onAltChange={(value) => onChange(updateItem(items, index, { logoAlt: value }))} />
           </div>
           <LabeledTextarea label="Focus" value={item.focus} onChange={(value) => onChange(updateItem(items, index, { focus: value }))} />
           <StringArrayEditor
@@ -1012,6 +1026,7 @@ function AiProductsEditor({
             title: "",
             category: "",
             image: "",
+            imageAlt: "",
             video: "",
             url: "",
             summary: "",
@@ -1024,7 +1039,7 @@ function AiProductsEditor({
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.title}-${index}`}
+          key={index}
           title={item.title || `Product ${index + 1}`}
           subtitle={item.category || "Category"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1032,7 +1047,7 @@ function AiProductsEditor({
           <div className="grid gap-4 md:grid-cols-2">
             <LabeledInput label="Title" value={item.title} onChange={(value) => onChange(updateItem(items, index, { title: value }))} />
             <LabeledInput label="Category" value={item.category} onChange={(value) => onChange(updateItem(items, index, { category: value }))} />
-            <LabeledInput label="Image path" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} />
+            <SiteImageField label="Ürün görseli" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} altValue={item.imageAlt} onAltChange={(value) => onChange(updateItem(items, index, { imageAlt: value }))} />
             <LabeledInput label="Video path / URL" value={item.video ?? ""} onChange={(value) => onChange(updateItem(items, index, { video: value }))} />
             <LabeledInput label="Live URL" value={item.url ?? ""} onChange={(value) => onChange(updateItem(items, index, { url: value }))} />
             <FieldShell label="Confidential">
@@ -1078,7 +1093,7 @@ function SimpleLinkListEditor({
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.title}-${index}`}
+          key={index}
           title={item.title || `Item ${index + 1}`}
           subtitle={item.url || "URL"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1107,7 +1122,7 @@ function CaseStudiesEditor({
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.brand}-${index}`}
+          key={index}
           title={item.brand || `Case Study ${index + 1}`}
           subtitle={item.url || "Link"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1132,7 +1147,7 @@ function HighlightMetricsEditor({
     <CardListShell addLabel="Yeni metric ekle" onAdd={() => onChange([...items, { value: "", label: "" }])}>
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.value}-${index}`}
+          key={index}
           title={item.value || `Metric ${index + 1}`}
           subtitle={item.label || "Label"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1155,15 +1170,16 @@ function ToolClustersEditor({
   onChange: (value: unknown) => void;
 }) {
   return (
-    <CardListShell addLabel="Yeni tool cluster ekle" onAdd={() => onChange([...items, { title: "", tools: [""] }])}>
+    <CardListShell addLabel="Yeni tool cluster ekle" onAdd={() => onChange([...items, { title: "", tools: [""], image: "", imageAlt: "" }])}>
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.title}-${index}`}
+          key={index}
           title={item.title || `Cluster ${index + 1}`}
           subtitle={`${item.tools.length} tools`}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
         >
           <LabeledInput label="Title" value={item.title} onChange={(value) => onChange(updateItem(items, index, { title: value }))} />
+          <SiteImageField label="Teknoloji görseli" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} altValue={item.imageAlt} onAltChange={(value) => onChange(updateItem(items, index, { imageAlt: value }))} />
           <StringArrayEditor label="Tools" items={item.tools} onChange={(value) => onChange(updateItem(items, index, { tools: value }))} />
         </CardEditor>
       ))}
@@ -1179,10 +1195,10 @@ function SpeakingEditor({
   onChange: (value: unknown) => void;
 }) {
   return (
-    <CardListShell addLabel="Yeni speaking item ekle" onAdd={() => onChange([...items, { title: "", org: "", detail: "", logo: "", url: "" }])}>
+    <CardListShell addLabel="Yeni speaking item ekle" onAdd={() => onChange([...items, { title: "", org: "", detail: "", logo: "", logoAlt: "", url: "" }])}>
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.org}-${index}`}
+          key={index}
           title={item.org || `Speaking ${index + 1}`}
           subtitle={item.title || "Role"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1190,7 +1206,7 @@ function SpeakingEditor({
           <div className="grid gap-4 md:grid-cols-2">
             <LabeledInput label="Title" value={item.title} onChange={(value) => onChange(updateItem(items, index, { title: value }))} />
             <LabeledInput label="Organization" value={item.org} onChange={(value) => onChange(updateItem(items, index, { org: value }))} />
-            <LabeledInput label="Logo path" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} />
+            <SiteImageField label="Kurum logosu" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} altValue={item.logoAlt} onAltChange={(value) => onChange(updateItem(items, index, { logoAlt: value }))} />
             <LabeledInput label="URL" value={item.url} onChange={(value) => onChange(updateItem(items, index, { url: value }))} />
           </div>
           <LabeledTextarea label="Detail" value={item.detail} onChange={(value) => onChange(updateItem(items, index, { detail: value }))} />
@@ -1210,11 +1226,11 @@ function CertificationsEditor({
   return (
     <CardListShell
       addLabel="Yeni sertifika ekle"
-      onAdd={() => onChange([...items, { title: "", issuer: "", date: "", image: "" }])}
+      onAdd={() => onChange([...items, { title: "", issuer: "", date: "", image: "", imageAlt: "" }])}
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.title}-${index}`}
+          key={index}
           title={item.title || `Certification ${index + 1}`}
           subtitle={item.issuer || "Issuer"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1223,7 +1239,7 @@ function CertificationsEditor({
             <LabeledInput label="Title" value={item.title} onChange={(value) => onChange(updateItem(items, index, { title: value }))} />
             <LabeledInput label="Issuer" value={item.issuer} onChange={(value) => onChange(updateItem(items, index, { issuer: value }))} />
             <LabeledInput label="Date" value={item.date} onChange={(value) => onChange(updateItem(items, index, { date: value }))} />
-            <LabeledInput label="Image path" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} />
+            <SiteImageField label="Sertifika görseli" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} altValue={item.imageAlt} onAltChange={(value) => onChange(updateItem(items, index, { imageAlt: value }))} />
           </div>
         </CardEditor>
       ))}
@@ -1239,17 +1255,17 @@ function PhotoMomentsEditor({
   onChange: (value: unknown) => void;
 }) {
   return (
-    <CardListShell addLabel="Yeni fotograf ekle" onAdd={() => onChange([...items, { title: "", image: "" }])}>
+    <CardListShell addLabel="Yeni fotograf ekle" onAdd={() => onChange([...items, { title: "", image: "", imageAlt: "" }])}>
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.title}-${index}`}
+          key={index}
           title={item.title || `Photo ${index + 1}`}
           subtitle={item.image || "Image path"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
         >
           <div className="grid gap-4 md:grid-cols-2">
             <LabeledInput label="Title" value={item.title} onChange={(value) => onChange(updateItem(items, index, { title: value }))} />
-            <LabeledInput label="Image path" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} />
+            <SiteImageField label="Fotoğraf" value={item.image ?? ""} onChange={(value) => onChange(updateItem(items, index, { image: value }))} altValue={item.imageAlt} onAltChange={(value) => onChange(updateItem(items, index, { imageAlt: value }))} />
           </div>
         </CardEditor>
       ))}
@@ -1267,11 +1283,11 @@ function EducationEditor({
   return (
     <CardListShell
       addLabel="Yeni egitim ekle"
-      onAdd={() => onChange([...items, { degree: "", school: "", period: "", location: "", logo: "" }])}
+      onAdd={() => onChange([...items, { degree: "", school: "", period: "", location: "", logo: "", logoAlt: "" }])}
     >
       {items.map((item, index) => (
         <CardEditor
-          key={`${item.degree}-${index}`}
+          key={index}
           title={item.degree || `Education ${index + 1}`}
           subtitle={item.school || "School"}
           onRemove={() => onChange(items.filter((_, itemIndex) => itemIndex !== index))}
@@ -1281,7 +1297,7 @@ function EducationEditor({
             <LabeledInput label="School" value={item.school} onChange={(value) => onChange(updateItem(items, index, { school: value }))} />
             <LabeledInput label="Period" value={item.period} onChange={(value) => onChange(updateItem(items, index, { period: value }))} />
             <LabeledInput label="Location" value={item.location} onChange={(value) => onChange(updateItem(items, index, { location: value }))} />
-            <LabeledInput label="Logo path" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} />
+            <SiteImageField label="Okul logosu" value={item.logo ?? ""} onChange={(value) => onChange(updateItem(items, index, { logo: value }))} altValue={item.logoAlt} onAltChange={(value) => onChange(updateItem(items, index, { logoAlt: value }))} />
           </div>
         </CardEditor>
       ))}
@@ -1350,6 +1366,84 @@ function LabeledInput({
     <FieldShell label={label}>
       <Input value={value} onChange={(event) => onChange(event.target.value)} className="bg-slate-950/70" />
     </FieldShell>
+  );
+}
+
+function SiteImageField({
+  label,
+  value,
+  onChange,
+  altValue,
+  onAltChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  altValue?: string;
+  onAltChange?: (value: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const handleFile = async (file: File) => {
+    setUploading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const url = await uploadSiteImage(file);
+      onChangeRef.current(url);
+      setMessage("Görsel yüklendi. Sayfada görünmesi için bu bölümü kaydedin.");
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Görsel yüklenemedi.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3 md:col-span-2">
+      <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{label}</div>
+      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/35 p-3">
+        {value ? (
+          <img src={value} alt="Görsel önizleme" className="h-24 w-36 rounded-xl border border-white/10 bg-white/5 object-contain" />
+        ) : (
+          <div className="flex h-24 w-36 items-center justify-center rounded-xl border border-dashed border-white/20 text-xs text-slate-400">Görsel yok</div>
+        )}
+        <div className="space-y-2">
+          <label className={`inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white ${uploading ? "cursor-wait opacity-60" : "cursor-pointer hover:bg-blue-500"}`}>
+            <Upload size={16} /> {uploading ? "Yükleniyor..." : value ? "Görseli değiştir" : "Görsel yükle"}
+            <input
+              type="file"
+              className="sr-only"
+              accept="image/png,image/jpeg,image/webp"
+              disabled={uploading}
+              onChange={async (event) => {
+                const input = event.currentTarget;
+                const file = input.files?.[0];
+                if (file) await handleFile(file);
+                input.value = "";
+              }}
+            />
+          </label>
+          <p className="text-xs text-slate-400">PNG, JPG veya WEBP · en fazla 5 MB</p>
+        </div>
+      </div>
+      {message ? <p role="status" className="text-sm text-emerald-300">{message}</p> : null}
+      {error ? <p role="alert" className="text-sm text-rose-300">{error}</p> : null}
+      {onAltChange ? (
+        <div>
+          <LabeledInput label="Alt text (SEO)" value={altValue ?? ""} onChange={onAltChange} />
+          <p className="mt-1 text-xs text-slate-400">Görselin içeriğini kısa ve doğal biçimde anlatın.</p>
+        </div>
+      ) : null}
+      <details className="text-sm text-slate-400">
+        <summary className="cursor-pointer">Mevcut görsel URL'sini kullan veya düzenle</summary>
+        <Input value={value} onChange={(event) => onChange(event.target.value)} placeholder="/images/site/..." className="mt-2 bg-slate-950/70" />
+      </details>
+    </div>
   );
 }
 

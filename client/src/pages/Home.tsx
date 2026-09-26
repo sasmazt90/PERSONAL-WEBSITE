@@ -48,7 +48,6 @@ import {
   isDownloadUrl,
   isExternalUrl,
   trackEvent,
-  trackPageView,
 } from "@/lib/analytics";
 import { setPageSeo } from "@/lib/seo";
 import { fetchPublicBlogPosts } from "@/lib/blogApi";
@@ -76,6 +75,7 @@ type TimelineItem = {
   role: string;
   location: string;
   logo: string;
+  logoAlt?: string;
   focus: string;
   meta: string[];
   detailCards?: { label: string; value: string }[];
@@ -203,7 +203,7 @@ function getAwardIcon(level: string) {
   return <Trophy size={18} />;
 }
 
-function getToolClusterVisual(title: string, dark: boolean, image?: string) {
+function getToolClusterVisual(title: string, dark: boolean, image?: string, imageAlt?: string) {
   if (image) {
     return (
       <div
@@ -211,7 +211,7 @@ function getToolClusterVisual(title: string, dark: boolean, image?: string) {
       >
         <img
           src={image}
-          alt={title}
+          alt={imageAlt || title}
           className="h-full w-full object-cover object-center"
         />
       </div>
@@ -948,7 +948,6 @@ export default function Home() {
         image: "https://www.sasmaz.digital/assets/profile/tolgar-sasmaz-application-photo.jpeg",
       },
     });
-    trackPageView(title);
   }, []);
 
   useEffect(() => {
@@ -1025,7 +1024,7 @@ export default function Home() {
           >
             <img
               src={product.image}
-              alt={product.title}
+              alt={product.imageAlt || product.title}
               loading="lazy"
               decoding="async"
               className={`h-full w-full ${portrait ? "aspect-[4/5]" : "aspect-[312/250]"} ${product.imageFit === "contain" ? "object-contain p-4" : "object-cover"} ${product.imageClassName ?? ""}`}
@@ -1196,7 +1195,8 @@ export default function Home() {
             {getToolClusterVisual(
               cluster.title,
               theme === "dark",
-              cluster.image
+              cluster.image,
+              cluster.imageAlt
             )}
             <div className="mt-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef4ff] text-[#2563eb] dark:bg-[#0f2530] dark:text-[#8cc8ff]">
               {getToolClusterIcon(cluster.title)}
@@ -1231,7 +1231,7 @@ export default function Home() {
           <div className="h-full overflow-hidden rounded-[1.75rem] border border-[#dce7f9] bg-white shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[#cadcf6] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none dark:hover:border-white/20 dark:hover:shadow-none">
             <img
               src={item.image}
-              alt={item.title}
+              alt={item.imageAlt || item.title}
               className="aspect-[4/2.2] w-full object-cover"
             />
             <div className="space-y-3 p-5">
@@ -1520,7 +1520,7 @@ export default function Home() {
                         <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1rem] bg-white p-2">
                           <img
                             src={item.logo}
-                            alt={item.school}
+                            alt={item.logoAlt || item.school}
                             className="max-h-full max-w-full object-contain"
                           />
                         </div>
@@ -1653,7 +1653,7 @@ export default function Home() {
                           >
                             <img
                               src={item.logo}
-                              alt={item.company}
+                              alt={item.logoAlt || item.company}
                               className="max-h-[34px] max-w-[34px] object-contain sm:max-h-[36px] sm:max-w-[36px] lg:max-h-[40px] lg:max-w-[40px]"
                             />
                           </div>
@@ -1677,7 +1677,7 @@ export default function Home() {
                   <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.2rem] bg-white p-2">
                     <img
                       src={activeCareer.logo}
-                      alt={activeCareer.company}
+                      alt={activeCareer.logoAlt || activeCareer.company}
                       className="max-h-full max-w-full object-contain"
                     />
                   </div>
@@ -1907,7 +1907,7 @@ export default function Home() {
                           <div className="flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-[1.25rem] bg-white p-3 dark:bg-white/90">
                             <img
                               src={item.logo}
-                              alt={item.org}
+                              alt={item.logoAlt || item.org}
                               className="max-h-full max-w-full object-contain"
                             />
                           </div>
@@ -2192,7 +2192,7 @@ export default function Home() {
               <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.2rem] bg-white p-2">
                 <img
                   src={experienceModal.logo}
-                  alt={experienceModal.company}
+                  alt={experienceModal.logoAlt || experienceModal.company}
                   className="max-h-full max-w-full object-contain"
                 />
               </div>

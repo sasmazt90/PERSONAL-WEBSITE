@@ -7,6 +7,7 @@ type CareerItem = {
   role: string;
   location: string;
   logo: string;
+  logoAlt?: string;
   focus: string;
   meta: string[];
   detailCards?: { label: string; value: string }[];

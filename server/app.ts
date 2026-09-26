@@ -1,7 +1,7 @@
 import express from "express";
 import { SITE_ORIGIN, articlePath, articleSeoPage, availableArticleLanguages, renderSeoHtml, renderSitemap, type SeoPage } from "./seo";
 import fs from "fs";
-import { createHmac, randomBytes, timingSafeEqual } from "crypto";
+import { createHmac, randomBytes, randomUUID, timingSafeEqual } from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import {
@@ -160,6 +160,7 @@ export function createApp() {
   const siteContentPath = path.resolve(writableDataPath, "site-content.json");
   const blogContentPath = path.resolve(writableDataPath, "blog-posts.json");
   const blogImagePath = path.resolve(writableDataPath, "blog-images");
+  const siteImagePath = path.resolve(writableDataPath, "site-images");
   const dataSeedPath = path.resolve(__dirname, "..", "data-seed");
   const adminPassword = process.env.ADMIN_PASSWORD?.trim();
   const isValidAdminPassword = (value: string | undefined) => {
@@ -465,6 +466,42 @@ export function createApp() {
     }
   });
 
+  app.post("/api/admin/site-images/upload", requireAdmin, (req: any, res: any) => {
+    try {
+      const { fileName, dataUrl } = req.body || {};
+      if (typeof fileName !== "string" || typeof dataUrl !== "string") {
+        res.status(400).json({ error: "Choose a PNG, JPG, or WEBP image." });
+        return;
+      }
+      const match = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(dataUrl);
+      if (!match) {
+        res.status(400).json({ error: "Unsupported image format. Use PNG, JPG, or WEBP." });
+        return;
+      }
+      const buffer = Buffer.from(match[2], "base64");
+      const mime = match[1];
+      const validImage = mime === "png"
+        ? buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+        : mime === "jpeg"
+          ? buffer.length > 3 && buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255
+          : buffer.toString("ascii", 0, 4) === "RIFF" && buffer.toString("ascii", 8, 12) === "WEBP";
+      if (!validImage || buffer.length === 0 || buffer.length > 5 * 1024 * 1024) {
+        res.status(400).json({ error: "Invalid image or file larger than 5 MB." });
+        return;
+      }
+      const baseName = fileName.replace(/\.[^.]+$/, "").normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "image";
+      const extension = mime === "jpeg" ? "jpg" : mime;
+      const safeName = `${baseName}-${randomUUID()}.${extension}`;
+      fs.mkdirSync(siteImagePath, { recursive: true });
+      fs.writeFileSync(path.join(siteImagePath, safeName), buffer, { flag: "wx" });
+      res.status(201).json({ url: `/images/site/${safeName}` });
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : "Image upload failed." });
+    }
+  });
+
   app.get("/api/blog-posts/public", (_req: any, res: any) => {
     try {
       const posts = readBlogCollection().posts
@@ -704,6 +741,7 @@ export function createApp() {
 
   app.get("/index.html", (_req: any, res: any) => res.redirect(301, "/"));
   app.use("/images/blog", express.static(blogImagePath, longLivedStaticOptions));
+  app.use("/images/site", express.static(siteImagePath, longLivedStaticOptions));
   app.use("/assets", express.static(path.join(staticPath, "assets"), longLivedStaticOptions));
   app.use("/images", express.static(path.join(staticPath, "images"), longLivedStaticOptions));
   app.use("/data", express.static(path.join(staticPath, "data"), { maxAge: "5m" }));

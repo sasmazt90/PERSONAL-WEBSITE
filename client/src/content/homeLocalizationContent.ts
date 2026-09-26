@@ -5,6 +5,7 @@ type ProductItem = {
   title: string;
   category: string;
   image?: string;
+  imageAlt?: string;
   imageFit?: string;
   imagePosition?: string;
   imageClassName?: string;
@@ -31,6 +32,7 @@ type ToolClusterItem = {
   title: string;
   tools: string[];
   image?: string;
+  imageAlt?: string;
 };
 
 type CertificationItem = {
@@ -38,6 +40,7 @@ type CertificationItem = {
   issuer: string;
   date: string;
   image: string;
+  imageAlt?: string;
 };
 
 type EducationItem = {
@@ -46,6 +49,7 @@ type EducationItem = {
   period: string;
   location: string;
   logo?: string;
+  logoAlt?: string;
 };
 
 type SpeakingItem = {
@@ -53,6 +57,7 @@ type SpeakingItem = {
   org: string;
   detail: string;
   logo: string;
+  logoAlt?: string;
   url: string;
 };
 

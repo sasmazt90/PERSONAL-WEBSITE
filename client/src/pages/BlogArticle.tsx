@@ -10,7 +10,6 @@ import {
   isDownloadUrl,
   isExternalUrl,
   trackEvent,
-  trackPageView,
 } from "@/lib/analytics";
 import { setPageSeo } from "@/lib/seo";
 import { fetchPublicBlogPost, fetchPublicBlogPosts } from "@/lib/blogApi";
@@ -149,7 +148,6 @@ export default function BlogArticle() {
         publisher: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz", url: "https://www.sasmaz.digital" },
       },
     });
-    trackPageView(title);
   }, [post, language, slug, routeLanguage]);
 
   useEffect(() => {

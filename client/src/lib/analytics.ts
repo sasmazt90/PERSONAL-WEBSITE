@@ -22,20 +22,6 @@ declare global {
   }
 }
 
-let lastPageViewLocation = "";
-
-export function trackPageView(pageTitle: string) {
-  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
-  const pageLocation = window.location.href;
-  if (lastPageViewLocation === pageLocation) return;
-  lastPageViewLocation = pageLocation;
-  window.gtag("event", "page_view", {
-    page_title: pageTitle,
-    page_location: pageLocation,
-    page_path: window.location.pathname + window.location.search,
-  });
-}
-
 export function trackEvent(
   eventName: AnalyticsEventName,
   params: AnalyticsEventParams = {}
