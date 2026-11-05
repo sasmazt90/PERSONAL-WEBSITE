@@ -1084,7 +1084,18 @@ export default function Home() {
               {t.watchWalkthrough}
             </button>
           ) : null}
-          {product.detailBody?.length ||
+          {product.detailUrl ? (
+            <a
+              href={product.detailUrl}
+              onClick={() => {
+                trackProject(product, "products", product.detailUrl);
+                trackCta(t.seeDetails, "details", product.detailUrl!, "products");
+              }}
+              className={secondaryCtaClass}
+            >
+              {t.seeDetails}
+            </a>
+          ) : product.detailBody?.length ||
           (product.confidential && (product.summary || product.outcome)) ? (
             <button
               type="button"

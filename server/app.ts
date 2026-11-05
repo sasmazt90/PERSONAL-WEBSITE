@@ -229,9 +229,39 @@ export function createApp() {
     fs.mkdirSync(path.dirname(dataPath), { recursive: true });
     fs.writeFileSync(dataPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   };
+  // Additive seed merge: carousel products in the seed that carry a `seedId` are added once to the
+  // live site content (tracked in `seededAiProductIds`). New cards ship with a deploy without
+  // overwriting content edited in /admin, and a card removed in /admin stays removed.
+  const mergeSeedProducts = (content: any) => {
+    try {
+      const seedPath = [
+        path.resolve(dataSeedPath, "site-content.json"),
+        path.resolve(__dirname, "..", "data", "site-content.json"),
+      ].find((candidate) => fs.existsSync(candidate));
+      if (!seedPath || !Array.isArray(content?.aiProducts)) return content;
+      const seed = JSON.parse(fs.readFileSync(seedPath, "utf8"));
+      const seeded: string[] = Array.isArray(content.seededAiProductIds) ? content.seededAiProductIds : [];
+      const toAdd = (Array.isArray(seed?.aiProducts) ? seed.aiProducts : []).filter(
+        (product: any) =>
+          product?.seedId &&
+          !seeded.includes(product.seedId) &&
+          !content.aiProducts.some((existing: any) => existing?.seedId === product.seedId),
+      );
+      if (!toAdd.length) return content;
+      const next = {
+        ...content,
+        aiProducts: [...toAdd, ...content.aiProducts],
+        seededAiProductIds: [...seeded, ...toAdd.map((product: any) => product.seedId)],
+      };
+      writeSiteContent(next);
+      return next;
+    } catch {
+      return content;
+    }
+  };
   const readSiteContent = () => {
     ensureDataFile(siteContentPath);
-    return JSON.parse(fs.readFileSync(siteContentPath, "utf8"));
+    return mergeSeedProducts(JSON.parse(fs.readFileSync(siteContentPath, "utf8")));
   };
   const writeSiteContent = (payload: unknown) => {
     fs.mkdirSync(path.dirname(siteContentPath), { recursive: true });

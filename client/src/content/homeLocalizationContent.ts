@@ -11,6 +11,7 @@ type ProductItem = {
   imageClassName?: string;
   detailImages?: string[];
   video?: string;
+  detailUrl?: string;
   videoType?: string;
   detailLabel?: string;
   summary: string;
@@ -84,6 +85,14 @@ function localizeCollection<T extends Record<string, unknown>>(
 }
 
 const deProducts: Record<string, Partial<ProductItem>> = {
+  "Attune.more": {
+    category: "Android Automotive · Präventive Gesundheit",
+    summary:
+      "Fünf Gesundheits-Check-ins nur im Stand für das Fahrzeugdisplay — Haut, Sehen, Zähne, Gehör und Mental —, die Ladezeit in Fürsorgezeit verwandeln.",
+    outcome:
+      "Für Android Automotive entwickelt: Einwilligung je Dienst, ein fail-closed Park-Gate, optionale Verlaufsverfolgung und der Weg zur passenden Fachperson. Vorläufige Einschätzung, nie eine Diagnose.",
+    tags: ["Android Automotive", "Computer Vision", "Voice AI", "Digitale Gesundheit"],
+  },
   "GEO & SEO Optimizer": {
     category: "Generative Engine Optimization",
     summary:
@@ -258,6 +267,14 @@ const deProducts: Record<string, Partial<ProductItem>> = {
   },
 };
 const trProducts: Record<string, Partial<ProductItem>> = {
+  "Attune.more": {
+    category: "Android Automotive · Koruyucu Sağlık",
+    summary:
+      "Araç ekranı için park halinde beş sağlık kontrolü — cilt, görme, diş, işitme ve ruh sağlığı — şarj süresini bakım süresine dönüştürür.",
+    outcome:
+      "Android Automotive için geliştirildi: hizmet başına rıza, güvenli-kapalı park kapısı, isteğe bağlı değişim takibi ve doğru uzmana giden yol. Ön değerlendirme, asla teşhis değil.",
+    tags: ["Android Automotive", "Bilgisayarlı görü", "Ses yapay zekâsı", "Dijital sağlık"],
+  },
   "GEO & SEO Optimizer": {
     category: "Generative Engine Optimization",
     summary:
