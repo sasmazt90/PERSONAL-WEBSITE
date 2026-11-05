@@ -414,6 +414,19 @@
   ],
   "aiProducts": [
     {
+      "seedId": "attune-more-aaos-health-checks",
+      "title": "Attune.more",
+      "category": "Android Automotive · Preventive Health",
+      "image": "/assets/apps/images/attune-more.webp",
+      "video": "",
+      "videoType": "youtube",
+      "detailUrl": "/blog/attune-more-in-car-health-checks/en",
+      "summary": "Five parked-only health check-ins for the car screen — skin, vision, dental, hearing and mental — that turn charging time into care time.",
+      "outcome": "Built for Android Automotive: consent per service, a fail-closed parking gate, optional change tracking and a path to the right professional. Preliminary assessment, never a diagnosis.",
+      "tags": ["Android Automotive", "Computer vision", "Voice AI", "Digital health"],
+      "confidential": false
+    },
+    {
       "title": "GEO & SEO Optimizer",
       "category": "Generative Engine Optimization",
       "image": "/assets/apps/portfolio-source/geo-seo-brand-entity.webp",
