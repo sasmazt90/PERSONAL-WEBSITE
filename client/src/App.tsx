@@ -11,12 +11,14 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import BlogList from "./pages/BlogList";
 import BlogArticle from "./pages/BlogArticle";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
+      <Route path={"/privacy-policy"} component={PrivacyPolicy} />
       <Route path={"/blog"} component={BlogList} />
       <Route path={"/blog/:slug"} component={BlogArticle} />
       <Route path={"/blog/:slug/:lang"} component={BlogArticle} />
