@@ -90,7 +90,7 @@ const deProducts: Record<string, Partial<ProductItem>> = {
     summary:
       "Fünf Gesundheits-Check-ins nur im Stand für das Fahrzeugdisplay — Haut, Sehen, Zähne, Gehör und Mental —, die Ladezeit in Fürsorgezeit verwandeln.",
     outcome:
-      "Für Android Automotive entwickelt: Einwilligung je Dienst, ein fail-closed Park-Gate, optionale Verlaufsverfolgung und der Weg zur passenden Fachperson. Vorläufige Einschätzung, nie eine Diagnose.",
+      "Für Android Automotive entwickelt: Einwilligung je Dienst, ein fail-closed Park-Gate, optionale Verlaufsverfolgung und der Weg zur passenden Fachperson.",
     tags: ["Android Automotive", "Computer Vision", "Voice AI", "Digitale Gesundheit"],
   },
   "GEO & SEO Optimizer": {
@@ -272,7 +272,7 @@ const trProducts: Record<string, Partial<ProductItem>> = {
     summary:
       "Araç ekranı için park halinde beş sağlık kontrolü — cilt, görme, diş, işitme ve ruh sağlığı — şarj süresini bakım süresine dönüştürür.",
     outcome:
-      "Android Automotive için geliştirildi: hizmet başına rıza, güvenli-kapalı park kapısı, isteğe bağlı değişim takibi ve doğru uzmana giden yol. Ön değerlendirme, asla teşhis değil.",
+      "Android Automotive için geliştirildi: hizmet başına rıza, güvenli-kapalı park kapısı, isteğe bağlı değişim takibi ve doğru uzmana giden yol.",
     tags: ["Android Automotive", "Bilgisayarlı görü", "Ses yapay zekâsı", "Dijital sağlık"],
   },
   "GEO & SEO Optimizer": {
