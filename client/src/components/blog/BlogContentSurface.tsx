@@ -63,13 +63,16 @@ export function BlogContentSurface({
 
       {post.faq[language]?.length ? (
         <section className="mt-12 rounded-[1.75rem] border border-[#dce7f9] bg-white p-6">
-          <h2 className="font-['Space_Grotesk'] text-3xl font-bold">FAQ</h2>
-          <div className="mt-5 grid gap-5">
-            {post.faq[language].map((item) => (
-              <div key={item.question}>
-                <h3 className="font-['Space_Grotesk'] text-xl font-bold">{item.question}</h3>
-                <p className="mt-2 leading-7 text-[#5b667b]">{item.answer}</p>
-              </div>
+          <h2 className="font-['Space_Grotesk'] text-3xl font-bold">{language === "tr" ? "Sık Sorulan Sorular" : language === "de" ? "Häufige Fragen" : "FAQ"}</h2>
+          <div className="mt-5 divide-y divide-[#e6eefc]">
+            {post.faq[language].map((item, index) => (
+              <details key={item.question} className="group py-4" open={index === 0}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-['Space_Grotesk'] text-xl font-bold text-[#0f172a] [&::-webkit-details-marker]:hidden">
+                  <span>{item.question}</span>
+                  <span aria-hidden="true" className="shrink-0 text-2xl font-normal text-[#2563eb] transition-transform duration-200 group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 leading-7 text-[#5b667b]">{item.answer}</p>
+              </details>
             ))}
           </div>
         </section>

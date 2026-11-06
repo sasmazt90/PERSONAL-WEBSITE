@@ -230,7 +230,7 @@ export function createApp() {
     fs.writeFileSync(dataPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   };
   // Additive seed merge: carousel products in the seed that carry a `seedId` are added once to the
-  // live site content (tracked in `seededAiProductIds`). New cards ship with a deploy without
+  // live site content (tracked in `seededAiProductIds`); a higher `seedVersion` refreshes that card. New cards ship with a deploy without
   // overwriting content edited in /admin, and a card removed in /admin stays removed.
   const mergeSeedProducts = (content: any) => {
     try {
@@ -241,16 +241,26 @@ export function createApp() {
       if (!seedPath || !Array.isArray(content?.aiProducts)) return content;
       const seed = JSON.parse(fs.readFileSync(seedPath, "utf8"));
       const seeded: string[] = Array.isArray(content.seededAiProductIds) ? content.seededAiProductIds : [];
-      const toAdd = (Array.isArray(seed?.aiProducts) ? seed.aiProducts : []).filter(
-        (product: any) =>
-          product?.seedId &&
-          !seeded.includes(product.seedId) &&
-          !content.aiProducts.some((existing: any) => existing?.seedId === product.seedId),
-      );
-      if (!toAdd.length) return content;
+      const products: any[] = [...content.aiProducts];
+      const toAdd: any[] = [];
+      let changed = false;
+      for (const product of Array.isArray(seed?.aiProducts) ? seed.aiProducts : []) {
+        if (!product?.seedId) continue;
+        const index = products.findIndex((existing: any) => existing?.seedId === product.seedId);
+        if (index >= 0) {
+          // A higher seedVersion refreshes the seeded card's text and media.
+          if ((product.seedVersion || 0) > (products[index]?.seedVersion || 0)) {
+            products[index] = product;
+            changed = true;
+          }
+        } else if (!seeded.includes(product.seedId)) {
+          toAdd.push(product);
+        }
+      }
+      if (!toAdd.length && !changed) return content;
       const next = {
         ...content,
-        aiProducts: [...toAdd, ...content.aiProducts],
+        aiProducts: [...toAdd, ...products],
         seededAiProductIds: [...seeded, ...toAdd.map((product: any) => product.seedId)],
       };
       writeSiteContent(next);
