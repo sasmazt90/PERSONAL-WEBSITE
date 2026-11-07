@@ -417,11 +417,11 @@ export const careerTimeline = [
 export const aiProducts = [
   {
     seedId: "attune-more-aaos-health-checks",
-    seedVersion: 2,
+    seedVersion: 3,
     title: "Attune.more",
     category: "Android Automotive · Preventive Health",
     image: "/assets/apps/images/attune-more.webp",
-    video: "",
+    video: "https://youtu.be/zv4tt87pjGo",
     videoType: "youtube",
     detailUrl: "/blog/attune-more-in-car-health-checks/en",
     summary:
