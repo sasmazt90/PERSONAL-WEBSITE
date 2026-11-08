@@ -1373,14 +1373,14 @@ export default function Home() {
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] opacity-70 lg:block">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(74,144,255,0.35)_0,rgba(74,144,255,0.0)_8%),radial-gradient(circle_at_60%_35%,rgba(74,144,255,0.28)_0,rgba(74,144,255,0.0)_7%),radial-gradient(circle_at_40%_58%,rgba(74,144,255,0.28)_0,rgba(74,144,255,0.0)_7%),radial-gradient(circle_at_75%_62%,rgba(74,144,255,0.32)_0,rgba(74,144,255,0.0)_7%),radial-gradient(circle_at_30%_78%,rgba(74,144,255,0.26)_0,rgba(74,144,255,0.0)_7%),linear-gradient(115deg,transparent_0%,transparent_18%,rgba(116,171,255,0.35)_18.5%,transparent_19.2%,transparent_100%),linear-gradient(150deg,transparent_0%,transparent_34%,rgba(116,171,255,0.24)_34.6%,transparent_35.2%,transparent_100%),linear-gradient(72deg,transparent_0%,transparent_56%,rgba(116,171,255,0.2)_56.4%,transparent_57%,transparent_100%)]" />
           </div>
-          <div className="relative mx-auto grid max-w-7xl gap-14 px-4 py-14 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
-            <div className="flex flex-col justify-center space-y-8">
+          <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-10 xl:py-14">
+            <div className="flex flex-col justify-center space-y-6">
               <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#d8e6ff] bg-[#eef4ff] px-4 py-2 text-sm font-semibold text-[#2563eb] dark:border-[#163243] dark:bg-[#0f2530] dark:text-[#8cc8ff]">
                 <Sparkles size={16} />
                 {t.badge}
               </div>
               <div className="space-y-5">
-                <h1 className="max-w-4xl font-['Space_Grotesk'] text-5xl font-bold leading-[0.95] text-[#0f172a] dark:text-white sm:text-6xl lg:text-[5.6rem]">
+                <h1 className="max-w-4xl font-['Space_Grotesk'] text-5xl font-bold leading-[0.95] text-[#0f172a] dark:text-white sm:text-6xl lg:text-[clamp(3rem,4.6vw,4.5rem)]">
                   Ibrahim Tolgar
                   <br />
                   Sasmaz
@@ -1462,7 +1462,7 @@ export default function Home() {
             </div>
 
             <div className="relative flex flex-col items-center gap-0 pt-4 lg:items-end lg:pt-0">
-              <div className="w-full max-w-[430px] rounded-[2rem] border border-[#dce7f9] bg-white p-2 shadow-[0_28px_80px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none">
+              <div className="w-full max-w-[430px] lg:max-w-[340px] xl:max-w-[380px] rounded-[2rem] border border-[#dce7f9] bg-white p-2 shadow-[0_28px_80px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none">
                 <div className="overflow-hidden rounded-[1.6rem]">
                   <img
                     src="/assets/profile/tolgar-sasmaz-application-photo.jpeg"
@@ -1475,11 +1475,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative z-10 -mt-7 grid w-full max-w-[540px] gap-4 sm:grid-cols-2 lg:-mt-12">
+              <div className="relative z-10 -mt-7 grid w-full max-w-[540px] gap-3 sm:grid-cols-2 lg:-mt-8">
                 {heroMetrics.map(metric => (
                   <div
                     key={metric.label}
-                    className="rounded-[1.8rem] border border-[#dce7f9] bg-white px-6 py-5 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none"
+                    className="rounded-[1.8rem] border border-[#dce7f9] bg-white px-5 py-4 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#102230] dark:shadow-none"
                   >
                     <AnimatedMetric
                       value={metric.value}
@@ -1497,7 +1497,7 @@ export default function Home() {
 
         <section
           id="about"
-          className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-12 xl:py-16 sm:px-6 lg:px-8"
         >
           <SectionHeading
             eyebrow={t.aboutEyebrow}
@@ -1605,7 +1605,7 @@ export default function Home() {
         <section
           id="journey"
           ref={journeyRef}
-          className="bg-white py-20 dark:bg-white"
+          className="bg-white py-12 xl:py-16 dark:bg-white"
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeading
@@ -1735,7 +1735,7 @@ export default function Home() {
 
         <section
           id="impact"
-          className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-12 xl:py-16 sm:px-6 lg:px-8"
         >
           <SectionHeading
             eyebrow={t.impactEyebrow}
@@ -1776,7 +1776,7 @@ export default function Home() {
 
         <section
           id="products"
-          className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-12 xl:py-16 sm:px-6 lg:px-8"
         >
           <SectionHeading
             title={portfolioSection.eyebrow}
@@ -1812,7 +1812,7 @@ export default function Home() {
 
         <section
           id="work"
-          className="border-y border-[#dce6f5] bg-white py-20 dark:border-white/10 dark:bg-[#081920]"
+          className="border-y border-[#dce6f5] bg-white py-12 xl:py-16 dark:border-white/10 dark:bg-[#081920]"
         >
           <div className="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
             <SectionHeading
@@ -1945,7 +1945,7 @@ export default function Home() {
 
         <section
           id="tools"
-          className="border-y border-[#dce6f5] bg-white/84 py-20 backdrop-blur-[2px] dark:border-white/10 dark:bg-[#081920]/86"
+          className="border-y border-[#dce6f5] bg-white/84 py-12 xl:py-16 backdrop-blur-[2px] dark:border-white/10 dark:bg-[#081920]/86"
         >
           <div className="mx-auto max-w-7xl space-y-14 px-4 sm:px-6 lg:px-8">
             <SectionHeading
@@ -1972,7 +1972,7 @@ export default function Home() {
 
         <section
           id="blog"
-          className="border-b border-[#dce6f5] bg-[#f8fbff]/88 py-20 backdrop-blur-[2px] dark:border-white/10 dark:bg-[#0b1f29]/88"
+          className="border-b border-[#dce6f5] bg-[#f8fbff]/88 py-12 xl:py-16 backdrop-blur-[2px] dark:border-white/10 dark:bg-[#0b1f29]/88"
         >
           <div className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:px-8">
             <SectionHeading
@@ -2006,12 +2006,12 @@ export default function Home() {
           id="contact"
           className="border-t border-[#dce6f5] bg-[#edf3fb] dark:border-white/10 dark:bg-[#07141c]"
         >
-          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 xl:py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
             <div className="space-y-5">
               <div className="inline-flex rounded-full border border-[#d8e6ff] bg-[#eef4ff] px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[#2563eb] dark:border-[#163243] dark:bg-[#0f2530] dark:text-[#8cc8ff]">
                 {t.contactEyebrow}
               </div>
-              <h2 className="max-w-5xl font-['Space_Grotesk'] text-[2.2rem] font-bold leading-tight text-[#0f172a] dark:text-white sm:text-[2.8rem] lg:text-[4rem]">
+              <h2 className="max-w-5xl font-['Space_Grotesk'] text-[2.2rem] font-bold leading-tight text-[#0f172a] dark:text-white sm:text-[2.5rem] lg:text-[clamp(2.5rem,3.4vw,3rem)]">
                 {t.contactTitle}
               </h2>
               <p className="max-w-4xl text-[1.02rem] font-normal leading-8 text-[#5b667b] dark:text-white/68">
@@ -2323,7 +2323,7 @@ function SectionHeading({
         </p>
       ) : null}
       <h2
-        className={`max-w-5xl font-['Space_Grotesk'] text-[2.2rem] font-bold leading-tight sm:text-[2.8rem] lg:text-[4rem] ${dark ? "text-white" : "text-[#0f172a]"}`}
+        className={`max-w-5xl font-['Space_Grotesk'] text-[2.2rem] font-bold leading-tight sm:text-[2.5rem] lg:text-[clamp(2.5rem,3.4vw,3rem)] ${dark ? "text-white" : "text-[#0f172a]"}`}
       >
         {title}
       </h2>
@@ -2534,7 +2534,7 @@ function AnimatedMetric({
   return (
     <div
       ref={ref}
-      className={`font-['Space_Grotesk'] text-4xl font-bold tracking-tight sm:text-5xl ${colorClass}`}
+      className={`font-['Space_Grotesk'] text-4xl font-bold tracking-tight sm:text-5xl lg:text-4xl ${colorClass}`}
     >
       {renderedValue}
     </div>
