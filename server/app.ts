@@ -1,5 +1,6 @@
 import express from "express";
 import { SITE_ORIGIN, articlePath, articleSeoPage, availableArticleLanguages, renderSeoHtml, renderSitemap, type SeoPage } from "./seo";
+import { renderArticleSnapshot, renderBlogIndexSnapshot, renderHomepageSnapshot, renderLlmsTxt } from "./seo-snapshot";
 import fs from "fs";
 import { createHmac, randomBytes, randomUUID, timingSafeEqual } from "crypto";
 import path from "path";
@@ -789,9 +790,12 @@ export function createApp() {
 
   const sendSeoPage = (res: any, page: SeoPage, status = 200) => {
     const template = fs.readFileSync(path.join(staticPath, "index.html"), "utf8");
-    if (status >= 400 || page.robots?.includes("noindex")) {
+    if (status >= 400) {
       res.set("X-Robots-Tag", "noindex, nofollow");
+    } else if (page.robots?.includes("noindex")) {
+      res.set("X-Robots-Tag", page.robots);
     }
+    if (page.language) res.set("Content-Language", page.language);
     res.status(status).type("html").send(renderSeoHtml(template, page));
   };
   const unavailablePage: SeoPage = {
@@ -802,6 +806,10 @@ export function createApp() {
 
   app.get("/robots.txt", (_req: any, res: any) => {
     res.type("text/plain").send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`);
+  });
+  app.get("/llms.txt", (_req: any, res: any) => {
+    const posts = readBlogCollection().posts.filter(post => post.status === "published");
+    res.type("text/plain; charset=utf-8").send(renderLlmsTxt(posts));
   });
   app.get("/sitemap.xml", (_req: any, res: any) => {
     try {
@@ -817,6 +825,7 @@ export function createApp() {
       description: "Personal portfolio of Ibrahim Tolgar Sasmaz, a Munich-based digital growth and AI transformation leader with 12+ years across FMCG, SaaS and retail.",
       canonicalPath: "/",
       imagePath: "/assets/profile/tolgar-sasmaz-application-photo.jpeg",
+      serverContent: renderHomepageSnapshot(readBlogCollection().posts.filter(post => post.status === "published")),
       structuredData: {
         "@context": "https://schema.org", "@type": "Person",
         name: "Ibrahim Tolgar Sasmaz", url: SITE_ORIGIN,
@@ -829,6 +838,7 @@ export function createApp() {
       title: "Blog | Ibrahim Tolgar Sasmaz",
       description: "Articles on AI marketing, digital growth, performance marketing, e-commerce and transformation by Ibrahim Tolgar Sasmaz.",
       canonicalPath: "/blog",
+      serverContent: renderBlogIndexSnapshot(readBlogCollection().posts.filter(post => post.status === "published")),
       structuredData: {
         "@context": "https://schema.org", "@type": "CollectionPage",
         name: "Ibrahim Tolgar Sasmaz Blog", url: `${SITE_ORIGIN}/blog`,
@@ -854,7 +864,7 @@ export function createApp() {
       res.redirect(301, canonicalPath);
       return;
     }
-    sendSeoPage(res, articleSeoPage(post, language));
+    sendSeoPage(res, { ...articleSeoPage(post, language), serverContent: renderArticleSnapshot(post, language) });
   });
   app.get("/blog/:slug", (req: any, res: any) => {
     const post = readBlogCollection().posts.find((item) =>
@@ -866,6 +876,14 @@ export function createApp() {
       return;
     }
     res.redirect(301, articlePath(post, availableArticleLanguages(post)[0] || "en"));
+  });
+  app.get("/privacy-policy", (_req: any, res: any) => {
+    sendSeoPage(res, {
+      title: "Privacy Policy | Ibrahim Tolgar Sasmaz",
+      description: "Privacy policy for the personal portfolio and connected applications.",
+      canonicalPath: "/privacy-policy",
+      robots: "noindex, follow",
+    });
   });
   app.get("/admin", (_req: any, res: any) => {
     sendSeoPage(res, {

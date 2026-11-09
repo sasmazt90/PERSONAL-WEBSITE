@@ -15,6 +15,7 @@ export type SeoPage = {
   publishedTime?: string;
   modifiedTime?: string;
   structuredData?: unknown;
+  serverContent?: string;
 };
 
 const escapeHtml = (value: string) =>
@@ -45,11 +46,15 @@ export function renderSeoHtml(template: string, page: SeoPage) {
     page.structuredData && `<script type="application/ld+json" data-site-seo>${JSON.stringify(page.structuredData).replace(/</g, "\\u003c")}</script>`,
   ].filter(Boolean).join("\n    ");
 
-  return template
+  const html = template
     .replace(/<html\s+lang="[^"]*"/i, `<html lang="${escapeHtml(page.language || "en")}"`)
     .replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(page.title)}</title>`)
     .replace(/<meta\s+name="description"[^>]*>/i, `<meta name="description" content="${escapeHtml(page.description)}" />`)
     .replace("</head>", `    ${tags}\n  </head>`);
+  // React uses createRoot, not hydrateRoot: it replaces this search-visible snapshot.
+  return page.serverContent
+    ? html.replace(/<div\s+id=["']root["']\s*><\/div>/i, `<div id="root">${page.serverContent}</div>`)
+    : html;
 }
 
 export function articlePath(post: BlogPost, language: string) {
@@ -95,6 +100,10 @@ export function articleSeoPage(post: BlogPost, language: "en" | "de" | "tr"): Se
       mainEntityOfPage: url,
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
+      inLanguage: language,
+      ...(seo.keywords?.length ? { keywords: seo.keywords.join(", ") } : {}),
+      ...(post.categories?.length ? { articleSection: post.categories } : {}),
+      isPartOf: { "@type": "Blog", name: "Ibrahim Tolgar Sasmaz Blog", url: `${SITE_ORIGIN}/blog` },
       ...(visual?.url ? { image: absoluteUrl(visual.url) } : {}),
       author: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz", url: SITE_ORIGIN },
       publisher: { "@type": "Person", name: "Ibrahim Tolgar Sasmaz", url: SITE_ORIGIN },
