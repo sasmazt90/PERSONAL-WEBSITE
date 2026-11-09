@@ -53,7 +53,7 @@ export function renderSeoHtml(template: string, page: SeoPage) {
     .replace("</head>", `    ${tags}\n  </head>`);
   // React uses createRoot, not hydrateRoot: it replaces this search-visible snapshot.
   return page.serverContent
-    ? html.replace(/<div\s+id=["']root["']\s*><\/div>/i, `<div id="root">${page.serverContent}</div>`)
+    ? html.replace(/<div\s+id=["']root["']\s*><\/div>/i, () => `<div id="root">${page.serverContent}</div>`)
     : html;
 }
 
