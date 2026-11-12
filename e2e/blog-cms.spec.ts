@@ -3,6 +3,14 @@ import { test, expect } from '@playwright/test';
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || 'e2e-test';
 const BASE_URL = process.env.E2E_BASE_URL || 'http://127.0.0.1:3000';
 
+// APIRequestContext keeps the session cookie returned by the current admin login.
+test.beforeEach(async ({ request }) => {
+  const response = await request.post(`${BASE_URL}/api/admin/auth`, {
+    data: { password: ADMIN_PASSWORD },
+  });
+  expect(response.ok()).toBeTruthy();
+});
+
 const articleTitle = 'Six AI Models Were Asked to Vote One of Them Off. Here’s What Happened.';
 const articleSubtitle = 'The most revealing AI experiment yet: ask six models to condemn one of their own — and watch what the answers say about competitive reasoning, self-interest, and how AI systems evaluate each other.';
 const videoUrl = 'https://youtu.be/AwvKnid2jPQ';
@@ -180,7 +188,7 @@ test('Back preserves edits made while its save request is in flight', async ({ p
   await expect(page.getByRole('button', { name: 'Add New Content' })).toBeVisible({ timeout: 10000 });
 
   const response = await request.get(`${BASE_URL}/api/admin/blog-posts`, {
-    headers: { 'x-admin-password': ADMIN_PASSWORD },
+    headers: { Origin: new URL(BASE_URL).origin },
   });
   expect(response.ok()).toBeTruthy();
   const collection = await response.json();
@@ -188,7 +196,7 @@ test('Back preserves edits made while its save request is in flight', async ({ p
 });
 
 test('full article can be saved, published through CMS API and rendered publicly', async ({ page, request }) => {
-  const headers = { 'x-admin-password': ADMIN_PASSWORD, 'Content-Type': 'application/json' };
+  const headers = { Origin: new URL(BASE_URL).origin, 'Content-Type': 'application/json' };
   const manual = await request.post(`${BASE_URL}/api/admin/blog-posts/manual`, {
     headers,
     data: { topic: articleTitle, angle: 'AI model competitive reasoning experiment', targetKeyword: 'AI model survival test', notes: 'E2E fixture based on the supplied DOCX.' },

@@ -12,7 +12,7 @@ import {
   trackEvent,
 } from "@/lib/analytics";
 import { setPageSeo } from "@/lib/seo";
-import { fetchPublicBlogPost, fetchPublicBlogPosts } from "@/lib/blogApi";
+import { fetchPublicBlogPost, fetchPublicBlogPosts, getInitialPublicBlogPost } from "@/lib/blogApi";
 import { BlogContentSurface } from "@/components/blog/BlogContentSurface";
 import PortfolioHeader, {
   portfolioNavLabels,
@@ -83,7 +83,10 @@ export default function BlogArticle() {
   )
     ? ((params as { lang?: string }).lang as BlogLanguage)
     : "en";
-  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loadedPost, setPost] = useState<BlogPost | null>(() => getInitialPublicBlogPost(slug));
+  const post = loadedPost && [loadedPost.slug.canonical, loadedPost.slug.en, loadedPost.slug.de, loadedPost.slug.tr].includes(slug)
+    ? loadedPost
+    : null;
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [language, setLanguage] = useState<BlogLanguage>(routeLanguage);
   const [error, setError] = useState<string | null>(null);
@@ -98,17 +101,22 @@ export default function BlogArticle() {
 
   useEffect(() => {
     if (!slug) return;
-    setPost(null);
+    let cancelled = false;
+    const initial = getInitialPublicBlogPost(slug);
+    setPost(initial);
     setError(null);
+    if (initial) return;
     fetchPublicBlogPost(slug)
-      .then(nextPost => setPost(nextPost))
-      .catch(loadError =>
+      .then(nextPost => { if (!cancelled) setPost(nextPost); })
+      .catch(loadError => {
+        if (cancelled) return;
         setError(
           loadError instanceof Error
             ? loadError.message
             : "Blog article not found."
-        )
-      );
+        );
+      });
+    return () => { cancelled = true; };
   }, [slug]);
 
   useEffect(() => {
