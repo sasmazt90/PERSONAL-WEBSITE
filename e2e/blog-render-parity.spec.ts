@@ -3,6 +3,14 @@ import { test, expect } from '@playwright/test';
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || 'e2e-test';
 const BASE_URL = process.env.E2E_BASE_URL || 'http://127.0.0.1:3000';
 
+// APIRequestContext keeps the session cookie returned by the current admin login.
+test.beforeEach(async ({ request }) => {
+  const response = await request.post(`${BASE_URL}/api/admin/auth`, {
+    data: { password: ADMIN_PASSWORD },
+  });
+  expect(response.ok()).toBeTruthy();
+});
+
 async function loginAndOpenBlog(page: import('@playwright/test').Page) {
   await page.goto(`${BASE_URL}/admin`);
   await page.getByPlaceholder('Admin password').fill(ADMIN_PASSWORD);
@@ -75,7 +83,7 @@ test('authoring canvas and preview use the same article rendering contract', asy
 });
 
 test('published article uses the shared rendering surface and preserves semantic content', async ({ page, request }) => {
-  const headers = { 'x-admin-password': ADMIN_PASSWORD, 'Content-Type': 'application/json' };
+  const headers = { Origin: new URL(BASE_URL).origin, 'Content-Type': 'application/json' };
   const manual = await request.post(`${BASE_URL}/api/admin/blog-posts/manual`, {
     headers,
     data: { topic: 'Rendering Contract Fixture', angle: 'E2E rendering parity', targetKeyword: 'rendering parity', notes: '' },

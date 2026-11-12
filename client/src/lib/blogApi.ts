@@ -1,5 +1,23 @@
 import type { BlogCollection, BlogGenerationInput, BlogPost } from "@shared/blog";
 
+// Keep the server-resolved article for this document, including language changes
+// and back navigation. Only a full page load needs to resolve it again.
+const initialPostData = document.getElementById("initial-blog-post")?.textContent;
+const initialPost: BlogPost | null = (() => {
+  try {
+    const post = initialPostData ? JSON.parse(initialPostData) as BlogPost : null;
+    return post?.status === "published" ? post : null;
+  } catch {
+    return null;
+  }
+})();
+
+export function getInitialPublicBlogPost(slug: string) {
+  return initialPost && [initialPost.slug.canonical, initialPost.slug.en, initialPost.slug.de, initialPost.slug.tr].includes(slug)
+    ? initialPost
+    : null;
+}
+
 const jsonHeaders = () => ({
   "Content-Type": "application/json",
 });
@@ -59,6 +77,8 @@ export async function fetchPublicBlogPosts() {
 }
 
 export async function fetchPublicBlogPost(slug: string) {
+  const initial = getInitialPublicBlogPost(slug);
+  if (initial) return initial;
   try {
     const response = await fetchWithTimeout(`/api/blog-posts/public/${encodeURIComponent(slug)}`);
     return await parseResponse<BlogPost>(response);

@@ -16,6 +16,7 @@ export type SeoPage = {
   modifiedTime?: string;
   structuredData?: unknown;
   serverContent?: string;
+  initialBlogPost?: BlogPost;
 };
 
 const escapeHtml = (value: string) =>
@@ -44,13 +45,14 @@ export function renderSeoHtml(template: string, page: SeoPage) {
     page.publishedTime && `<meta property="article:published_time" content="${escapeHtml(page.publishedTime)}" />`,
     page.modifiedTime && `<meta property="article:modified_time" content="${escapeHtml(page.modifiedTime)}" />`,
     page.structuredData && `<script type="application/ld+json" data-site-seo>${JSON.stringify(page.structuredData).replace(/</g, "\\u003c")}</script>`,
+    page.initialBlogPost && `<script type="application/json" id="initial-blog-post">${JSON.stringify(page.initialBlogPost).replace(/</g, "\\u003c")}</script>`,
   ].filter(Boolean).join("\n    ");
 
   const html = template
     .replace(/<html\s+lang="[^"]*"/i, `<html lang="${escapeHtml(page.language || "en")}"`)
     .replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(page.title)}</title>`)
     .replace(/<meta\s+name="description"[^>]*>/i, `<meta name="description" content="${escapeHtml(page.description)}" />`)
-    .replace("</head>", `    ${tags}\n  </head>`);
+    .replace("</head>", () => `    ${tags}\n  </head>`);
   // React uses createRoot, not hydrateRoot: it replaces this search-visible snapshot.
   return page.serverContent
     ? html.replace(/<div\s+id=["']root["']\s*><\/div>/i, () => `<div id="root">${page.serverContent}</div>`)

@@ -805,7 +805,7 @@ export function createApp() {
   };
 
   app.get("/robots.txt", (_req: any, res: any) => {
-    res.type("text/plain").send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`);
+    res.type("text/plain").send(`User-agent: *\nAllow: /\nDisallow: /api/\nAllow: /api/blog-posts/public$\nAllow: /api/blog-posts/public/\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`);
   });
   app.get("/llms.txt", (_req: any, res: any) => {
     const posts = readBlogCollection().posts.filter(post => post.status === "published");
@@ -864,7 +864,7 @@ export function createApp() {
       res.redirect(301, canonicalPath);
       return;
     }
-    sendSeoPage(res, { ...articleSeoPage(post, language), serverContent: renderArticleSnapshot(post, language) });
+    sendSeoPage(res, { ...articleSeoPage(post, language), serverContent: renderArticleSnapshot(post, language), initialBlogPost: post });
   });
   app.get("/blog/:slug", (req: any, res: any) => {
     const post = readBlogCollection().posts.find((item) =>
